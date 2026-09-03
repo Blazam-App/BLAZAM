@@ -417,6 +417,9 @@ namespace BLAZAM.Pages
 
             _ = AttemptResetPassword();
         }
+        /// <summary>
+        /// Disposes of the resources used by the Reset component, including the audit logger.
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();

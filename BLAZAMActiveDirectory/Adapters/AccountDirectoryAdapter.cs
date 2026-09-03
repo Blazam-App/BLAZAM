@@ -11,11 +11,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -210,7 +205,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 var uacRaw = Convert.ToInt32(GetAttribute<object>("userAccountControl"));
                 if (uacRaw == 0)
                 {
-                    //UAC = ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                     return ADS_UF_NORMAL_ACCOUNT | ADS_UF_PASSWD_NOTREQD;
                 }
                 return uacRaw;
@@ -346,7 +340,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     try
                     {
@@ -360,7 +354,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             return null;
                         }
                     }
-                    catch (Exception ex2)
+                    catch
                     {
                         //Ignore conversion errors during runtime
                     }
@@ -502,8 +496,6 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 DirectoryEntry.SetPropertyValue("userAccountControl", UAC);
                 return true;
 
-                Enabled = true;
-                return true;
             }));
 
 
