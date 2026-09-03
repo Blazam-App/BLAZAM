@@ -392,8 +392,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         /// <param name="entry"></param>
         private void ProcessAttributes(EntryCache? existingCache, SearchResultEntry entry)
         {
-            GetNamingContext();
-            var attributeCollectionLog = new Dictionary<string, TimeSpan>();
+            GetNamingContext(this);
 
             foreach (string currentAttributeLdapName in entry.Attributes.AttributeNames)
             {
@@ -447,7 +446,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             DirectoryCache.SetEntryCache(DN, existingCache.Attributes);
         }
 
-        private void GetNamingContext()
+        private static void GetNamingContext(LdapDirectoryEntry entry)
         {
             if (_namingContextCache.IsNullOrEmpty())
             {
@@ -458,7 +457,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         // First, find the schema naming context
                         var rootDseRequest = new SearchRequest("", "(objectClass=*)", SearchScope.Base, "schemaNamingContext");
-                        var rootDseResponse = SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
+                        var rootDseResponse = entry.SendRequestAndGetResponse<SearchResponse>(rootDseRequest);
                         if (rootDseResponse == null || rootDseResponse.Entries.Count == 0)
                         {
                             throw new AppException("Could not read RootDSE to find schema naming context.");
@@ -746,7 +745,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     return connection?.LdapConnection.SessionOptions.SslInformation?.AlgorithmIdentifier ?? CipherAlgorithmType.None;
                 }
-                catch (Exception ex)
+                catch
                 {
                     return CipherAlgorithmType.Null;
                 }

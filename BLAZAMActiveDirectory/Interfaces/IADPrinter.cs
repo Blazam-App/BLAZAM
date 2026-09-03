@@ -8,52 +8,52 @@
         /// <summary>
         /// Gets or sets the name of the printer driver.
         /// </summary>
-        string DriverName { get; set; }
+        string? DriverName { get; set; }
 
         /// <summary>
         /// Gets or sets the version of the printer driver.
         /// </summary>
-        string DriverVersion { get; set; }
+        string? DriverVersion { get; set; }
 
         /// <summary>
         /// Gets or sets the physical location of the printer.
         /// </summary>
-        string Location { get; set; }
+        string? Location { get; set; }
 
         /// <summary>
         /// Gets or sets the port name the printer is connected to.
         /// </summary>
-        string PortName { get; set; }
+        string? PortName { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the printer.
         /// </summary>
-        string PrinterName { get; set; }
+        string? PrinterName { get; set; }
 
         /// <summary>
         /// Gets or sets the short name of the server hosting the printer.
         /// </summary>
-        string ShortServerName { get; set; }
+        string? ShortServerName { get; set; }
 
         /// <summary>
         /// Gets or sets the full name of the server hosting the printer.
         /// </summary>
-        string ServerName { get; set; }
+        string? ServerName { get; set; }
 
         /// <summary>
         /// Gets or sets the printer language (e.g., PostScript, PCL).
         /// </summary>
-        string PrintLanguage { get; set; }
+        string? PrintLanguage { get; set; }
 
         /// <summary>
         /// Gets or sets the unit of measurement for the print rate (e.g., pages per minute).
         /// </summary>
-        string PrintRateUnit { get; set; }
+        string? PrintRateUnit { get; set; }
 
         /// <summary>
         /// Gets or sets the Universal Naming Convention (UNC) path to the printer.
         /// </summary>
-        string UncName { get; set; }
+        string? UncName { get; set; }
 
         /// <summary>
         /// Gets or sets the version number of the printer.
