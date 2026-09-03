@@ -370,6 +370,9 @@
                                     }
                                     else
                                     {
+                                        <ADAutoComplete  SearchObjectType="ActiveDirectoryObjectType.OU"
+                                            SelectedResult="@SelectedOU"
+                                                        SelectedResultChanged="@((ou) => { SelectedOU = ou as IADOrganizationalUnit; if (_workingTemplate.EffectiveParentOU != ou.DN) _workingTemplate.ParentOU = ou.DN; })" />
                                             <ADTreeView ShowAllEntries=false
                                                 SelectedEntry=@SelectedOU
                                                 SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(_workingTemplate.EffectiveParentOU!=ou.DN)_workingTemplate.ParentOU = ou.DN;})"

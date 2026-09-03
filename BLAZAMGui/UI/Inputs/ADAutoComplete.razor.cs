@@ -142,10 +142,12 @@ namespace BLAZAM.Gui.UI.Inputs
                     value
                 };
                 _selectedResult = value;
-
-                SearchService.SearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : SearchTerm;
+                var newSearchTerm = _selectedResult != null ? _selectedResult.CanonicalName : SearchTerm;
+                this.SearchTerm = newSearchTerm;
+                SearchService.SearchTerm = newSearchTerm;
                 _ = CancelExistingTokens();
                 SelectedResultChanged.InvokeAsync(value);
+                InvokeStateHasChanged();
             }
         }
 
