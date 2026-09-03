@@ -217,10 +217,10 @@ namespace BLAZAMCommon.Tests
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            _service.SetInterval(TimeSpan.Zero);
+            _service.SetInterval(TimeSpan.FromMilliseconds(10));
 
             // Act
-            _service.Start(true); // Immediate, delay is 0
+            _service.Start(true); // "Immediate", delay is 10ms
 
             // Assert
             Assert.True(_service.IsServiceStarted);
@@ -242,10 +242,10 @@ namespace BLAZAMCommon.Tests
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            _service.SetInterval(TimeSpan.Zero);
+            _service.SetInterval(TimeSpan.FromMilliseconds(10));
 
             // Act
-            _service.Start(false); // Not immediate. SUT uses Task.Delay(15-45ms) due to bug.
+            _service.Start(false);
 
             // Assert
             Assert.True(_service.IsServiceStarted);
