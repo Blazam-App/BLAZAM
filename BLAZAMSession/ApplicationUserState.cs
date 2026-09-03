@@ -19,9 +19,9 @@ namespace BLAZAM.Session
     public class ApplicationUserState : IApplicationUserState, IDisposable
     {
 
-        public AppEvent OnSettingsChanged { get; set; } = new();
+        public AppEvent? OnSettingsChanged { get; set; } = new();
 
-        public AppEvent OnReadNewsSaved { get; set; } = new();
+        public AppEvent? OnReadNewsSaved { get; set; } = new();
 
 
         public ClaimsPrincipal User { get; set; }

@@ -20,7 +20,7 @@ namespace BLAZAM.Session.Interfaces
         /// <summary>
         /// Event triggered when user-specific settings or preferences change.
         /// </summary>
-        AppEvent OnSettingsChanged { get; set; }
+        AppEvent? OnSettingsChanged { get; set; }
 
         /// <summary>
         /// Gets the username for audit logging, including impersonator information if applicable (e.g., "UserA impersonated by AdminUser").
@@ -140,7 +140,7 @@ namespace BLAZAM.Session.Interfaces
         /// Gets or sets a value indicating whether plugin placeholders should be shown in the UI.
         /// </summary>
         bool ShowPluginPlaceholders { get; set; }
-        AppEvent OnReadNewsSaved { get; set; }
+        AppEvent? OnReadNewsSaved { get; set; }
         string? Browser { get; set; }
 
         /// <summary>

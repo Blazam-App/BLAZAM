@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Pages.Api
 {
+    /// <summary>
+    /// Represents a Razor Page model that handles the retrieval of unread notifications for the currently authenticated user.
+    /// </summary>
     public class UnreadNotificationsModel : PageModel
     {
         private readonly IAppDatabaseFactory _dbFactory;

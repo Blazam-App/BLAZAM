@@ -10,7 +10,7 @@ namespace BLAZAM.Common.Data
     {
         private const string OldSalt = "BLAZAM_SALT";
         private readonly object _cipherCacheLock=new();
-        public static Encryption Instance;
+        public static Encryption Instance { get; private set; }
 
 
 

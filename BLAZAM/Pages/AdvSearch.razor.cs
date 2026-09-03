@@ -14,16 +14,20 @@ namespace BLAZAM.Pages
     /// URI, handling cascading parameters, and managing search results.</remarks>
     public partial class AdvSearch : SearchPageBase
     {
+        /// <summary>
+        /// Gets or sets the search GUID used to identify the current search operation. This parameter is used to determine
+        /// if it should repeat a previous search, currently unimplemented.
+        /// </summary>
         [Parameter]
-        public string? seachGuid { get; set; }
+        public string? SearchGuid { get; set; }
 
         private string? _previousSeachGuid;
 
         protected override async Task OnParametersSetAsync()
         {
-            if (_previousSeachGuid != seachGuid)
+            if (_previousSeachGuid != SearchGuid)
             {
-                _previousSeachGuid = seachGuid;
+                _previousSeachGuid = SearchGuid;
                 await PerformSearch();
             }
         }

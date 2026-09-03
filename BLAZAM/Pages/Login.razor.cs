@@ -59,7 +59,9 @@ namespace BLAZAM.Pages
                 SetPasswordResetAvailable();
             }
         }
-
+        /// <summary>
+        /// Disposes of the component and unsubscribes from the <see cref="ConnMonitor.OnAppReadyChanged"/> event to prevent memory leaks.
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();

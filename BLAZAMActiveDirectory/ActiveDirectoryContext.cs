@@ -50,8 +50,9 @@ namespace BLAZAM.ActiveDirectory
                     var sidBytes = RootDirectoryEntry.GetPropertyValue("objectSid") as byte[];
                     if (sidBytes != null)
                     {
-                        var sid = new SecurityIdentifier(sidBytes, 0);
-                        return sid.ToString();
+
+                       return sidBytes.ToSidString();
+                        
                     }
                 }
                 return string.Empty;
@@ -688,37 +689,7 @@ namespace BLAZAM.ActiveDirectory
             _context?.Dispose();
             _context = null;
         }
-        private AuthenticationTypes AuthTypeWin
-        {
-            get
-            {
-                AuthenticationTypes _authType = AuthenticationTypes.Secure;
-                using var context = Factory.CreateDbContext();
-                ADSettings? ad = context?.ActiveDirectorySettings.FirstOrDefault();
-
-                if (ad != null)
-                {
-                    ConnectionSettings = ad;
-
-                    //We need to determine what security options to use when authenticating
-                    //based on the settings in the DB
-
-                    if (ad.UseTLS)
-                    {
-                        _authType = AuthenticationTypes.Encryption;
-
-                    }
-                    if (ad.ServerPort == 636)
-                    {
-                        _authType = AuthenticationTypes.SecureSocketsLayer | AuthenticationTypes.Secure;
-
-                    }
-                }
-                return _authType;
-
-            }
-        }
-
+      
         public List<string> DomainControllers { get; private set; } = new();
 
         public IADUser? Authenticate(LoginRequest loginReq)
@@ -829,7 +800,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 catch (LdapException ex)
                 {
-                    Loggers.ActiveDirectoryLogger.Debug(ex, "Error authenticating user: " + ex.Message + "");
+                    Loggers.ActiveDirectoryLogger.Debug(ex, "Error authenticating user");
                     switch (ex.Message)
                     {
                         case "The user name or password is incorrect.":
