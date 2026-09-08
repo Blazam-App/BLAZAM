@@ -23,14 +23,12 @@
 
 
 @code {
-
-    public override string Render() => new ComponentRenderer<EntryDeletedEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName)
-            .Set(c => c.ActorName, ActorName)
-            .Set(c => c.Timestamp, Timestamp)
-            .Render();
+    public override string Render() => new EmailTemplateRenderer<LockedOutEmailMessage>()
+        .Set(c => c.EntryName, EntryName)
+        .Set(c => c.ActorName, ActorName)
+        .Set(c => c.Timestamp, Timestamp)
+        .Render();
+   
 }
 
 
