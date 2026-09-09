@@ -2,36 +2,34 @@
 @using System.Security
 @inherits EmailNotificationTemplateComponent
 
-    <EmailTemplateHeader>
+<EmailTemplateHeader>
     <strong>@AppLocalization[Lang.Group_member_added]</strong>
-    </EmailTemplateHeader>
-   
-    <EmailTemplateBody>
+</EmailTemplateHeader>
+
+<EmailTemplateBody>
     @EntryName @AppLocalization["has been assigned to"] @GroupName
-    <br/>
+    <br />
     @if (ShouldRenderLinks)
     {
         <br />
         <EmailLink Href="@EntryLink" />
     }
-   
-    </EmailTemplateBody>
+
+</EmailTemplateBody>
 
 
-@code{
+@code {
 
     [Parameter]
     public string? GroupName { get; set; }
-    public override string Render() => new ComponentRenderer<EntryAssignedEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName)
-            .Set(c => c.EntryLink, EntryLink)
-            .Set(c => c.ActorName, ActorName)
-            .Set(c => c.Timestamp, Timestamp)
+    public override string Render() => new EmailTemplateRenderer<EntryAssignedEmailMessage>()
+        .Set(c => c.EntryName, EntryName)
+        .Set(c => c.EntryLink, EntryLink)
+        .Set(c => c.ActorName, ActorName)
+        .Set(c => c.Timestamp, Timestamp)
+        .Set(c => c.GroupName, GroupName)
+        .Render();
 
-            .Set(c => c.GroupName, GroupName)
-            .Render();
 }
 
 

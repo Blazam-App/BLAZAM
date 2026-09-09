@@ -25,9 +25,7 @@
 
 @code {
 
-    public override string Render() => new ComponentRenderer<LockedOutEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
+    public override string Render() => new EmailTemplateRenderer<LockedOutEmailMessage>()
             .Set(c => c.EntryName, EntryName)
             .Set(c => c.EntryLink, EntryLink)
             .Set(c => c.ActorName, ActorName)

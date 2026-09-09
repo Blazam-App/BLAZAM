@@ -5,11 +5,11 @@
 <EmailTemplateHeader>
     <strong>@AppLocalization[Lang.Group_member_removed]</strong>
 </EmailTemplateHeader>
-   
+
 <EmailTemplateBody>
     @EntryName @AppLocalization["has been unassigned from"] @GroupName
     <br />
-   
+
     @if (ShouldRenderLinks)
     {
         <br />
@@ -21,16 +21,14 @@
 @code {
     [Parameter]
     public string? GroupName { get; set; }
- 
-    public override string Render() => new ComponentRenderer<EntryUnassignedEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
-            .Set(c => c.EntryName, EntryName)
-                .Set(c => c.EntryLink, EntryLink)
-                .Set(c => c.ActorName, ActorName)
-                .Set(c => c.Timestamp, Timestamp)
-            .Set(c => c.GroupName, GroupName)
-            .Render();
+    public override string Render() => new EmailTemplateRenderer<EntryUnassignedEmailMessage>()
+           .Set(c => c.EntryName, EntryName)
+           .Set(c => c.EntryLink, EntryLink)
+           .Set(c => c.ActorName, ActorName)
+           .Set(c => c.Timestamp, Timestamp)
+           .Set(c => c.GroupName, GroupName)
+           .Render();
+
 }
 
 
