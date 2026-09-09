@@ -21,7 +21,7 @@
 
 
 @code{
-    public override string Render() => new EmailTemplateRenderer<LockedOutEmailMessage>()
+    public override string Render() => new EmailTemplateRenderer<EntryCreatedEmailMessage>()
            .Set(c => c.EntryName, EntryName)
            .Set(c => c.EntryLink, EntryLink)
            .Set(c => c.ActorName, ActorName)
