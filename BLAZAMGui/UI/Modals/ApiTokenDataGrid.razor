@@ -1,19 +1,27 @@
 @inherits DatabaseComponentBase
+@{
+       DateTime _renderTime = DateTime.Now;
+}
 <MudDataGrid Items="@_tokens"
-    Loading=LoadingData
-    Class="mb-5">
+             Loading=LoadingData
+             Class="mb-5">
     <Columns>
+        <TemplateColumn Class="" Title="@AppLocalization[Lang.Enabled]">
+            <CellTemplate>
+                <StatusCheck Status="@(IsValid(context.Item,_renderTime))" /> 
+            </CellTemplate>
+        </TemplateColumn>
         @if (ShowUser)
         {
             <TemplateColumn Class="" Title="@AppLocalization[Lang.User]">
                 <CellTemplate>
-                        <MudText>@(context.Item.User.Username)</MudText>
+                    <MudText>@(context.Item.User.Username)</MudText>
                 </CellTemplate>
             </TemplateColumn>
         }
         <TemplateColumn Class="" Title="@AppLocalization[Lang.Token]">
             <CellTemplate>
-               <ApiTokenDisplay Token="@context.Item.Token"/>
+                <ApiTokenDisplay Token="@context.Item.Token" />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Created]">
@@ -23,13 +31,23 @@
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Expires]">
             <CellTemplate>
-                <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
+                <MudStack Spacing="0" Row=true Class="pa-0 ma-0">
+                    <MudText>@(context.Item.ExpiresAt.ToLocalTime())</MudText>
+                    @if (context.Item.ExpiresAt < _renderTime)
+                    {
+                        <AppTooltip Text="@AppLocalization[Lang.Token_expired]">
+                            <MudIcon Color="Color.Error"
+                                     Icon="@Icons.Material.Filled.Error" />
+                        </AppTooltip>
+                    }
+          
+                </MudStack>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Description]">
             <CellTemplate>
-                <MudTextField Disabled="context.Item.DeletedAt!=null"
- @bind-Value=@(context.Item.Description) />
+                <MudTextField Disabled="context.Item.DeletedAt != null"
+                              @bind-Value=@(context.Item.Description) />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Last_Used]">
@@ -44,15 +62,16 @@
         <TemplateColumn Title="@AppLocalization[Lang.Is_Revoked]">
             <CellTemplate>
                 <MudSwitch Color="Color.Error"
-                Disabled="context.Item.DeletedAt!=null"
-                @bind-Value=@context.Item.IsRevoked />
+                           Disabled="context.Item.DeletedAt!=null"
+                           @bind-Value=@context.Item.IsRevoked />
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title="@AppLocalization[Lang.Delete]">
             <CellTemplate>
-               @if(context.Item.DeletedAt==null){
-                <AppIconButton Color="@Color.Error"
-                               Icon="@Icons.Material.Filled.Delete"
+                @if (context.Item.DeletedAt == null)
+                {
+                    <AppIconButton Color="@Color.Error"
+                                   Icon="@Icons.Material.Filled.Delete"
                                    OnClick="@(async()=>{await Delete(context.Item);})" />
                 }
                 else
@@ -61,29 +80,32 @@
                         <MudStack>
                             <MudText>@AppLocalization[Lang.Deleted]</MudText>
                             <MudText>@context.Item.DeletedAt.Value.ToLocalTime().ToString()</MudText>
-                        </MudStack></MudAlert>
+                        </MudStack>
+                    </MudAlert>
                 }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
     <NoRecordsContent>
-        
-        @AppLocalization[ShowUser==true?"There are no active API tokens." :"You don't have any active API tokens."]
+
+        @AppLocalization[ShowUser == true ? "There are no active API tokens." : "You don't have any active API tokens."]
     </NoRecordsContent>
 </MudDataGrid>
 
 
 @code {
+
+
     [Parameter]
-    public bool ShowUser{ get; set; }
+    public bool ShowUser { get; set; }
 
     List<ApiToken> _tokens = new();
 
     [Parameter]
-    public bool ShowAllTokens{ get; set; }
+    public bool ShowAllTokens { get; set; }
 
     [Parameter]
-    public bool ShowDeleted{ get; set; }
+    public bool ShowDeleted { get; set; }
 
     [Parameter]
     public EventCallback<ApiToken?> OnTokenDeleted { get; set; }
@@ -104,7 +126,8 @@
     public async Task GetTokensAsync()
     {
         LoadingData = true;
-        if(ShowAllTokens){
+        if (ShowAllTokens)
+        {
             if (ShowDeleted)
                 _tokens = await Context.ApiTokens.Include(t => t.User).ToListAsync();
             else
@@ -112,10 +135,14 @@
         }
         else
         {
-            _tokens = await Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id && t.DeletedAt==null).Include(t => t.User).ToListAsync();
+            _tokens = await Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id && t.DeletedAt == null).Include(t => t.User).ToListAsync();
         }
 
         LoadingData = false;
 
+    }
+    private bool IsValid(ApiToken token, DateTime renderTime)
+    {
+        return !(token.ExpiresAt.ToLocalTime() < renderTime || token.CreatedAt.ToLocalTime() > renderTime || token.IsRevoked);
     }
 }

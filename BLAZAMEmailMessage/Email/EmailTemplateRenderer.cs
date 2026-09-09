@@ -16,7 +16,7 @@ namespace BLAZAM.EmailMessage.Email
             this.UseLayout<DefaultEmailLayout>();
             this.AddServiceProvider(ApplicationInfo.services);
         }
-        public ComponentRenderer<TComponent> Set<TValue>(Expression<Func<TComponent, TValue>> parameterSelector, TValue value)
+        public new ComponentRenderer<TComponent> Set<TValue>(Expression<Func<TComponent, TValue>> parameterSelector, TValue value)
         {
             if (value != null)
             {
