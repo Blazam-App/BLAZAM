@@ -23,7 +23,7 @@
 
 
 @code {
-    public override string Render() => new EmailTemplateRenderer<LockedOutEmailMessage>()
+    public override string Render() => new EmailTemplateRenderer<EntryDeletedEmailMessage>()
         .Set(c => c.EntryName, EntryName)
         .Set(c => c.ActorName, ActorName)
         .Set(c => c.Timestamp, Timestamp)
