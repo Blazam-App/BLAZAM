@@ -25,6 +25,9 @@
             <DetailsField Label="@AppLocalization[Lang.Pass_Change]">
                 <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
             </DetailsField>
+            <DetailsField Label="@AppLocalization[Lang.Password_Expiration]">
+                <DateWithTimeTooltip DateTime="User?.PasswordExpirationTime" />
+            </DetailsField>
         }
         <DetailsField Label="@AppLocalization[Lang.Last_Logon]">
             <LastLogonTime Typo=Typo.caption DirectoryEntry="Account" />

@@ -54,6 +54,11 @@
                             <MudSpacer />
                             <DateWithTimeTooltip DateTime="User.PasswordLastSet" />
                         </MudStack>
+                        <MudStack Row=true>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Password_Expiration]:</MudText>
+                            <MudSpacer />
+                            <DateWithTimeTooltip DateTime="User.PasswordExpirationTime" />
+                        </MudStack>
                     }
                     <MudStack Row=true>
 
