@@ -317,6 +317,7 @@
         public static readonly string Change_Password = "Change Password";
         public static readonly string Last_Change = "Last Change";
         public static readonly string Pass_Change = "Pass Change";
+        public static readonly string Password_Expiration = "Password Expiration";
         public static readonly string Lockout_Time = "Lockout Time";
         public static readonly string Last_Logon = "Last Logon";
         public static readonly string LAPS_Password = "LAPS Password";
