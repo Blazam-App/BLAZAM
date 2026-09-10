@@ -10,6 +10,7 @@
     case "float":
         <MudNumericField HelperText="@HelperText"
                          T=T
+                         Class=@Class
                          Required=@Required
                          Label="@Label"
                          Immediate=@Immediate
@@ -20,7 +21,9 @@
         break;
 
     case "String":
-        <MudTextField Label="@Label" T=T
+        <MudTextField Label="@Label"
+                      T=T
+                      Class=@Class
                       Required=@Required
                       HelperText="@HelperText"
                       Immediate=@Immediate
@@ -34,6 +37,7 @@
     case "Boolean":
         <MudStack>
             <MudSwitch Color=@Color
+                       Class=@Class
                        Required=@Required
                        UncheckedColor=@UncheckedColor
                        T="T"
@@ -46,6 +50,7 @@
         break;
     case "DateTime":
         <MudDatePicker Clearable=@Clearable
+                       Class=@Class
                        Required=@Required
                        HelperText="@HelperText"
                        ReadOnly=@ReadOnly
