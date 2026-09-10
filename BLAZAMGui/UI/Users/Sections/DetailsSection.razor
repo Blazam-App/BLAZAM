@@ -8,7 +8,7 @@
 <ViewSection Title="@AppLocalization["User Details"]" Stack=true FullWidth=false>
 
     <ContactThumbnailPhoto Contact=Contact />
-    
+
     <DetailsField Label="@AppLocalization[Lang.Created]">
         <DateWithTimeTooltip DateTime="GroupableEntry?.Created" />
     </DetailsField>
@@ -16,15 +16,16 @@
     <DetailsField Label="@AppLocalization[Lang.Last_Change]">
         <DateWithTimeTooltip DateTime="GroupableEntry?.LastChanged" />
     </DetailsField>
+
     
-   
     @if (User != null)
     {
-        
-        <DetailsField Label="@AppLocalization[Lang.Pass_Change]">
-            <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
-        </DetailsField>
-        
+        @if (User.CanSetPassword)
+        {
+            <DetailsField Label="@AppLocalization[Lang.Pass_Change]">
+                <DateWithTimeTooltip DateTime="User?.PasswordLastSet" />
+            </DetailsField>
+        }
         <DetailsField Label="@AppLocalization[Lang.Last_Logon]">
             <LastLogonTime Typo=Typo.caption DirectoryEntry="Account" />
         </DetailsField>
@@ -37,10 +38,10 @@
             </DetailsField>
         }
     }
-    
+
     <DetailsField Label="@AppLocalization[Lang.OU]" Value="@Entry?.OU.ToPrettyOu()" />
 
-       <MudStack>
+    <MudStack>
         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Groups]:</MudText>
         <MemberOfList AssignToClicked=@AssignToClicked Model="GroupableEntry" />
     </MudStack>
