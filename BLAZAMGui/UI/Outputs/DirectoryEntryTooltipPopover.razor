@@ -7,9 +7,9 @@
         </ActivatorContent>
         <PopoverContent>
             <MudElement Class="pa-1">
-                
+
                 <MudText Align=Align.Center><MudLink Href="@Entry?.SearchUri">@Entry?.CanonicalName</MudLink></MudText>
-                @if (GroupableEntry?.Description.IsNullOrEmpty()==false)
+                @if (GroupableEntry?.Description.IsNullOrEmpty() == false)
                 {
                     <MudText Align=Align.Center>
                         <MudText Typo=Typo.caption Align=Align.Center>@GroupableEntry.Description</MudText>
@@ -47,15 +47,14 @@
                 </MudStack>
                 @if (User != null)
                 {
-                    <MudStack Row=true>
-
-                        <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
-                        <MudSpacer />
-                        <DateWithTimeTooltip DateTime="User.PasswordLastSet" />
-
-                     
-                    </MudStack>
-                
+                    @if (User.CanSetPassword)
+                    {
+                        <MudStack Row=true>
+                            <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Pass_Change]:</MudText>
+                            <MudSpacer />
+                            <DateWithTimeTooltip DateTime="User.PasswordLastSet" />
+                        </MudStack>
+                    }
                     <MudStack Row=true>
 
                         <MudText Typo="Typo.subtitle2">@AppLocalization[Lang.Last_Logon]:</MudText>
