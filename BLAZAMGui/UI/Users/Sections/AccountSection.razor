@@ -104,7 +104,7 @@
                            ThumbIconColor="@(Account.RequirePasswordChange==true?Color.Success:Color.Default)"
                            Label=@AppLocalization[Lang.Require_Password_Change]
                            Value=@Account.RequirePasswordChange
-                           Disabled=@true />
+                           Disabled=@(!EditMode || !Account.CanSetPassword) />
 
             }
         </MudStack>
