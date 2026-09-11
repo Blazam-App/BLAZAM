@@ -1,5 +1,4 @@
-﻿
-@inherits DirectoryModelComponentElement
+﻿@inherits DirectoryModelComponentElement
 
 
 
@@ -105,7 +104,12 @@
                            Label=@AppLocalization[Lang.Require_Password_Change]
                            Value=@Account.RequirePasswordChange
                            Disabled=@true />
-
+                <MudSwitch T=bool
+                           Color=Color.Success
+                           ThumbIconColor="@(Account.PasswordNeverExpires==true?Color.Success:Color.Default)"
+                           Label=@AppLocalization[Lang.Password_Never_Expires]
+                           @bind-Value=@Account.PasswordNeverExpires
+                           Disabled=@(!EditMode || !Account.CanSetPassword) />
             }
         </MudStack>
         @if (CurrentUser.State.IsSuperAdmin)
@@ -127,9 +131,9 @@
             }
         }
 
-       <PluginComponents Page="@PageType.User" Location="@PageLocation.Account"/>
-     
+        <PluginComponents Page="@PageType.User" Location="@PageLocation.Account" />
 
+     
 
     </ViewSection>
 
