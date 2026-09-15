@@ -506,6 +506,7 @@ namespace PlaywrightTests
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).PressAsync("Tab");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Password" }).FillAsync("incorrectpassword");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Log In" }).ClickAsync();
+            await Page.WaitForTimeoutAsync(5000);
             await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeHiddenAsync(new() { Timeout = 30000 });
 
             return;
