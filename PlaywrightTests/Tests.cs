@@ -452,12 +452,7 @@ namespace PlaywrightTests
 
         private async Task OpenUserMenu()
         {
-            await page.GetByRole(AriaRole.Button, new() { Name = "D", Exact = true }).ClickAsync();
-
-            // Expect an attribute "to be strictly equal" to the value.
-            //await Expect(getStarted).ToHaveAttributeAsync("href", "/docs/intro");
-
-            // Click the get started link.
+           var userButton = Page.GetByRole(AriaRole.Button, new() { Name = "D", Exact = true });
             await userButton.ClickAsync();
 
             var profileSettingsButton = Page.Locator("text=Profile Settings");
