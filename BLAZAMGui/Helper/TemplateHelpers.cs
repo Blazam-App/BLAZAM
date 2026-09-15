@@ -37,7 +37,7 @@ namespace BLAZAM.Gui.Helpers
                 if (template.HasIncrementorVariable)
                 {
                     var conflictAttempt = 0;
-                    while(directory.Users.FindUserByUsername(newUser.SAMAccountName,exactMatch:true) != null)
+                    while(directory.Users.FindUserByUsername(newUser.SAMAccountName,false,true) != null)
                     {
                         newUser.SAMAccountName = template.GenerateUsername(newUserName, conflictAttempt + 2);
                         conflictAttempt++;
