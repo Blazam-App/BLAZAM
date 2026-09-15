@@ -51,8 +51,8 @@ namespace BLAZAM.ActiveDirectory
                     if (sidBytes != null)
                     {
 
-                       return sidBytes.ToSidString();
-                        
+                        return sidBytes.ToSidString();
+
                     }
                 }
                 return string.Empty;
@@ -139,7 +139,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     TryGetDomainControllers();
                 }
-            },this._connectionCTS.Token);
+            }, this._connectionCTS.Token);
 
             Users = new ADUserSearcher(this);
             Contacts = new ADContactSearcher(this);
@@ -282,13 +282,13 @@ namespace BLAZAM.ActiveDirectory
             }
             return await LdapConnectionFactory.ConnectAsync(ConnectionSettings);
         }
-        public AppLdapConnection GetConnection(string? serverHostname=null)
+        public AppLdapConnection GetConnection(string? serverHostname = null)
         {
             if (ConnectionSettings == null)
             {
                 throw new InvalidOperationException("Active Directory Connection Settings are not configured.");
             }
-            return LdapConnectionFactory.Connect(ConnectionSettings,serverHostname);
+            return LdapConnectionFactory.Connect(ConnectionSettings, serverHostname);
         }
 
 
@@ -327,17 +327,17 @@ namespace BLAZAM.ActiveDirectory
                 using (var context = Factory.CreateDbContext())
                 {
 
-                if (IsCancelRequested)
-                {
-                    return null;
-                }
+                    if (IsCancelRequested)
+                    {
+                        return null;
+                    }
                     ConnectDatabase(context);
 
 
-                if (IsCancelRequested)
-                {
-                    return null;
-                }
+                    if (IsCancelRequested)
+                    {
+                        return null;
+                    }
                     GetConnectionSettings(context, out ad);
                 }
 
@@ -360,7 +360,7 @@ namespace BLAZAM.ActiveDirectory
                 {
                     return null;
                 }
-              
+
 
                 return CreateConnection(ad);
 
@@ -498,7 +498,7 @@ namespace BLAZAM.ActiveDirectory
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Warning(ex,"Could not get domain controllers directly");
+                Loggers.ActiveDirectoryLogger.Warning(ex, "Could not get domain controllers directly");
             }
 
         }
@@ -689,7 +689,7 @@ namespace BLAZAM.ActiveDirectory
             _context?.Dispose();
             _context = null;
         }
-      
+
         public List<string> DomainControllers { get; private set; } = new();
 
         public IADUser? Authenticate(LoginRequest loginReq)
@@ -770,7 +770,6 @@ namespace BLAZAM.ActiveDirectory
                                     _ = test3?.Parent;
 
                                     _authenticatedContext.Dispose();
-                                    stopWatch.Stop();
                                     Loggers.ActiveDirectoryLogger.Debug("Authentication success: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
 
                                     return findUser;
@@ -779,22 +778,24 @@ namespace BLAZAM.ActiveDirectory
                                 catch (DirectoryServicesCOMException ex)
                                 {
                                     Loggers.ActiveDirectoryLogger.Information(ex, "Error authenticating user: {@Message}", ex.Message);
+                                    if (ex.ErrorCode == -2147023570 && ex.ExtendedError == -2146893044)
+                                    {
+                                        Loggers.ActiveDirectoryLogger.Debug("User entered incorrect username or password");
+                                    }
+
                                     if (ex.ExtendedErrorMessage.Contains("data 773, v4563"))
                                     {
                                         Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {@Elapsed} ms", stopWatch.ElapsedMilliseconds);
-                                        return null;
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    stopWatch.Stop();
 
                                     Loggers.ActiveDirectoryLogger.Debug("Authentication failure: {Elapsed} ms", stopWatch.ElapsedMilliseconds);
 
                                     Loggers.ActiveDirectoryLogger.Error(ex, "Error while authenticating credentials.");
                                 }
                             }
-                            return findUser;
                         }
                     }
                 }
@@ -806,6 +807,10 @@ namespace BLAZAM.ActiveDirectory
                         case "The user name or password is incorrect.":
                             return null;
                     }
+                }
+                finally
+                {
+                    stopWatch.Stop();
                 }
             }
             return null;
