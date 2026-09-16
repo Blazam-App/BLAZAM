@@ -159,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public string? NativeGuid => GetPropertyValue("nativeGuid")?.ToString();
 
-        public void SetPropertyValue(string propertyName, object? value)
+        public bool SetPropertyValue(string propertyName, object? value)
         {
             // NEW: If the object is a new in-memory placeholder, update its entry in the DirectoryCache.
             if (_isNew)
@@ -169,9 +169,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     cacheEntry.Attributes[propertyName.ToLower()] = value;
                 }
-                return;
+                return true;
             }
             Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
+            return true;
         }
 
         public void RemovePropertyValue(string propertyName, object? value)
