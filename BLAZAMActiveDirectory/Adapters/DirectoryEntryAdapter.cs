@@ -1357,7 +1357,18 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
+        public virtual IDirectoryEntryAdapter? Clone()
+        {
+            if (Guid.HasValue)
+            {
+                return Directory.FindGlobalEntryByGuid(Guid.Value);
+            } else if (SID!=null && SID.Length > 0)
+            {
+                return Directory.FindGlobalEntryBySid(SID);
 
+            }
+            return null;
+        }
         public virtual bool Rename(string newName)
         {
             newName = newName.Replace(",", "\\,");
