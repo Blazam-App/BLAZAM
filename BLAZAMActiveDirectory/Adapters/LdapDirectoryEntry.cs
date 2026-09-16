@@ -171,8 +171,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 return true;
             }
-            Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
-            return true;
+return Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
         }
 
         public void RemovePropertyValue(string propertyName, object? value)
