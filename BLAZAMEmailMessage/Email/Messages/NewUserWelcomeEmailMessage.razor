@@ -39,13 +39,12 @@
     [Parameter]
 
  public SecureString? Password{get;set;}
- 
-    public override string Render() => new ComponentRenderer<NewUserWelcomeEmailMessage>()
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services)
+    public override string Render() => new EmailTemplateRenderer<NewUserWelcomeEmailMessage>()
             .Set(c => c.Domain, Domain)
             .Set(c => c.Username, Username)
-            .Set(c => c.Password, Password).Render();
+            .Set(c => c.Password, Password)
+           .Render();
+  
 }
 
 

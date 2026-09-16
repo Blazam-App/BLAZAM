@@ -108,10 +108,7 @@ namespace BLAZAM.Services.Background
 
         }
 
-        private ComponentRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => new ComponentRenderer<TComponent>()
-            .AddService(dbFactory)
-            .UseLayout<DefaultEmailLayout>()
-            .AddServiceProvider(ApplicationInfo.services);
+        private EmailTemplateRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => (EmailTemplateRenderer<TComponent>) new EmailTemplateRenderer<TComponent>().AddService(dbFactory);
 
 
 

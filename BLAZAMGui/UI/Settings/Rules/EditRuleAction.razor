@@ -129,7 +129,7 @@
             using var directory = DirectoryFactory.CreateActiveDirectoryContext();
             if (!Action.Data.IsNullOrEmpty())
             {
-                ou = directory.OUs.FindOuByDN(Action.Data);
+                ou = await directory.OUs.FindOuByDNAsync(Action.Data);
             }
         }
         LoadingData = false;

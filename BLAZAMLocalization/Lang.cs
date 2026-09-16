@@ -57,6 +57,7 @@
         public static readonly string Unknown_error_while_attempting_to_log_in = "Unknown error while attempting to log in";
         public static readonly string Update_Scheduled = "Update Scheduled";
         public static readonly string Dismiss_all = "Dismiss all";
+        public static readonly string Token_expired = "Token expired";
         public static readonly string Security_Questions = "Security Questions";
         public static readonly string Delete_permission_mapping = "Delete permission mapping";
         public static readonly string No_unread_notifications = "No unread notifications";
@@ -316,6 +317,7 @@
         public static readonly string Change_Password = "Change Password";
         public static readonly string Last_Change = "Last Change";
         public static readonly string Pass_Change = "Pass Change";
+        public static readonly string Password_Expiration = "Password Expiration";
         public static readonly string Lockout_Time = "Lockout Time";
         public static readonly string Last_Logon = "Last Logon";
         public static readonly string LAPS_Password = "LAPS Password";

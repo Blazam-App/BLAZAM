@@ -14,7 +14,7 @@ namespace BLAZAM.Notifications.Notifications
         /// <typeparam name="T">The expected base type of the notification component (should be <see cref="BLAZAM.EmailMessage.Email.Base.EmailNotificationTemplateComponent"/> or a class derived from it).</typeparam>
         /// <param name="type">The notification type to convert.</param>
         /// <returns>An instance of the corresponding notification component cast to type T, or default(T) if no mapping exists for the given type or if an error occurs.</returns>
-        public static T? ToNotification<T>(this NotificationType type) where T : EmailNotificationTemplateComponent
+        public static T? ToEmailNotification<T>(this NotificationType type) where T : EmailNotificationTemplateComponent
         {
             EmailNotificationTemplateComponent? notificationTemplate = null;
             switch (type)

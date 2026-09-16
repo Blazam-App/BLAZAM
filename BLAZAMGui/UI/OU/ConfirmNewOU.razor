@@ -27,7 +27,7 @@
             var results = await OU.CommitChangesAsync();
             if (results.FailedSteps.Count == 0)
             {
-                OU = Directory.OUs.FindOuByDN(OU.DN);
+                OU = await Directory.OUs.FindOuByDNAsync(OU.DN);
                 SnackBarService.Success(AppLocalization[Lang.OU_created]);
                 ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                     {

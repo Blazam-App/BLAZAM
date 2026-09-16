@@ -139,7 +139,6 @@ namespace BLAZAM.Update
                 {
                     if (!check.Invoke())
                     {
-                        Loggers.UpdateLogger?.Warning("Update prerequisite check failed");
                         return false;
                     }
                 }

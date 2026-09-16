@@ -93,6 +93,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool RequirePasswordChange { get; set; }
 
         /// <summary>
+        /// Indicates whether the account's password is set to never expire.
+        /// </summary>
+        bool PasswordNeverExpires { get; set; }
+
+        /// <summary>
         /// The last logon timestamp as replicated across domain controllers.
         /// </summary>
         DateTime? LastLogonTimestamp { get; }

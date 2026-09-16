@@ -66,7 +66,7 @@
 <MudPaper Class=" mud-overlay-light" Style="width:100%;max-width:550px;height:min-content;">
 
     <ADAutoComplete Class="mt-0"
-                    AutoFocus="true"
+                    AutoFocus="@(Nav.Uri.EndsWith("/home", StringComparison.OrdinalIgnoreCase))" 
                     Style="max-width:550px;"
                     AllowCustomInput="true"
                     Adornment="@(IsAdmin?Adornment.Start:Adornment.None)"

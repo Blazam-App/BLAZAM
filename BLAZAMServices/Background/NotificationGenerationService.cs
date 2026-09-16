@@ -281,9 +281,10 @@ namespace BLAZAM.Services.Background
 
                     notificationTitle += _appLocalization[Lang.Created];
                     notificationBody += _appLocalization["was created at "] + time;
-                    var createdMessage = NotificationType.Create.ToNotification<EntryCreatedEmailMessage>();
+                    var createdMessage = NotificationType.Create.ToEmailNotification<EntryCreatedEmailMessage>();
                     createdMessage.EntryName = source.CanonicalName;
                     createdMessage.EntryLink = source.SearchUri;
+                    createdMessage.ActorName = actor?.AuditUsername;
                     emailMessage = createdMessage;
                     break;
                 case NotificationType.Delete:
@@ -291,18 +292,19 @@ namespace BLAZAM.Services.Background
 
                     notificationTitle += _appLocalization[Lang.Deleted];
                     notificationBody += _appLocalization["was deleted at "] + time;
-                    var deletedMessage = NotificationType.Delete.ToNotification<EntryDeletedEmailMessage>();
+                    var deletedMessage = NotificationType.Delete.ToEmailNotification<EntryDeletedEmailMessage>();
                     deletedMessage.EntryName = source.CanonicalName;
+                    deletedMessage.ActorName = actor?.AuditUsername;
                     emailMessage = deletedMessage;
                     break;
                 case NotificationType.Modify:
                     notificationTitle += _appLocalization["Modified"];
                     notificationBody += _appLocalization["was modified at "] + time;
 
-                    var editedMessage = NotificationType.Modify.ToNotification<EntryEditedEmailMessage>();
+                    var editedMessage = NotificationType.Modify.ToEmailNotification<EntryEditedEmailMessage>();
                     editedMessage.EntryName = source.CanonicalName;
                     editedMessage.EntryLink = source.SearchUri;
-
+                    editedMessage.ActorName = actor?.AuditUsername;
                     emailMessage = editedMessage;
                     break;
                 case NotificationType.Unassign:
@@ -311,10 +313,11 @@ namespace BLAZAM.Services.Background
                     notificationTitle += _appLocalization[Lang.Removed_from_Group];
                     notificationBody += _appLocalization["was removed from"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
-                    var groupMemberRemovedMessage = NotificationType.Unassign.ToNotification<EntryUnassignedEmailMessage>();
+                    var groupMemberRemovedMessage = NotificationType.Unassign.ToEmailNotification<EntryUnassignedEmailMessage>();
                     groupMemberRemovedMessage.EntryName = source.CanonicalName;
                     groupMemberRemovedMessage.EntryLink = source.SearchUri;
                     groupMemberRemovedMessage.GroupName = target?.CanonicalName;
+                    groupMemberRemovedMessage.ActorName = actor?.AuditUsername;
                     emailMessage = groupMemberRemovedMessage;
                     break;
                 case NotificationType.Assign:
@@ -323,12 +326,12 @@ namespace BLAZAM.Services.Background
                     notificationTitle += _appLocalization[Lang.Added_to_Group];
                     notificationBody += _appLocalization["was assigned to"] + " <a href=\"" + target.SearchUri + "\" class=\"mud-typography mud-link mud-primary-text mud-link-underline-hover mud-typography-caption\">" + target.CanonicalName + "</a> " + _appLocalization[" at "] + time;
 
-                    var groupMemberAssignedMessage = NotificationType.Assign.ToNotification<EntryAssignedEmailMessage>();
+                    var groupMemberAssignedMessage = NotificationType.Assign.ToEmailNotification<EntryAssignedEmailMessage>();
                     groupMemberAssignedMessage.EntryName = source.CanonicalName;
                     groupMemberAssignedMessage.EntryLink = source.SearchUri;
 
                     groupMemberAssignedMessage.GroupName = target?.CanonicalName;
-
+                    groupMemberAssignedMessage.ActorName = actor?.AuditUsername;
                     emailMessage = groupMemberAssignedMessage;
                     break;
                 case NotificationType.PasswordChange:
@@ -336,10 +339,10 @@ namespace BLAZAM.Services.Background
 
                     notificationTitle += _appLocalization[Lang.Password_Changed];
                     notificationBody += _appLocalization["had a password reset at "] + time;
-                    var passwordChangeMessage = NotificationType.PasswordChange.ToNotification<PasswordChangedEmailMessage>();
+                    var passwordChangeMessage = NotificationType.PasswordChange.ToEmailNotification<PasswordChangedEmailMessage>();
                     passwordChangeMessage.EntryName = source.CanonicalName;
                     passwordChangeMessage.EntryLink = source.SearchUri;
-
+                    passwordChangeMessage.ActorName = actor?.AuditUsername;
                     emailMessage = passwordChangeMessage;
                     break;
                 case NotificationType.LockedOut:
@@ -351,9 +354,11 @@ namespace BLAZAM.Services.Background
 
                     notificationTitle += _appLocalization[Lang.Locked_Out];
                     notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime!=null?sourceUser.LockoutTime?.ToLocalTime():DateTime.Now);
-                    var lockedOutMessage = NotificationType.LockedOut.ToNotification<LockedOutEmailMessage>();
+                    var lockedOutMessage = NotificationType.LockedOut.ToEmailNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
                     lockedOutMessage.EntryLink = source.SearchUri;
+                    lockedOutMessage.ActorName = actor?.AuditUsername;
+                    lockedOutMessage.Timestamp = sourceUser.LockoutTime != null ? sourceUser.LockoutTime?.ToLocalTime().ToLongDateString() : DateTime.Now.ToLocalTime().ToLongDateString();
                     emailMessage = lockedOutMessage;
                     break;
 

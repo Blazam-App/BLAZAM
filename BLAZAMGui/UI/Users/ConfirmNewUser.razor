@@ -46,6 +46,7 @@
 
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
+              Class="password-font"
               Value="@User?.NewPassword.ToPlainText()"
               Disabled=true />
 
@@ -53,7 +54,7 @@
     <CascadingValue Value="Entry">
         <CascadingValue Value="DirectoryTemplate">
             <OrganizationSection Disabled=true />
-            
+
             <ContactInfoSection Disabled=true />
 
            
@@ -61,7 +62,7 @@
 
 
             <ViewSection Title=@AppLocalization[Lang.Groups]>
-                @if (User?.IsAGroupMember==true)
+                @if (User?.IsAGroupMember == true)
                 {
                     <MudText Class="mud-width-full" Align="Align.Center">
                         <MemberOfList AllowNavigation="false" Model="@User" Disabled=true />
@@ -170,11 +171,11 @@ else
                         Actor = CurrentUser.State
 
                     });
-                    
+
                 }
-             
+
             }
-            else if(User is not null)
+            else if (User is not null)
             {
                 disableCreateUserButton = true;
                 await StateHasChangedAsync();

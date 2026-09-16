@@ -421,6 +421,10 @@ namespace BLAZAM.Helpers
 
             if (value is DateTime dtValue)
             {
+                if(dtValue==DateTime.Parse("1/1/1601 12:00:00AM", CultureInfo.InvariantCulture))
+                {
+                    return null;
+                }   
                 return dtValue;
             }
 

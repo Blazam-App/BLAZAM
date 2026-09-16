@@ -169,6 +169,36 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
             }
         }
+        public virtual bool PasswordNeverExpires
+        {
+            get
+            {
+
+                try
+                {
+                    return (UAC & ADS_UF_DONT_EXPIRE_PASSWD) == ADS_UF_DONT_EXPIRE_PASSWD;
+                }
+                catch
+                {
+                    //Ignore error
+                }
+                return true;
+            }
+            set
+            {
+                if (value && !PasswordNeverExpires)
+                {
+                    UAC = UAC | ADS_UF_DONT_EXPIRE_PASSWD;
+                }
+                else if (!value && PasswordNeverExpires)
+                {
+
+                    UAC = UAC & ~ADS_UF_DONT_EXPIRE_PASSWD;
+
+                }
+            }
+        }
+
         public virtual bool PasswordNotRequired
         {
             get
@@ -328,39 +358,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public DateTime? PasswordLastSet
         {
-            get
-            {
-
-                try
-                {
-                    var dateTime = GetDateTimeAttribute(pwdLastSet)?.AdsValueToDateTime();
-                    if (dateTime.HasValue)
-                    {
-                        return dateTime.Value;
-
-                    }
-                }
-                catch
-                {
-                    try
-                    {
-                        var rawValue = GetAttribute<Int32>(pwdLastSet);
-                        if (rawValue == -1)
-                        {
-                            return DateTime.UtcNow;
-                        }
-                        if (rawValue == 0)
-                        {
-                            return null;
-                        }
-                    }
-                    catch
-                    {
-                        //Ignore conversion errors during runtime
-                    }
-                }
-                return null;
-            }
+            get=>GetDateTimeAttribute(pwdLastSet);
+            
             set
             {
                 if (value == null)

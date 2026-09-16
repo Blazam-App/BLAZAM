@@ -97,7 +97,7 @@
             using var directory = DirectoryFactory.CreateActiveDirectoryContext();
             if (!Filter.Value.IsNullOrEmpty())
             {
-                ou = directory.OUs.FindOuByDN(Filter.Value);
+                ou = await directory.OUs.FindOuByDNAsync(Filter.Value);
             }
 
         }

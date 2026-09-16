@@ -144,7 +144,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                     _workingTemplate = DirectoryTemplate;
                 }
 
-                SelectedOU = Directory?.OUs.FindOuByDN(_workingTemplate.EffectiveParentOU);
+                SelectedOU = await Directory.OUs.FindOuByDNAsync(_workingTemplate.EffectiveParentOU);
 
                 _usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                 _displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
