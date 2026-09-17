@@ -16,7 +16,7 @@
     <ItemTemplate>
         <MudTreeViewItem Selected=@(context.Value.Id.Equals(SelectedTemplate?.Id) == true)
                          Expanded="context.Expanded"
-                         Items="@context.Children"
+                         Items="@context.Children?.Where(c=>c.Value.DeletedAt==null).ToList()"
                          Value="@context.Value">
             <Content>
                 <MudTreeViewItemToggleButton ExpandedChanged="@((state) => { context.Expanded = state; })"
