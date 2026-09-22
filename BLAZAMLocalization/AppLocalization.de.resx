@@ -835,7 +835,7 @@
     <value>Startzeit</value>
   </data>
   <data name="State" xml:space="preserve">
-    <value>Bundesland</value>
+    <value>Bundesland/Region</value>
   </data>
   <data name="Stop It" xml:space="preserve">
     <value>Beenden</value>
@@ -1147,7 +1147,7 @@
     <value>IP-Adresse</value>
   </data>
   <data name="Is Revoked" xml:space="preserve">
-    <value>Wird widerrufen</value>
+    <value>Widerrufen</value>
   </data>
   <data name="Last Attempt Timestamp" xml:space="preserve">
     <value>Zeitstempel des letzten Versuchs</value>
