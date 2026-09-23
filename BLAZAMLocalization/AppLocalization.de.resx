@@ -187,7 +187,7 @@
     <value>Automatische Aktualisierung zulassen</value>
   </data>
   <data name="Allow Disabled User Access" xml:space="preserve">
-    <value>Behindertenzugriff zulassen</value>
+    <value> Zugriff auf deaktivierte Benutzer erlauben</value>
   </data>
   <data name="An error has occurred while trying to create the template user" xml:space="preserve">
     <value>Beim Versuch, den Vorlagenbenutzer zu erstellen, ist ein Fehler aufgetreten</value>
@@ -412,7 +412,7 @@
     <value>Treiber-Version</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>Redigieren</value>
+    <value>Bearbeiten</value>
   </data>
   <data name="Editable" xml:space="preserve">
     <value>Editierbar</value>
@@ -784,7 +784,7 @@
     <value>Ausgeführte</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Retten</value>
+    <value>Speichern</value>
   </data>
   <data name="Save Changes" xml:space="preserve">
     <value>Änderungen speichern</value>
@@ -889,7 +889,7 @@
     <value>Unbekannter Delegat</value>
   </data>
   <data name="Unlock" xml:space="preserve">
-    <value>Aufschließen</value>
+    <value>Entsperren</value>
   </data>
   <data name="Up to date" xml:space="preserve">
     <value>Aktuell</value>
@@ -1090,7 +1090,7 @@
     <value>Abgegeben</value>
   </data>
   <data name="Disable" xml:space="preserve">
-    <value>Abschalten</value>
+    <value>Deaktivieren</value>
   </data>
   <data name="Display Name Format" xml:space="preserve">
     <value>Format des Anzeigenamens</value>
@@ -1385,5 +1385,8 @@
   </data>
   <data name="Year" xml:space="preserve">
     <value>Jahr</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Sprache</value>
   </data>
 </root>

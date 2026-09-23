@@ -1386,4 +1386,7 @@
   <data name="Year" xml:space="preserve">
     <value>Rok</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Język</value>
+  </data>
 </root>

@@ -1,6 +1,8 @@
 ﻿@inherits AppModalContent
 @using BLAZAM.Helpers
 @using System.Security
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization
 <MudStack>
     @if (CurrentUser.State.Preferences.ProfilePicture != null)
     {
@@ -41,6 +43,13 @@
 
     <MudTextField T="string" @bind-Text=@CurrentUser.State.Preferences.Email Label=@AppLocalization[Lang.Email] />
     
+    <MudSelect T="string" Label=@AppLocalization[Lang.Language] @bind-Value="selectedCulture">
+        @foreach (var culture in Lang.SupportedCultures)
+        {
+            <MudSelectItem Value="@culture.Name">@culture.DisplayName (@culture.NativeName)</MudSelectItem>
+        }
+    </MudSelect>
+
     <MudNavGroup Title="Themes">
         @foreach (var theme in ApplicationTheme.Themes)
         {
@@ -70,8 +79,11 @@
 
         <LoadingData Loading=LoadingData />
     </MudStack>
-    @code {
+@code {
     private AuthenticationSettings? authSettings;
+    private string selectedCulture = CultureInfo.CurrentUICulture.Name;
+
+
 
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
@@ -88,10 +100,19 @@
     {
         LoadingData = true;
         await Modal.RefreshView();
+
+        var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(selectedCulture));
+        await JS.SetCookieAsync(CookieRequestCultureProvider.DefaultCookieName, cookieValue, days: 36500, path: "/");
+
         if (await CurrentUser.State.SaveAllUserSettings())
         {
             SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
+            if (!selectedCulture.Equals(CultureInfo.CurrentUICulture))
+            {
+                Refresh(true);   
+            }else{
             await Modal.CloseAsync();
+            }
         }
         else
         {

@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Localization
+﻿using System.Globalization;
+
+namespace BLAZAM.Localization
 {
     /// <summary>
     /// Collection of available string translations
@@ -13,6 +15,30 @@
     /// </remarks>
     public static class Lang
     {
+
+        public static readonly CultureInfo[] SupportedCultures = new[]
+    {
+        new CultureInfo("ar"),
+        new CultureInfo("en-US"),
+        new CultureInfo("en-GB"),
+        new CultureInfo("fi"),
+        new CultureInfo("fr-FR"),
+        new CultureInfo("de"),
+        new CultureInfo("es"),
+        new CultureInfo("hi"),
+        new CultureInfo("it"),
+        new CultureInfo("ja"),
+        new CultureInfo("ko"),
+        new CultureInfo("nl"),
+        new CultureInfo("pl"),
+        new CultureInfo("pt"),
+        new CultureInfo("ro"),
+        new CultureInfo("ru"),
+        new CultureInfo("tr"),
+        new CultureInfo("uk"),
+        new CultureInfo("zh-Hans")
+    };
+
         public static readonly string About = "About";
         public static readonly string Contact = "Contact";
         public static readonly string Username = "Username";
@@ -27,6 +53,7 @@
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
         public static readonly string Text = "Text";
+        public static readonly string Language = "Language";
         public static readonly string PIN = "PIN";
         public static readonly string Removed_from_Group = "Removed from Group";
         public static readonly string Added_to_Group = "Added to Group";

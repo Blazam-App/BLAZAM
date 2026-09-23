@@ -1386,4 +1386,7 @@
   <data name="Year" xml:space="preserve">
     <value>Ano</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
 </root>
