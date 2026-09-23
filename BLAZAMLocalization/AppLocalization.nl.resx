@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Thuistelefoon</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Thuistelefoonnummer</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Startpaginabericht</value>
   </data>
@@ -1328,5 +1331,59 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Voor actie</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Lezen</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>Wachtwoord instellen</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>E-mailadres</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>Aanmelden bij</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>Paginering</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Beheerder</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Telefoonnummer</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Veld</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Maand</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Dag</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Uur</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Pad van het inlogscript</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Aanmeldtijden</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minuut</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Jaar</value>
   </data>
 </root>

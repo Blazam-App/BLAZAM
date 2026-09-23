@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Домашній телефон</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Номер домашнього телефону</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Повідомлення на головній сторінці</value>
   </data>
@@ -1328,5 +1331,59 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>До дії</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Читання</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>Задати пароль</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>Електронна адреса</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>Увійти в</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Фото</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>Пейджер</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Менеджер</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Номер телефону</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Поле</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Тиждень</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Місяць</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Година</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Шлях сценарію входу</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Години входу</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Хвилина</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Рік</value>
   </data>
 </root>

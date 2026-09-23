@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>住宅电话</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>家庭电话号码</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>首页留言</value>
   </data>
@@ -1231,7 +1234,7 @@
     <value>时间戳</value>
   </data>
   <data name="Toggle Fields" xml:space="preserve">
-    <value>Toggle Fields</value>
+    <value>切换字段</value>
   </data>
   <data name="Token" xml:space="preserve">
     <value>令 牌</value>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>您的会话即将过期</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>过去90天内更改的已禁用用户</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>已更改的条目</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>已更改的密码</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>已删除的条目</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>新电脑</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>新联系人</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>新组</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>新OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>新打印机</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>新用户</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>文本</value>
   </data>
@@ -1299,34 +1332,58 @@
   <data name="Before Action" xml:space="preserve">
     <value>行动前</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>已更改的条目</value>
+  <data name="Read" xml:space="preserve">
+    <value>读取</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>已更改的密码</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>设置密码</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>已删除的条目</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>电子邮件地址</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>过去90天内更改的已禁用用户</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>登录到</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>新电脑</value>
+  <data name="Photo" xml:space="preserve">
+    <value>照片</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>新联系人</value>
+  <data name="Pager" xml:space="preserve">
+    <value>分页器</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>新组</value>
+  <data name="Manager" xml:space="preserve">
+    <value>经理</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>新OU</value>
+  <data name="Title" xml:space="preserve">
+    <value>标题</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>新打印机</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>电话号码</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>新用户</value>
+  <data name="Field" xml:space="preserve">
+    <value>字段</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>周</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>日</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>小时</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>登录脚本路径</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>登录时间</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>分钟</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>年</value>
   </data>
 </root>

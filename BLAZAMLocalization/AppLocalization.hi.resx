@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>घर का फोन</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>घर का फ़ोन नंबर</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>होमपेज संदेश</value>
   </data>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>आपका सत्र समाप्त होने वाला है</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>पिछले 90 दिनों में बदले गए अक्षम उपयोगकर्ता</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>बदली गई प्रविष्टियाँ</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>बदले गए पासवर्ड</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>हटाई गई प्रविष्टियाँ</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>नए कंप्यूटर</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>नए संपर्क</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>नए समूह</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>नई OU's</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>नए प्रिंटर</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>नए उपयोगकर्ता</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>पाठ</value>
   </data>
@@ -1299,34 +1332,58 @@
   <data name="Before Action" xml:space="preserve">
     <value>कार्रवाई से पहले</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>बदली गई प्रविष्टियाँ</value>
+  <data name="Read" xml:space="preserve">
+    <value>पढ़ना</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>बदले गए पासवर्ड</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>पासवर्ड सेट करें</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>हटाई गई प्रविष्टियाँ</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>ईमेल पता</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>पिछले 90 दिनों में बदले गए अक्षम उपयोगकर्ता</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>लॉग ऑन करने के लिए</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>नए कंप्यूटर</value>
+  <data name="Photo" xml:space="preserve">
+    <value>फ़ोटो</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>नए संपर्क</value>
+  <data name="Pager" xml:space="preserve">
+    <value>पेज़र</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>नए समूह</value>
+  <data name="Manager" xml:space="preserve">
+    <value>प्रबंधक</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>नई OU's</value>
+  <data name="Title" xml:space="preserve">
+    <value>शीर्षक</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>नए प्रिंटर</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>टेलीफोन नंबर</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>नए उपयोगकर्ता</value>
+  <data name="Field" xml:space="preserve">
+    <value>फ़ील्ड</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>सप्ताह</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>महीना</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>दिन</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>घंटा</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>लॉगऑन स्क्रिप्ट पथ</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>लॉगऑन घंटे</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>मिनट</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>वर्ष</value>
   </data>
 </root>

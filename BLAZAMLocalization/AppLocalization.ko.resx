@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>집 전화</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>집 전화번호</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>홈페이지 메시지</value>
   </data>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>세션이 곧 만료됩니다.</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>지난 90일 동안 변경된 비활성화된 사용자</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>변경된 항목</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>변경된 비밀번호</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>삭제된 항목</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>새 컴퓨터</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>새 연락처</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>새 그룹</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>새 OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>새 프린터</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>새 사용자</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>텍스트</value>
   </data>
@@ -1299,34 +1332,58 @@
   <data name="Before Action" xml:space="preserve">
     <value>행동 전</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>변경된 항목</value>
+  <data name="Read" xml:space="preserve">
+    <value>읽기</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>변경된 비밀번호</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>비밀번호 설정</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>삭제된 항목</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>이메일 주소</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>지난 90일 동안 변경된 비활성화된 사용자</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>로그인할 대상</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>새 컴퓨터</value>
+  <data name="Photo" xml:space="preserve">
+    <value>사진</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>새 연락처</value>
+  <data name="Pager" xml:space="preserve">
+    <value>페이저</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>새 그룹</value>
+  <data name="Manager" xml:space="preserve">
+    <value>관리자</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>새 OU</value>
+  <data name="Title" xml:space="preserve">
+    <value>제목</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>새 프린터</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>전화번호</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>새 사용자</value>
+  <data name="Field" xml:space="preserve">
+    <value>필드</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>주</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>월</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>일</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>로그온 스크립트 경로</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>로그온 시간</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>분</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>연도</value>
   </data>
 </root>
