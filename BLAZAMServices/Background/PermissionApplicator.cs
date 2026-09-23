@@ -7,7 +7,6 @@ using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Cmp;
 using System.Security.Claims;
 
 namespace BLAZAM.Services.Background
