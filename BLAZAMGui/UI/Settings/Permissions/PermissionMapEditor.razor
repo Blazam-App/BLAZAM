@@ -196,8 +196,8 @@
             {
 
 
-
-                Context.PermissionMap.Remove(Mapping);
+                var existing = await Context.PermissionMap.FirstOrDefaultAsync(x => x.Id == Mapping.Id && x.DeletedAt == null);
+                Context.PermissionMap.Remove(existing);
                 await Context.SaveChangesAsync();
             }
             await StateHasChangedAsync();
