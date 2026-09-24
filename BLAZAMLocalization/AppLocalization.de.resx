@@ -268,13 +268,13 @@
     <value>Zertifikatstyp</value>
   </data>
   <data name="Change History" xml:space="preserve">
-    <value>Historie ändern</value>
+    <value>Änderungsverlauf</value>
   </data>
   <data name="Change Password" xml:space="preserve">
     <value>Passwort ändern</value>
   </data>
   <data name="Chat" xml:space="preserve">
-    <value>Plaudern</value>
+    <value>Chat</value>
   </data>
   <data name="Choose or Search..." xml:space="preserve">
     <value>Wählen oder Suchen...</value>
@@ -406,7 +406,7 @@
     <value>Details zum Laufwerk</value>
   </data>
   <data name="Driver" xml:space="preserve">
-    <value>Fahrer</value>
+    <value>Treiber</value>
   </data>
   <data name="Driver Version" xml:space="preserve">
     <value>Treiber-Version</value>
@@ -475,10 +475,10 @@
     <value>FQDN</value>
   </data>
   <data name="From Address" xml:space="preserve">
-    <value>Von der Adresse</value>
+    <value>Absenderadresse</value>
   </data>
   <data name="From Display Name" xml:space="preserve">
-    <value>Über den Anzeigenamen</value>
+    <value>Anzeigename des Absenders</value>
   </data>
   <data name="Google Analytics ID" xml:space="preserve">
     <value>Google Analytics-ID</value>
@@ -697,10 +697,10 @@
     <value>Profil-Einstellungen</value>
   </data>
   <data name="Queued" xml:space="preserve">
-    <value>Angestanden</value>
+    <value>In Warteschlange</value>
   </data>
   <data name="Ran by" xml:space="preserve">
-    <value>Abgelaufen</value>
+    <value>Ausgeführt von</value>
   </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>Papierkorb</value>
@@ -775,7 +775,7 @@
     <value>Wiederherstellen:</value>
   </data>
   <data name="Results" xml:space="preserve">
-    <value>Befund</value>
+    <value>Ergebnisse</value>
   </data>
   <data name="Revert to inherited value" xml:space="preserve">
     <value>Wiederherstellen des geerbten Werts</value>
@@ -817,7 +817,7 @@
     <value>Abmelden</value>
   </data>
   <data name="Site" xml:space="preserve">
-    <value>Platz</value>
+    <value>Standort</value>
   </data>
   <data name="SMTP Password" xml:space="preserve">
     <value>SMTP-Passwort</value>
@@ -952,7 +952,7 @@
     <value>Benutzer</value>
   </data>
   <data name="UseTLS" xml:space="preserve">
-    <value>VerwendenTLS</value>
+    <value>TLS verwenden</value>
   </data>
   <data name="Visible" xml:space="preserve">
     <value>Sichtbar</value>
@@ -973,10 +973,10 @@
     <value>Anmeldungen von Anwendungen</value>
   </data>
   <data name="Block" xml:space="preserve">
-    <value>Block</value>
+    <value>Blockieren</value>
   </data>
   <data name="Bypass" xml:space="preserve">
-    <value>Umgehungsstraße</value>
+    <value>Umgehen</value>
   </data>
   <data name="Click to view help documentation" xml:space="preserve">
     <value>Klicken Sie hier, um die Hilfedokumentation anzuzeigen</value>
@@ -991,7 +991,7 @@
     <value>Protokolle herunterladen</value>
   </data>
   <data name="Duo Enabled" xml:space="preserve">
-    <value>Duo Ermöglichte</value>
+    <value>Duo aktiviert</value>
   </data>
   <data name="Duo Health Check" xml:space="preserve">
     <value>Duo-Gesundheitscheck</value>
@@ -1033,7 +1033,7 @@
     <value>Zertifikat hochladen</value>
   </data>
   <data name="Upload Icon" xml:space="preserve">
-    <value>Upload-Symbol</value>
+    <value>Symbol hochladen</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>Über</value>
@@ -1060,10 +1060,10 @@
     <value>Art der Autorisierung</value>
   </data>
   <data name="Basic" xml:space="preserve">
-    <value>Grundlegend</value>
+    <value>Basic</value>
   </data>
   <data name="Bearer" xml:space="preserve">
-    <value>Überbringer</value>
+    <value>Bearer</value>
   </data>
   <data name="BitLocker" xml:space="preserve">
     <value>BitLocker</value>
@@ -1087,7 +1087,7 @@
     <value>Gelöscht</value>
   </data>
   <data name="Delivered" xml:space="preserve">
-    <value>Abgegeben</value>
+    <value>Übermittelt</value>
   </data>
   <data name="Disable" xml:space="preserve">
     <value>Deaktivieren</value>
@@ -1099,7 +1099,7 @@
     <value>Effektive Berechtigungen</value>
   </data>
   <data name="Enable" xml:space="preserve">
-    <value>Ermöglichen</value>
+    <value>Aktivieren</value>
   </data>
   <data name="Error Message" xml:space="preserve">
     <value>Fehlermeldung</value>
@@ -1150,7 +1150,7 @@
     <value>IP-Adresse</value>
   </data>
   <data name="Is Revoked" xml:space="preserve">
-    <value>Wird widerrufen</value>
+    <value>Widerrufen</value>
   </data>
   <data name="Last Attempt Timestamp" xml:space="preserve">
     <value>Zeitstempel des letzten Versuchs</value>
@@ -1162,7 +1162,7 @@
     <value>Zuletzt verwendet</value>
   </data>
   <data name="Locked Out" xml:space="preserve">
-    <value>Ausgesperrt</value>
+    <value>Gesperrt</value>
   </data>
   <data name="Message Id" xml:space="preserve">
     <value>Nachrichten-ID</value>
@@ -1186,7 +1186,7 @@
     <value>PasswortÄndern</value>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value>Auffrischen</value>
+    <value>Aktualisieren</value>
   </data>
   <data name="Refresh Session" xml:space="preserve">
     <value>Sitzung aktualisieren</value>
@@ -1237,7 +1237,7 @@
     <value>Felder umschalten</value>
   </data>
   <data name="Token" xml:space="preserve">
-    <value>Zeichen</value>
+    <value>Token</value>
   </data>
   <data name="Token Lifetime" xml:space="preserve">
     <value>Token-Lebensdauer</value>
@@ -1258,7 +1258,7 @@
     <value>Benutzer gesucht</value>
   </data>
   <data name="User Unassigned" xml:space="preserve">
-    <value>Benutzer nicht zugewiesen</value>
+    <value>Benutzer aus Gruppe entfernt</value>
   </data>
   <data name="Username Format" xml:space="preserve">
     <value>Format des Benutzernamens</value>
