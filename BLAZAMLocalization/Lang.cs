@@ -17,27 +17,27 @@ namespace BLAZAM.Localization
     {
 
         public static readonly CultureInfo[] SupportedCultures = new[]
-    {
-        new CultureInfo("ar"),
-        new CultureInfo("en-US"),
-        new CultureInfo("en-GB"),
-        new CultureInfo("fi"),
-        new CultureInfo("fr-FR"),
-        new CultureInfo("de"),
-        new CultureInfo("es"),
-        new CultureInfo("hi"),
-        new CultureInfo("it"),
-        new CultureInfo("ja"),
-        new CultureInfo("ko"),
-        new CultureInfo("nl"),
-        new CultureInfo("pl"),
-        new CultureInfo("pt"),
-        new CultureInfo("ro"),
-        new CultureInfo("ru"),
-        new CultureInfo("tr"),
-        new CultureInfo("uk"),
-        new CultureInfo("zh-Hans")
-    };
+        {
+            new CultureInfo("ar"),    // Arabic
+            new CultureInfo("en-US"), // English (United States)
+            new CultureInfo("en-GB"), // English (United Kingdom)
+            new CultureInfo("fi"),    // Finnish
+            new CultureInfo("fr-FR"), // French (France)
+            new CultureInfo("de"),    // German (Default)
+            new CultureInfo("es"),    // Spanish (Default)
+            new CultureInfo("hi"),    // Hindi
+            new CultureInfo("it"),    // Italian
+            new CultureInfo("ja"),    // Japanese
+            new CultureInfo("ko"),    // Korean
+            new CultureInfo("nl"),    // Dutch
+            new CultureInfo("pl"),    // Polish
+            new CultureInfo("pt"),    // Portuguese
+            new CultureInfo("ro"),    // Romanian
+            new CultureInfo("ru"),    // Russian
+            new CultureInfo("tr"),    // Turkish
+            new CultureInfo("uk"),    // Ukrainian
+            new CultureInfo("zh-Hans") // Chinese (Simplified)
+        };
 
         public static readonly string About = "About";
         public static readonly string Contact = "Contact";
