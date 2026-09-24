@@ -107,7 +107,7 @@
         if (await CurrentUser.State.SaveAllUserSettings())
         {
             SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
-            if (!selectedCulture.Equals(CultureInfo.CurrentUICulture))
+            if (!selectedCulture.Equals(CultureInfo.CurrentUICulture.Name))
             {
                 Refresh(true);   
             }else{
