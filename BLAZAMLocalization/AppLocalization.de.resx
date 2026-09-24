@@ -187,7 +187,7 @@
     <value>Automatische Aktualisierung zulassen</value>
   </data>
   <data name="Allow Disabled User Access" xml:space="preserve">
-    <value> Zugriff auf deaktivierte Benutzer erlauben</value>
+    <value>Zugriff auf deaktivierte Benutzer erlauben</value>
   </data>
   <data name="An error has occurred while trying to create the template user" xml:space="preserve">
     <value>Beim Versuch, den Vorlagenbenutzer zu erstellen, ist ein Fehler aufgetreten</value>
