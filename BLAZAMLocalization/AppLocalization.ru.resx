@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Домашний телефон</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Номер домашнего телефона</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Сообщение на главной странице</value>
   </data>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>Срок действия сеанса истекает</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Отключённые пользователи, изменённые за последние 90 дней</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Изменённые записи</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Изменённые пароли</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Удалённые записи</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Новые компьютеры</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Новые контакты</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Новые группы</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Новые ОП</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Новые принтеры</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Новые пользователи</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>Текст</value>
   </data>
@@ -1299,34 +1332,61 @@
   <data name="Before Action" xml:space="preserve">
     <value>Перед действием</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>Изменённые записи</value>
+  <data name="Read" xml:space="preserve">
+    <value>Чтение</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>Изменённые пароли</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>Установить пароль</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>Удалённые записи</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>Адрес электронной почты</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Отключённые пользователи, изменённые за последние 90 дней</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>Войти в</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>Новые компьютеры</value>
+  <data name="Photo" xml:space="preserve">
+    <value>Фото</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>Новые контакты</value>
+  <data name="Pager" xml:space="preserve">
+    <value>Пейджер</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>Новые группы</value>
+  <data name="Manager" xml:space="preserve">
+    <value>Менеджер</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>Новые ОП</value>
+  <data name="Title" xml:space="preserve">
+    <value>Заголовок</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>Новые принтеры</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Номер телефона</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>Новые пользователи</value>
+  <data name="Field" xml:space="preserve">
+    <value>Поле</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Неделя</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Месяц</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Путь к скрипту входа</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Часы входа</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Минута</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Год</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
   </data>
 </root>

@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Telefono di casa</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Numero di telefono di casa</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Homepage Messaggio</value>
   </data>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>La tua sessione sta per scadere</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>Utenti disabilitati modificati negli ultimi 90 giorni</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>Voci modificate</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>Password modificate</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>Voci eliminate</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>Nuovi computer</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>Nuovi contatti</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>Nuovi gruppi</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>Nuove OU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>Nuove stampanti</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>Nuovi utenti</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>Testo</value>
   </data>
@@ -1299,34 +1332,61 @@
   <data name="Before Action" xml:space="preserve">
     <value>Prima dell'azione</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>Voci modificate</value>
+  <data name="Read" xml:space="preserve">
+    <value>Lettura</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>Password modificate</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>Imposta la password</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>Voci eliminate</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>Indirizzo email</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>Utenti disabilitati modificati negli ultimi 90 giorni</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>Accedi a</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>Nuovi computer</value>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>Nuovi contatti</value>
+  <data name="Pager" xml:space="preserve">
+    <value>Paginatore</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>Nuovi gruppi</value>
+  <data name="Manager" xml:space="preserve">
+    <value>Responsabile</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>Nuove OU</value>
+  <data name="Title" xml:space="preserve">
+    <value>Titolo</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>Nuove stampanti</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Numero di telefono</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>Nuovi utenti</value>
+  <data name="Field" xml:space="preserve">
+    <value>Campo</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Settimana</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Mese</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Giorno</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Ora</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Percorso script di accesso</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Orari di accesso</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minuto</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Anno</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Lingua</value>
   </data>
 </root>

@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Kotipuhelin</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Kotipuhelinnumero</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Etusivun viesti</value>
   </data>
@@ -1328,5 +1331,62 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Esitoiminta</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Luku</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>Aseta salasana</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>Sähköpostiosoite</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>Kirjaudu sisään</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Valokuva</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>Sivutus</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Päällikkö</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Otsikko</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Puhelinnumero</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Kenttä</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Viikko</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Kuukausi</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Päivä</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Tunti</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Kirjautumisskriptin polku</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Kirjautumisajat</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minuutti</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Vuosi</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Kieli</value>
   </data>
 </root>

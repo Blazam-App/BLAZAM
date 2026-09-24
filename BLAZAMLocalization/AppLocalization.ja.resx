@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>自宅電話</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>自宅電話番号</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>ホームページメッセージ</value>
   </data>
@@ -1275,6 +1278,36 @@
   <data name="Your session is about to expire" xml:space="preserve">
     <value>セッションの有効期限が近づいています</value>
   </data>
+  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
+    <value>過去90日間に変更された無効ユーザー</value>
+  </data>
+  <data name="Changed_Entries" xml:space="preserve">
+    <value>変更されたエントリ</value>
+  </data>
+  <data name="Changed_Passwords" xml:space="preserve">
+    <value>変更されたパスワード</value>
+  </data>
+  <data name="Deleted_Entries" xml:space="preserve">
+    <value>削除されたエントリ</value>
+  </data>
+  <data name="New_Computers" xml:space="preserve">
+    <value>新しいコンピューター</value>
+  </data>
+  <data name="New_Contacts" xml:space="preserve">
+    <value>新しい連絡先</value>
+  </data>
+  <data name="New_Groups" xml:space="preserve">
+    <value>新しいグループ</value>
+  </data>
+  <data name="New_OUs" xml:space="preserve">
+    <value>新しいOU</value>
+  </data>
+  <data name="New_Printers" xml:space="preserve">
+    <value>新しいプリンター</value>
+  </data>
+  <data name="New_Users" xml:space="preserve">
+    <value>新しいユーザー</value>
+  </data>
   <data name="Text" xml:space="preserve">
     <value>テキスト</value>
   </data>
@@ -1299,34 +1332,61 @@
   <data name="Before Action" xml:space="preserve">
     <value>行動の前に</value>
   </data>
-  <data name="Changed_Entries" xml:space="preserve">
-    <value>変更されたエントリ</value>
+  <data name="Read" xml:space="preserve">
+    <value>読み取り</value>
   </data>
-  <data name="Changed_Passwords" xml:space="preserve">
-    <value>変更されたパスワード</value>
+  <data name="Set Password" xml:space="preserve">
+    <value>パスワードを設定</value>
   </data>
-  <data name="Deleted_Entries" xml:space="preserve">
-    <value>削除されたエントリ</value>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>アドレス</value>
   </data>
-  <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
-    <value>過去90日間に変更された無効ユーザー</value>
+  <data name="Log On To" xml:space="preserve">
+    <value>ログオン先</value>
   </data>
-  <data name="New_Computers" xml:space="preserve">
-    <value>新しいコンピューター</value>
+  <data name="Photo" xml:space="preserve">
+    <value>写真</value>
   </data>
-  <data name="New_Contacts" xml:space="preserve">
-    <value>新しい連絡先</value>
+  <data name="Pager" xml:space="preserve">
+    <value>ページャー</value>
   </data>
-  <data name="New_Groups" xml:space="preserve">
-    <value>新しいグループ</value>
+  <data name="Manager" xml:space="preserve">
+    <value>マネージャー</value>
   </data>
-  <data name="New_OUs" xml:space="preserve">
-    <value>新しいOU</value>
+  <data name="Title" xml:space="preserve">
+    <value>タイトル</value>
   </data>
-  <data name="New_Printers" xml:space="preserve">
-    <value>新しいプリンター</value>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>電話番号</value>
   </data>
-  <data name="New_Users" xml:space="preserve">
-    <value>新しいユーザー</value>
+  <data name="Field" xml:space="preserve">
+    <value>フィールド</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>週</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>日</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>ログオン スクリプトのパス</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>ログオン時間</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>言語</value>
   </data>
 </root>

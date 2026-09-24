@@ -180,6 +180,8 @@ namespace BLAZAM
             AppInstance.MapSwagger().RequireAuthorization();
             // Enable cookie policy handling.
             AppInstance.UseCookiePolicy();
+            // Process the .AspNetCore.Culture cookie on incoming requests
+            AppInstance.UseRequestLocalization();
             // Enable authentication middleware.
             AppInstance.UseAuthentication();
             // Enable authorization middleware.
