@@ -70,20 +70,10 @@ namespace BLAZAM.Services.Background
         {
             using var Context = await _factory.CreateDbContextAsync();
         
-            var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).Where(x=>x.DeletedAt==null).ToListAsync();
+            var cursor = await Context.PermissionDelegate.Include(pd => pd.PermissionsMaps).Where(pm=>pm.DeletedAt==null).ToListAsync();
             foreach (var l in cursor)
             {
-                var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindGlobalEntryBySid(l.DelegateSid);
-
-                if (permissiondelegate != null
-                    &&
-                    (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
-                    || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
-                {
-                    webUser.PermissionDelegates.Add(l);
-                    webUser.PermissionMappings.AddRange(l.PermissionsMaps.Where(pm=>pm.AccessLevels.Any(al=>al.DeletedAt==null)));
-                }
-
+                ProcessDelegate(webUser, directoryUser, l);
 
             }
 #pragma warning disable S6966 // Awaitable method should be used
@@ -104,6 +94,33 @@ namespace BLAZAM.Services.Background
             }
 #pragma warning restore S6966 // Awaitable method should be used
 
+        }
+
+        private static void ProcessDelegate(IApplicationUserState webUser, IADUser directoryUser, PermissionDelegate l)
+        {
+            var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindGlobalEntryBySid(l.DelegateSid);
+
+            if (permissiondelegate != null
+                &&
+                (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
+                || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
+            {
+                webUser.PermissionDelegates.Add(l);
+                //webUser.PermissionMappings.AddRange(l.PermissionsMaps.Where(pm=> pm.DeletedAt==null && pm.AccessLevels.Any(al=>al.DeletedAt==null)));
+                foreach (var pm in l.PermissionsMaps.Where(pm => pm.DeletedAt == null))
+                {
+                    ProcessMapping(webUser, pm);
+                }
+            }
+        }
+
+        private static void ProcessMapping(IApplicationUserState webUser, PermissionMapping pm)
+        {
+            pm.AccessLevels = pm.AccessLevels.Where(al => al.DeletedAt == null).ToList();
+            if (pm.AccessLevels.Any())
+            {
+                webUser.PermissionMappings.Add(pm);
+            }
         }
 
 
