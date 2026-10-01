@@ -145,9 +145,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         g.Group.Invoke("Add", new object[] { g.Member.DN });
 
                     });
+                    ToAssignTo.Clear();
                     return true;
                 }));
-                ToAssignTo.Clear();
             }
             if (ToUnassignFrom.Count > 0)
             {
@@ -157,9 +157,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.DN });
                     });
+                    ToUnassignFrom.Clear();
                     return true;
                 }));
-                ToUnassignFrom.Clear();
             }
             commitJob = base.CommitChanges(commitJob);
 
