@@ -147,6 +147,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     });
                     return true;
                 }));
+                ToAssignTo.Clear();
             }
             if (ToUnassignFrom.Count > 0)
             {
@@ -158,7 +159,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     });
                     return true;
                 }));
-
+                ToUnassignFrom.Clear();
             }
             commitJob = base.CommitChanges(commitJob);
 
