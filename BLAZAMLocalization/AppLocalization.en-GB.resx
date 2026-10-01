@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Home Phone</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Home Phone Number</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Homepage Message</value>
   </data>
@@ -1328,5 +1331,62 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Before Action</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Read</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>Set Password</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>E-Mail Address</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>Log On To</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>Pager</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Telephone Number</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Hour</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Logon Script Path</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Logon Hours</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
   </data>
 </root>

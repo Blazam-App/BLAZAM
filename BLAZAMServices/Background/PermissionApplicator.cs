@@ -70,7 +70,7 @@ namespace BLAZAM.Services.Background
         {
             using var Context = await _factory.CreateDbContextAsync();
         
-            var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).ToListAsync();
+            var cursor = await Context.PermissionDelegate.Include(pl => pl.PermissionsMaps).Where(x=>x.DeletedAt==null).ToListAsync();
             foreach (var l in cursor)
             {
                 var permissiondelegate = ActiveDirectoryContext.SystemInstance.FindGlobalEntryBySid(l.DelegateSid);
@@ -81,17 +81,9 @@ namespace BLAZAM.Services.Background
                     || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
                 {
                     webUser.PermissionDelegates.Add(l);
-                    webUser.PermissionMappings.AddRange(l.PermissionsMaps);
+                    webUser.PermissionMappings.AddRange(l.PermissionsMaps.Where(pm=>pm.AccessLevels.Any(al=>al.DeletedAt==null)));
                 }
 
-                if (permissiondelegate != null
-                    &&
-                    (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
-                    || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
-                {
-                    webUser.PermissionDelegates.Add(l);
-                    webUser.PermissionMappings.AddRange(l.PermissionsMaps);
-                }
 
             }
 #pragma warning disable S6966 // Awaitable method should be used

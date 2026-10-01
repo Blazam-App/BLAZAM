@@ -1,18 +1,26 @@
-﻿@inherits MudBreadcrumbs
+﻿@using System.Text
+@inherits MudBreadcrumbs
 <MudStack Row=true Spacing="1">
     @if (Items != null)
     {
         // Limit breadcrumbs to max 3: show first and last 2 if over limit
         List<BreadcrumbItem> displayItems = new(Items);
+        var hiddenItems = new List<BreadcrumbItem>();
         if (Items.Count() > 3)
         {
-            var first = Items.First();
-            var thirdFromLast = Items[Items.Count-2];
-            var lastTwo = Items.Skip(Items.Count() - 2);
-            displayItems = new List<BreadcrumbItem>() { first };
-            displayItems.Add(new("...", thirdFromLast.Href)); // Use a string or a custom object for ellipsis
 
-            displayItems.AddRange(lastTwo);
+            hiddenItems = Items
+                           .Skip(1)
+                           .Take(Items.Count - 3)
+                           .ToList();
+
+            displayItems = new List<BreadcrumbItem>
+            {
+                Items.First()
+            };
+
+            displayItems.Add(new BreadcrumbItem("...", null));
+            displayItems.AddRange(Items.TakeLast(2));
         }
 
         var firstItem = true;
@@ -24,7 +32,23 @@
             }
             if (item?.Text == "...")
             {
-                <span>...</span>
+                string tooltipText = "";
+                StringBuilder s = new StringBuilder();
+                var first = true;
+                @foreach (var hiddenItem in hiddenItems)
+                {
+                    if (!first)
+                    {
+                        s.Append("/");
+
+                    }
+                    s.Append(hiddenItem.Text);
+                    first = false;
+                }
+                tooltipText = s.ToString();
+                <AppTooltip Text="@tooltipText">
+                        <span class="cursor-pointer">...</span>
+                </AppTooltip>
             }
             else
             {
