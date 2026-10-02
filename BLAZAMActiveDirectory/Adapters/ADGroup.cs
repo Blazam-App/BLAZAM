@@ -182,7 +182,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         }));
 
                     });
-
+                _members = null;
                 MembersToAdd.Clear();
             }
             if (MembersToRemove.Count > 0)
@@ -195,6 +195,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             return true;
                         }));
                     });
+                _members = null;
                 MembersToRemove.Clear();
             }
 
@@ -321,7 +322,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 });
              
-                Parallel.ForEach(MembersToRemove, m => {
+                Parallel.ForEach(MembersToAdd, m => {
                     lock (_effectiveMembersLock)
                     {
                         if (!effectiveMembers.Contains(m.Member))
