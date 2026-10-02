@@ -43,7 +43,7 @@ window.attemptSignIn = async (loginReq) => {
 
 window.playAudio = async (path) => {
     let audio = new Audio(path);
-    audio.play();
+    await audio.play();
 };
 
 window.printPage = async () => {
