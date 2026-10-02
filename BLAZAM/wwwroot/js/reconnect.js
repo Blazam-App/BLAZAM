@@ -24,9 +24,9 @@ const observer = new MutationObserver(() => {
         if (reloadIntervalId === null) {
             // ...start a timer. If this timer finishes, we'll assume the modal is stuck.
             // We give it 5 seconds to resolve itself normally.
-            stuckTimerId = setTimeout(() => {
+            stuckTimerId = setTimeout(async () => {
                 console.log('Modal is stuck. Forcing reload attempts...');
-                attemptReload(); // Try once immediately
+                await attemptReload(); // Try once immediately
                 reloadIntervalId = setInterval(attemptReload, 10000);
             }, 5000); // 5-second delay
         }

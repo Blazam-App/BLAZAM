@@ -401,6 +401,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (TryInvokeSetPassword(password))
                 {
+                    if(requireChange)
+                    {
+                        RequirePasswordChange = true;
+                        return CommitChanges().Result==JobResult.Passed;
+                    }
                     return true;
                 }
 

@@ -37,7 +37,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         object? Invoke(string methodName, params object[]? args);
         void Rename(string newName);
         void MoveTo(IDirectoryEntry newParent);
-        void SetPropertyValue(string propertyName, object? value);
+        bool SetPropertyValue(string propertyName, object? value);
         object? GetPropertyValue(string propertyName);
         bool ContainsProperty(string propertyName);
         void ClearPropertyValue(string propertyName);

@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>هاتف المنزل</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>رقم الهاتف المنزلي</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>رسالة الصفحة الرئيسية</value>
   </data>
@@ -1278,30 +1281,6 @@
   <data name="Disabled_users_changed_in_the_last_90_days" xml:space="preserve">
     <value>المستخدمون المعطّلون المعدَّلون في آخر 90 يومًا</value>
   </data>
-  <data name="Text" xml:space="preserve">
-    <value>نص</value>
-  </data>
-  <data name="Rule" xml:space="preserve">
-    <value>قاعدة</value>
-  </data>
-  <data name="Rules" xml:space="preserve">
-    <value>قواعد</value>
-  </data>
-  <data name="Create Rule" xml:space="preserve">
-    <value>إنشاء القاعدة</value>
-  </data>
-  <data name="Object Type" xml:space="preserve">
-    <value>نوع الكائن</value>
-  </data>
-  <data name="Trigger" xml:space="preserve">
-    <value>مشغل</value>
-  </data>
-  <data name="After Action" xml:space="preserve">
-    <value>بعد العمل</value>
-  </data>
-  <data name="Before Action" xml:space="preserve">
-    <value>قبل العمل</value>
-  </data>
   <data name="Changed_Entries" xml:space="preserve">
     <value>إدخالات معدّلة</value>
   </data>
@@ -1328,5 +1307,86 @@
   </data>
   <data name="New_Users" xml:space="preserve">
     <value>مستخدمون جدد</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>نص</value>
+  </data>
+  <data name="Rule" xml:space="preserve">
+    <value>قاعدة</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>قواعد</value>
+  </data>
+  <data name="Create Rule" xml:space="preserve">
+    <value>إنشاء القاعدة</value>
+  </data>
+  <data name="Object Type" xml:space="preserve">
+    <value>نوع الكائن</value>
+  </data>
+  <data name="Trigger" xml:space="preserve">
+    <value>مشغل</value>
+  </data>
+  <data name="After Action" xml:space="preserve">
+    <value>بعد العمل</value>
+  </data>
+  <data name="Before Action" xml:space="preserve">
+    <value>قبل العمل</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>قراءة</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>تعيين كلمة المرور</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>عنوان البريد الإلكتروني</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>تسجيل الدخول إلى</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>صورة</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>جهاز النداء</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>مدير</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>العنوان</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>رقم الهاتف</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>حقل</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>أسبوع</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>شهر</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>يوم</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>ساعة</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>مسار البرنامج النصي لتسجيل الدخول</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>ساعات تسجيل الدخول</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>دقيقة</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>سنة</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>اللغة</value>
   </data>
 </root>
