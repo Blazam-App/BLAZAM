@@ -71,7 +71,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    //ignore
+                    //only throws while the member changes are being committed, so we can ignore it
                 }
                 try
                 {
@@ -79,7 +79,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 catch
                 {
-                    //ignore
+                    //only throws while the member changes are being committed, so we can ignore it
                 }
                 return temp;
             }
@@ -169,7 +169,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         _memberOf = null;
                     }
 
-                    return true;
+                    return ToAssignTo.Count == 0;
                 }));
             }
             if (ToUnassignFrom.Count > 0)
@@ -190,7 +190,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         _memberOf = null;
                     }
-                    return true;
+                    return ToUnassignFrom.Count == 0;
                 }));
             }
             commitJob = base.CommitChanges(commitJob);
