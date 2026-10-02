@@ -419,6 +419,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<IDirectoryEntryAdapter?> GetParentAsync();
-        IDirectoryEntryAdapter? Clone();
+        IDirectoryEntryAdapter Clone();
     }
 }
