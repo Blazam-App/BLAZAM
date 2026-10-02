@@ -16,6 +16,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         [JsonIgnore]
         public List<GroupMembership> ToUnassignFrom { get; protected set; } = [];
 
+
         public virtual bool CanAssign => HasActionPermission(ObjectActions.Assign);
 
         public virtual bool CanUnassign => HasActionPermission(ObjectActions.UnAssign);
@@ -64,9 +65,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 }
                 var temp = new List<IADGroup>(_memberOf);
-
-                temp.AddRange(ToAssignTo.Select(gm => gm.Group).ToList());
-                ToUnassignFrom.ForEach(g => temp.Remove(g.Group));
+                try
+                {
+                    temp.AddRange(ToAssignTo.Select(gm => gm.Group).ToList());
+                }
+                catch (InvalidOperationException)
+                {
+                    //only throws while the member changes are being committed, so we can ignore it
+                }
+                try
+                {
+                    ToUnassignFrom.ForEach(g => temp.Remove(g.Group));
+                }
+                catch (InvalidOperationException)
+                {
+                    //only throws while the member changes are being committed, so we can ignore it
+                }
                 return temp;
             }
 
@@ -140,25 +154,43 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 PostCommitSteps.Add(new Jobs.JobStep("Assign to groups", (step) =>
                 {
-                    ToAssignTo.ForEach(g =>
-                    {
-                        g.Group.Invoke("Add", new object[] { g.Member.DN });
+                    var refreshGroups = false;
 
-                    });
-                    ToAssignTo.Clear();
-                    return true;
+                    foreach (var g in ToAssignTo.ToList())
+                    {
+                        if (g.Group.Invoke("Add", [g.Member.DN]))
+                        {
+                            ToAssignTo.Remove(g);
+                            refreshGroups = true;
+                        }
+                    }
+                    if (refreshGroups)
+                    {
+                        _memberOf = null;
+                    }
+
+                    return ToAssignTo.Count == 0;
                 }));
             }
             if (ToUnassignFrom.Count > 0)
             {
                 CommitSteps.Add(new JobStep("Unassign from groups", (step) =>
                 {
-                    ToUnassignFrom.ForEach(g =>
+
+                    var refreshGroups = false;
+                    foreach (var g in ToUnassignFrom.ToList())
                     {
-                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
-                    });
-                    ToUnassignFrom.Clear();
-                    return true;
+                        if (g.Group.Invoke("Remove", [g.Member.DN]))
+                        {
+                            ToUnassignFrom.Remove(g);
+                            refreshGroups = true;
+                        }
+                    }
+                    if (refreshGroups)
+                    {
+                        _memberOf = null;
+                    }
+                    return ToUnassignFrom.Count == 0;
                 }));
             }
             commitJob = base.CommitChanges(commitJob);
