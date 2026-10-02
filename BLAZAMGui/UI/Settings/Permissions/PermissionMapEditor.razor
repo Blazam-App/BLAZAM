@@ -202,7 +202,7 @@
                     SnackBarService.Error("Mapping not found");
                     return;
                 }
-                Context.PermissionMap.Remove(existing);
+                existing.DeletedAt = DateTime.UtcNow;
                 await Context.SaveChangesAsync();
             }
             await StateHasChangedAsync();
