@@ -88,10 +88,11 @@
         {
             if (DirectoryEntry != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
             {
+                LoadingData = true;
                 DirectoryEntry.DiscardChanges();
                 EditMode = false;
                 await RefreshEntryComponents();
-
+                LoadingData = false;
             }
 
         }
