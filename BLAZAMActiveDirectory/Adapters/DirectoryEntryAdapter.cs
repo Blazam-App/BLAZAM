@@ -1357,7 +1357,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-        public virtual IDirectoryEntryAdapter? Clone()
+        public virtual IDirectoryEntryAdapter Clone()
         {
             if (Guid.HasValue)
             {
