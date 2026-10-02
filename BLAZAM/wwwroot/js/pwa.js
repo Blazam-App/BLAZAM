@@ -1,5 +1,4 @@
-﻿
-window.blazam_stripHtml = (html) => {
+﻿window.blazam_stripHtml = (html) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || '';
@@ -74,17 +73,15 @@ window.blazam = {
             if (notifications && notifications.length > 0) {
                 const latestNotification = notifications[0];
                 if (latestNotification.id > window.blazam.lastNotificationId) {
-                    navigator.serviceWorker.ready.then((registration) => {
-                        registration.showNotification(latestNotification.notification.title || "Notification", {
-                            body: window.blazam_stripHtml(latestNotification.notification.message || ""),
-                            icon: latestNotification.icon || "/icon-192.png",
-                            tag: latestNotification.tag || "blazam-notification",
-                        });
+                    const registration = await navigator.serviceWorker.ready;
+                    await registration.showNotification(latestNotification.notification.title || "Notification", {
+                        body: window.blazam_stripHtml(latestNotification.notification.message || ""),
+                        icon: latestNotification.icon || "/icon-192.png",
+                        tag: latestNotification.tag || "blazam-notification",
                     });
                 }
                 window.blazam.lastNotificationId = latestNotification.id;
                 localStorage.setItem('lastNotificationId', latestNotification.id);
-
             }
         }
     }
