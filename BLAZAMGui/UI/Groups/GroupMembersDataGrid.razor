@@ -37,7 +37,8 @@
             <TemplateColumn Title=@AppLocalization[Lang.Remove_Member] Context="templateContext">
                 <CellTemplate Context="cellContext">
                     <AppTooltip ShowOnHover=@(!Group.CanUnassign)
-                                Text=@AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission]>
+                                ShowOnClick=@(!Group.CanUnassign)
+                                Text=@(Group.CanUnassign?"":AppHelpLocalization[HelpLang.Lacks_Group_Member_Remove_Permission])>
                         <MudButton Disabled=@(!Group.CanUnassign)
                                    Color="Color.Error"
                                    OnClick="(()=>{RemoveMember(cellContext.Item);})">
@@ -95,10 +96,11 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        Group.OnChangesDiscarded.Delegate += RefreshData;
         RefreshData();
 
     }
-    private void RefreshData()
+    public void RefreshData(object? sender=null, EventArgs? e=null)
     {
         Task.Run(() =>
         {
@@ -126,5 +128,10 @@ else
             Members.Add(groupMember);
 
         }
+    }
+    public override void Dispose()
+    {
+        Group.OnChangesDiscarded.Delegate -= RefreshData;
+        base.Dispose();
     }
 }
