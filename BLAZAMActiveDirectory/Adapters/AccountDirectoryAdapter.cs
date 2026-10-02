@@ -404,8 +404,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     if(requireChange)
                     {
                         RequirePasswordChange = true;
-                        CommitChanges();
-                        return true;
+                        return CommitChanges().Result==JobResult.Passed;
                     }
                     return true;
                 }

@@ -197,6 +197,11 @@
 
 
                 var existing = await Context.PermissionMap.FirstOrDefaultAsync(x => x.Id == Mapping.Id && x.DeletedAt == null);
+                if(existing == null)
+                {
+                    SnackBarService.Error("Mapping not found");
+                    return;
+                }
                 Context.PermissionMap.Remove(existing);
                 await Context.SaveChangesAsync();
             }

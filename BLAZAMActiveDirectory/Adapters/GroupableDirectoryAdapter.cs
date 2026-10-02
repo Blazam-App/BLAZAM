@@ -145,6 +145,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         g.Group.Invoke("Add", new object[] { g.Member.DN });
 
                     });
+                    ToAssignTo.Clear();
                     return true;
                 }));
             }
@@ -156,9 +157,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.DN });
                     });
+                    ToUnassignFrom.Clear();
                     return true;
                 }));
-
             }
             commitJob = base.CommitChanges(commitJob);
 
