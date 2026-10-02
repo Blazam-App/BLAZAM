@@ -11,7 +11,7 @@
             <ADAutoComplete Label="@AppLocalization[Lang.Search]" @bind-SelectedResult="SelectedNode"/>
             <ADTreeView @ref=@OUTree 
             StartRootExpanded=false
-            EndText="@(x=>x.DirectPermissionMappings.Count>0?x.DirectPermissionMappings.Count.ToString():"")"
+                        EndText="@(x=>x.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).Count()>0?x.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).Count().ToString():"")"
             @bind-SelectedEntry="SelectedNode">
 
             </ADTreeView>
