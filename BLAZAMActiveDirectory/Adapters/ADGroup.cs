@@ -207,6 +207,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             MembersToRemove = [];
             MembersToAdd = [];
+            _members = null;
             //CachedChildren = new List<IDirectoryEntryAdapter>();
             base.DiscardChanges();
             OnModelChanged?.Invoke();
@@ -271,6 +272,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
         private readonly static object _membersLock = new();
+        private readonly static object _effectiveMembersLock = new();
+
+        private List<IGroupableDirectoryAdapter>? _members;
+
+
         /// <summary>
         /// Gathers current group members in realtime
         /// </summary>
@@ -279,71 +285,53 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                var temp = MembersAsStrings;
-
-                List<IGroupableDirectoryAdapter> members = [];
-                temp?.ForEach(t =>
+                if (_members == null)
                 {
-                     ADSearch search = new(Directory);
-                    
-                    search.Fields.DN = t;
-                    search.EnabledOnly = false;
-                    var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
-                    if (member != null)
+                    var temp = MembersAsStrings;
+
+                    List<IGroupableDirectoryAdapter> members = [];
+                    temp?.ForEach(t =>
                     {
-                        lock (_membersLock)
+                        ADSearch search = new(Directory);
+
+                        search.Fields.DN = t;
+                        search.EnabledOnly = false;
+                        var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
+                        if (member != null)
                         {
-                            members.Add(member);
+                            lock (_membersLock)
+                            {
+                                members.Add(member);
+                            }
                         }
-                    }
-                });
-
-                //temp?.ForEach(t =>
-                //{
-                //    search.Results.Clear();
-                //    search.Fields.DN = t;
-                //    var member = search.Search<GroupableDirectoryAdapter, IGroupableDirectoryAdapter>()?.FirstOrDefault();
-                //    if (member != null)
-                //    {
-                //        members.Add(member);
-                //    }
-
-                //});
-                var tempRemoval = new List<IGroupableDirectoryAdapter>(members);
+                    });
+                    _members = members.ToList();
+                }
+                var effectiveMembers = _members.ToList();
                 Parallel.ForEach(MembersToRemove, m =>
                 {
 
-                    lock (_membersLock)
+                    lock (_effectiveMembersLock)
                     {
-                        if (members.Contains(m.Member))
+                        if (effectiveMembers.Contains(m.Member))
                         {
-                            members.Remove(m.Member);
+                            effectiveMembers.Remove(m.Member);
                         }
                     }
 
                 });
-                //tempRemoval.ForEach(m =>
-                //{
-                //    if (MembersToRemove.Select(gm => gm.Member).Contains(m))
-                //    {
-                //        members.Remove(m);
-                //    }
-                //});
+             
                 Parallel.ForEach(MembersToRemove, m => {
-                    lock (_membersLock)
+                    lock (_effectiveMembersLock)
                     {
-                        if (!members.Contains(m.Member))
+                        if (!effectiveMembers.Contains(m.Member))
                         {
-                            members.Add(m.Member);
+                            effectiveMembers.Add(m.Member);
                         }
                     }
                 });
-                //MembersToAdd.ForEach(m =>
-                //{
-                //    if (!members.Contains(m.Member))
-                //        members.Add(m.Member);
-                //});
-                return members;
+             
+                return effectiveMembers;
             }
         }
         /// <summary>
