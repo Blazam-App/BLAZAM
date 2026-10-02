@@ -68,7 +68,7 @@
     }
 
     <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Add_Member] @ref=@AssignMemberModal>
-        <AddMemberModalContent ModelChanged=@(() => { InvokeAsync(OnInitializedAsync); }) Group="Group" />
+        <AddMemberModalContent ModelChanged=@(() => { RefreshData(); }) Group="Group" />
     </AppModal>
 }
 else
