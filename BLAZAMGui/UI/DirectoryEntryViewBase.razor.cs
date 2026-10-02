@@ -91,8 +91,8 @@
                 LoadingData = true;
                 DirectoryEntry.DiscardChanges();
                 EditMode = false;
-                await RefreshEntryComponents();
                 LoadingData = false;
+                await RefreshEntryComponents();
             }
 
         }
