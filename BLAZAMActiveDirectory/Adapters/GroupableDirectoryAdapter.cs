@@ -69,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     temp.AddRange(ToAssignTo.Select(gm => gm.Group).ToList());
                 }
-                catch
+                catch (InvalidOperationException)
                 {
                     //only throws while the member changes are being committed, so we can ignore it
                 }
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 {
                     ToUnassignFrom.ForEach(g => temp.Remove(g.Group));
                 }
-                catch
+                catch (InvalidOperationException)
                 {
                     //only throws while the member changes are being committed, so we can ignore it
                 }
