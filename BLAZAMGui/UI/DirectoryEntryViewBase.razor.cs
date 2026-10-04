@@ -19,10 +19,18 @@
         [Parameter]
         public bool EditMode { get; set; }
 
+        private IList<CustomActiveDirectoryField> _customFields = [];
+
         /// <summary>
-        /// A store of all custom fields defined
+        /// Custom fields configured for the currently displayed entry's object type.
         /// </summary>
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
+        protected IList<CustomActiveDirectoryField> CustomFields
+        {
+            get => DirectoryEntry == null
+                ? []
+                : _customFields.Where(customField => customField.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
+            set => _customFields = value;
+        }
 
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
