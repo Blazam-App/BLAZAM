@@ -19,10 +19,11 @@
         [Parameter]
         public bool EditMode { get; set; }
 
+
         /// <summary>
-        /// A store of all custom fields defined
+        /// Custom fields configured for the currently displayed entry's object type.
         /// </summary>
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; }
 
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
@@ -48,12 +49,12 @@
                 DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
 
                 DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
+                if (Context != null)
+                {
+                    CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf=>cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
+                }
+            }
 
-            }
-            if (Context != null)
-            {
-                CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
-            }
 
             LoadingData = false;
         }
