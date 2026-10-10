@@ -122,7 +122,7 @@
                 {
                     if (Mapping.Id > 0 && !Context.EntityIsTracked(Mapping))
                     {
-                        Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id).FirstOrDefaultAsync();
+                        Mapping = await Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id && pm.DeletedAt == null).FirstOrDefaultAsync();
                     }
                     _accessLevels = await Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToListAsync();
                     _permissionDelegates = await Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToListAsync();
@@ -196,8 +196,13 @@
             {
 
 
-
-                Context.PermissionMap.Remove(Mapping);
+                var existing = await Context.PermissionMap.FirstOrDefaultAsync(x => x.Id == Mapping.Id && x.DeletedAt == null);
+                if(existing == null)
+                {
+                    SnackBarService.Error("Mapping not found");
+                    return;
+                }
+                existing.DeletedAt = DateTime.UtcNow;
                 await Context.SaveChangesAsync();
             }
             await StateHasChangedAsync();

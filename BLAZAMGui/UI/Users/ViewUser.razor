@@ -117,7 +117,7 @@
         </CascadingValue>
 
     </EditForm>
-    @if ((GroupableEntry.CanEdit || CurrentUser.State.CanAssign || Account.CanEnable || Account.CanDisable) && GroupableEntry.HasUnsavedChanges && !GroupableEntry.NewEntry)
+    @if ((GroupableEntry.CanEdit || GroupableEntry.CanAssign || Account.CanEnable || Account.CanDisable || Account.CanUnlock || GroupableEntry.CanMove || GroupableEntry.CanUnassign) && GroupableEntry.HasUnsavedChanges && !GroupableEntry.NewEntry)
     {
 
         <UnsavedChangesPrompt SaveChanges="SaveChanges" DiscardChanges="DiscardChanges" />

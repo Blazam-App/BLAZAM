@@ -452,12 +452,7 @@ namespace PlaywrightTests
 
         private async Task OpenUserMenu()
         {
-            var userButton = Page.GetByRole(AriaRole.Img).Locator("text=D");
-
-            // Expect an attribute "to be strictly equal" to the value.
-            //await Expect(getStarted).ToHaveAttributeAsync("href", "/docs/intro");
-
-            // Click the get started link.
+           var userButton = Page.GetByRole(AriaRole.Button, new() { Name = "D", Exact = true });
             await userButton.ClickAsync();
 
             var profileSettingsButton = Page.Locator("text=Profile Settings");
@@ -466,7 +461,53 @@ namespace PlaywrightTests
             await Expect(profileSettingsButton).ToBeVisibleAsync();
             await Expect(profileSettingsButton).ToBeEnabledAsync();
         }
+        //[Test]
 
+        //public async Task Authenticate_CorrectPassword()
+        //{
+        //    await using var context = await Browser.NewContextAsync(new()
+        //    {
+        //        IsMobile = false,
+        //        ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
+        //    });
+        //    await Page.GotoAsync($"{BaseUrl}/home");
+        //    await Page.GetByTestId("custom-login-menu").ClickAsync();
+        //    await Page.GetByTestId("custom-login-menu-item").ClickAsync();
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).PressAsync("ControlOrMeta+a");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).FillAsync("bgoodman");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).PressAsync("Tab");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Password" }).FillAsync("C0rrectP@ssword");
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Log In" }).ClickAsync();
+        //    await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeVisibleAsync(new() { Timeout = 30000 });
+        //    return;
+
+
+        //}
+        //[Test]
+        //public async Task Authenticate_IncorrectPassword()
+        //{
+        //    await using var context = await Browser.NewContextAsync(new()
+        //    {
+        //        IsMobile = false,
+        //        ViewportSize = new ViewportSize() { Width = 1280, Height = 1024 }
+        //    });
+        //    await Page.GotoAsync($"{BaseUrl}/home");
+        //    await Page.GetByTestId("custom-login-menu").ClickAsync();
+        //    await Page.GetByTestId("custom-login-menu-item").ClickAsync();
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).ClickAsync();
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).PressAsync("ControlOrMeta+a");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).FillAsync("bgoodman");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).PressAsync("Tab");
+        //    await Page.GetByRole(AriaRole.Textbox, new() { Name = "Password" }).FillAsync("incorrectpassword");
+        //    await Page.GetByRole(AriaRole.Button, new() { Name = "Log In" }).ClickAsync();
+        //    await Page.WaitForTimeoutAsync(5000);
+        //    await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Home" })).ToBeHiddenAsync(new() { Timeout = 30000 });
+
+        //    return;
+
+
+        //}
         private async Task LogIn()
         {
             await using var context = await Browser.NewContextAsync(new()

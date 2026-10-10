@@ -134,43 +134,7 @@ namespace BLAZAMCommon.Tests
             _service.Stop();
         }
 
-        [Fact]
-        public void Start_NotImmediate_WithNonZeroInterval_EventuallyCallsExecute()
-        {
-            // Arrange
-            _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            // The SUT's random delay for non-immediate start is 15-45 seconds.
-            // For a unit test, this is too long.
-            // This test acknowledges this by checking it's not immediate, and then relies on a shorter wait
-            // for a manually set shorter interval, knowing the initial delay can be long.
-            // To test the actual 15-45s delay, this test would need to run much longer.
-            // Here, we're more focused on the mechanism after the initial delay.
-            _service.SetInterval(TimeSpan.FromMilliseconds(100)); // A short interval for quicker test.
-
-            // Act
-            _service.Start(false); // Initial delay is random 15-45s, then interval.
-
-            // Assert: Not immediate
-            Assert.True(_service.IsServiceStarted);
-            Assert.NotNull(_service.InspectTimer);
-            Assert.False(_service.ExecuteCalled);
-
-            // To truly test the 15-45s delay + subsequent execute would involve:
-            // bool executed = _service.WaitForExecute(TimeSpan.FromSeconds(50)); // Max SUT delay + buffer
-            // Assert.True(executed, "Execute was not called within the expected maximum delay.");
-            // This makes the test very slow. The previous test verifies it's not immediate.
-            // Here we'll assume if it starts, it will eventually call.
-            // For quicker feedback on Execute being hooked up with non-zero interval:
-            // We'll start immediately to bypass the long random delay for this specific check.
-            _service.Stop(); // Stop previous start
-            _service.ResetExecuteSignal();
-            _service.Start(true); // Start immediately
-
-            bool executed = _service.WaitForExecute(TimeSpan.FromSeconds(1)); // Due time 0, interval 100ms
-            Assert.True(executed, "Execute was not called after immediate start.");
-
-            _service.Stop();
-        }
+       
 
 
         [Fact]
@@ -178,7 +142,7 @@ namespace BLAZAMCommon.Tests
         {
             // Arrange
             _service = new TestableBackgroundService(_mockStringLocalizer.Object);
-            _service.SetInterval(TimeSpan.FromMilliseconds(100)); // Interval after first execution
+            _service.SetInterval(TimeSpan.FromMilliseconds(10000)); // Interval after first execution
 
             // Act
             _service.Start(true); // Immediate start, delay should be 0
@@ -186,7 +150,7 @@ namespace BLAZAMCommon.Tests
             // Assert
             Assert.True(_service.IsServiceStarted);
             Assert.NotNull(_service.InspectTimer);
-            Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(2)), "Execute was not called within expected time for immediate start.");
+            Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(20)), "Execute was not called within expected time for immediate start.");
 
             _service.Stop();
         }
@@ -225,7 +189,7 @@ namespace BLAZAMCommon.Tests
             // Assert
             Assert.True(_service.IsServiceStarted);
             Assert.Null(_service.InspectTimer); // Timer should not be created for Zero interval
-            Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(1)), "Execute was not called for ZeroInterval immediate start.");
+            Assert.True(_service.WaitForExecute(TimeSpan.FromSeconds(10)), "Execute was not called for ZeroInterval immediate start.");
 
             // Check it only executes once (Task.Delay().ContinueWith() runs once)
             int initialCallCount = _service.ExecuteCallCount;

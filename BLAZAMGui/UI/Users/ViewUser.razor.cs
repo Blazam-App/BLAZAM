@@ -104,9 +104,9 @@ namespace BLAZAM.Gui.UI.Users
                         SnackBarService.Error("Unable to save changes. No entry loaded.");
                         return;
                     }
-                    var changes = GroupableEntry.Changes;
-                    var assignTo = GroupableEntry.ToAssignTo;
-                    var unassignFrom = GroupableEntry.ToUnassignFrom;
+                    var changes = GroupableEntry.Changes.ToList();
+                    var assignTo = GroupableEntry.ToAssignTo.ToList();
+                    var unassignFrom = GroupableEntry.ToUnassignFrom.ToList();
                     var jobResults = await GroupableEntry.CommitChangesAsync();
                     if (jobResults.Result == JobResult.Passed)
                     {

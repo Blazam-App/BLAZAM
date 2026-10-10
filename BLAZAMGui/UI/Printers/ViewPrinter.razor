@@ -85,16 +85,16 @@
 
 
 
-                    @if (Printer.CanReadAnyCustomFields)
+                    @if (Printer.CanReadAnyCustomFields && CustomFields.Count > 0)
                     {
-                        <ViewSection Title="Additional Field">
+                        <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
                             @if (CustomFields != null)
                             {
                                 @foreach (var field in CustomFields)
                                 {
                                     @if (Printer.CanReadField(field))
                                     {
-                                        <CustomDirectoryField Disabled=@(!EditMode || !Printer.CanEditField(ActiveDirectoryFields.ProfilePath)) Entry="Printer" Field="@field" />
+                                        <CustomDirectoryField Disabled=@(!EditMode || !Printer.CanEditField(field)) Entry="Printer" Field="@field" />
 
                                     }
                                 }

@@ -504,6 +504,9 @@
   <data name="Home Phone" xml:space="preserve">
     <value>Telefon Acasă</value>
   </data>
+  <data name="Home Phone Number" xml:space="preserve">
+    <value>Număr De Telefon De Acasă</value>
+  </data>
   <data name="Homepage Message" xml:space="preserve">
     <value>Mesaj Pagină Principală</value>
   </data>
@@ -1328,5 +1331,62 @@
   </data>
   <data name="Before Action" xml:space="preserve">
     <value>Acțiune Pre</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Citire</value>
+  </data>
+  <data name="Set Password" xml:space="preserve">
+    <value>Setați parola</value>
+  </data>
+  <data name="E-Mail Address" xml:space="preserve">
+    <value>Adresă E-mail</value>
+  </data>
+  <data name="Log On To" xml:space="preserve">
+    <value>Conectare La</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Fotografie</value>
+  </data>
+  <data name="Pager" xml:space="preserve">
+    <value>Paginare</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titlu</value>
+  </data>
+  <data name="Telephone Number" xml:space="preserve">
+    <value>Număr de telefon</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Câmp</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Săptămână</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Lună</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Zi</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Oră</value>
+  </data>
+  <data name="Logon Script Path" xml:space="preserve">
+    <value>Cale script de autentificare</value>
+  </data>
+  <data name="Logon Hours" xml:space="preserve">
+    <value>Ore de conectare</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minut</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>An</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Limbă</value>
   </data>
 </root>

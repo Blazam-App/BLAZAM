@@ -87,8 +87,12 @@
 
                         <MudButton Disabled=@attemptingSignIn Class="my-6" ButtonType=ButtonType.Submit Color="Color.Primary">@AppLocalization["Log In To Demo"]</MudButton>
 
-                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
-                            <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })>@AppLocalization["Custom Login"]</MudMenuItem>
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown"
+                                 data-testid="custom-login-menu">
+                            <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })
+                                         data-testid="custom-login-menu-item">
+                                @AppLocalization["Custom Login"]
+                            </MudMenuItem>
                         </MudMenu>
                     </MudButtonGroup>
 

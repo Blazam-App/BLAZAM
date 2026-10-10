@@ -77,8 +77,8 @@
     async Task RefreshData()
     {
         Node.ClearPermissionCache();
-        appliedMappings = Node.DirectPermissionMappings;
-        inheritedMappings = Node.InheritedPermissionMappings;
+        appliedMappings =  Node.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).ToList();
+        inheritedMappings =  Node.InheritedPermissionMappings.Where(pm=>pm.DeletedAt==null).ToList();
         NewMapping = null;
         await StateHasChangedAsync();
     }
