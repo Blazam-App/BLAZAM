@@ -58,7 +58,13 @@
                        Date="@dateValue"
                        DateChanged=@((date) =>{dateValue = date;})
                        Disabled=@Disabled />
-
+        break;
+    case "List`1":
+         <MudSelectList T="string"
+                       Options="StringValues"
+                       OptionsChanged="OnStringListChanged"
+                       Label="@Label"
+                       Disabled=@Disabled /> 
         break;
     default:
 
@@ -146,5 +152,13 @@
 
         }
     }
+    private IEnumerable<string> StringValues =>
+        Value is IEnumerable<string> selectedValues
+            ? selectedValues
+            : Enumerable.Empty<string>();
 
+    private async Task OnStringListChanged(IEnumerable<string> selectedValues)
+    {
+        Value = (T?)(object)selectedValues;
+    }
 }

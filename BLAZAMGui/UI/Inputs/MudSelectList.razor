@@ -184,6 +184,9 @@
     [Parameter]
     public IEnumerable<T> Options { get; set; }
 
+    [Parameter]
+    public EventCallback<IEnumerable<T>> OptionsChanged { get; set; }
+
 
     [Parameter]
     public IEnumerable<T> Selected { get; set; } = Enumerable.Empty<T>();

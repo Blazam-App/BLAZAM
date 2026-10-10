@@ -2,19 +2,25 @@
 {
     case ActiveDirectoryFieldType.Text:
         <DynamicMudInput T="string"
-                 Disabled=@Disabled
-                 Label="@Field.DisplayName"
-                 Value="Entry.GetCustomProperty<string>(Field.FieldName)"
-                 ValueChanged="@((val)=>{SetValue(val);})" />
+                         Disabled=@Disabled
+                         Label="@Field.DisplayName"
+                         Value="(string)_value"
+                         ValueChanged="@((val)=>{SetValue(val);})" />
         break;
     case ActiveDirectoryFieldType.Date:
         <DynamicMudInput T="DateTime?"
-                 Disabled=@Disabled
-                 Label="@Field.DisplayName"
-                 Value="Entry.GetDateTimeAttribute(Field.FieldName)"
-                 ValueChanged="@((val)=>{SetValue(val);})" />
+                         Disabled=@Disabled
+                         Label="@Field.DisplayName"
+                         Value="(DateTime?)_value"
+                         ValueChanged="@((val)=>{SetValue(val);})" />
         break;
-
+    case ActiveDirectoryFieldType.StringList:
+        <DynamicMudInput T="List<string>"
+                         Disabled=@Disabled
+                         Label="@Field.DisplayName"
+                         Value="(List<string>?)_value"
+                         ValueChanged="@((val)=>{SetValue(val);})" />
+        break;
 
 
 }
@@ -29,8 +35,30 @@
     [Parameter]
     public CustomActiveDirectoryField Field { get; set; }
 
+    private object? _value=null;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        switch (Field.FieldType)
+        {
+            case ActiveDirectoryFieldType.Text:
+                _value = Entry.GetCustomProperty<string>(Field.FieldName);
+                break;
+            case ActiveDirectoryFieldType.Date:
+                _value = Entry.GetDateTimeAttribute(Field.FieldName);
+                break;
+            case ActiveDirectoryFieldType.StringList:
+                _value = Entry.GetCustomProperty<List<string>>(Field.FieldName);
+                break;
+
+
+        }
+    }
+
     void SetValue(object? newValue)
     {
+
         Entry.SetCustomProperty(Field.FieldName, newValue);
+        _value = newValue;
     }
 }
