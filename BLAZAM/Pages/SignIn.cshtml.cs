@@ -59,7 +59,9 @@ namespace BLAZAM.Server.Pages
                 var result = await _auth.Login(req);
                 req.Password = null;
                 req.AuthenticationResult = result.AuthenticationResult;
-                if (result != null && (result.AuthenticationResult == LoginResultStatus.OK || result.AuthenticationResult == LoginResultStatus.DuoRequested))
+                if (result != null && 
+                    (result.AuthenticationResult == LoginResultStatus.OK 
+                    || result.AuthenticationResult == LoginResultStatus.DuoRequested))
                 {
 
                     await HttpContext.SignInAsync(result.AuthenticationState.User);

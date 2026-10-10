@@ -102,7 +102,7 @@
                            Color=Color.Success
                            ThumbIconColor="@(Account.RequirePasswordChange==true?Color.Success:Color.Default)"
                            Label=@AppLocalization[Lang.Require_Password_Change]
-                           Value=@Account.RequirePasswordChange
+                           @bind-Value=@Account.RequirePasswordChange
                            Disabled=@(!EditMode || !Account.CanSetPassword) />
                 <MudSwitch T=bool
                            Color=Color.Success

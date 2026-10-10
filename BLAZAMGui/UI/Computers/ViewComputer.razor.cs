@@ -95,9 +95,9 @@ namespace BLAZAM.Gui.UI.Computers
 
             try
             {
-                var changes = Computer.Changes;
-                var assignTo = Computer.ToAssignTo;
-                var unassignFrom = Computer.ToUnassignFrom;
+                var changes = Computer.Changes.ToList();
+                var assignTo = Computer.ToAssignTo.ToList();
+                var unassignFrom = Computer.ToUnassignFrom.ToList();
                 var jobResults = await Computer.CommitChangesAsync();
 
                 if (jobResults.Result == JobResult.Passed)

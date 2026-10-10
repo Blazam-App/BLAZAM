@@ -35,9 +35,9 @@ namespace BLAZAM.Gui.UI.Groups
             {
 
 
-                var changes = Group.Changes;
-                var assignTo = Group.MembersToAdd;
-                var unassignFrom = Group.MembersToRemove;
+                var changes = Group.Changes.ToList() ;
+                var assignTo = Group.MembersToAdd.ToList();
+                var unassignFrom = Group.MembersToRemove.ToList();
                 var jobResults = await Group.CommitChangesAsync();
                 if (jobResults.Result == JobResult.Passed)
                 {

@@ -40,13 +40,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.LogonHours.FieldName, value?.EncodeLogonHours());
             }
         }
-        public virtual async Task<IJob> CommitChangesAsync(IJob? commitJob = null)
-        {
-            return await Task.Run(() =>
-            {
-                return CommitChanges(commitJob);
-            });
-        }
+
        
 
         [Required]

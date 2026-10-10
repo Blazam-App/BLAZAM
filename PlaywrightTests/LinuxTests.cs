@@ -4,9 +4,10 @@ namespace PlaywrightTests
 {
 
     [TestFixture]
+    [NonParallelizable]
     public class LinuxTests : Tests
     {
-        protected virtual string BaseUrl { get { return "https://beta.blazam.org"; } }
+        protected override string BaseUrl { get { return "https://beta.blazam.org"; } }
 
     }
 }
