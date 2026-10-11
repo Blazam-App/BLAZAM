@@ -10,12 +10,13 @@
     <MudText>@AppLocalization[Lang.Fields]</MudText>
 </SetHeader>
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Fields] <AppDocumentationButton Page="/admin/fields" /></MudText>
-<MudDataGrid @ref=fieldGrid
+<MudDataGrid @ref="fieldGrid"
              T="CustomActiveDirectoryField"
              ServerData="RefreshData"
-             ReadOnly=false
-             CommittedItemChanges=SaveChanges
-             FixedHeader=true
+             ReadOnly="false"
+             EditMode="DataGridEditMode.Form"
+             CommittedItemChanges="SaveChanges"
+             FixedHeader="true"
              EditTrigger="DataGridEditTrigger.Manual">
     <ToolBarContent>
         <MudSpacer />
@@ -67,9 +68,10 @@
                                  Label="@objectType.ToString()"
                                  Size="@Size.Small"
                                  Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))"
-                                 ValueChanged="@((val)=>{
-                                 ToggleObjectType(context.Item,objectType,val);
-                                })" />
+                                 ValueChanged="@((val) =>
+                             {
+                                 ToggleObjectType(context.Item, objectType, val);
+                             })" />
                 </EditTemplate>
                 <CellTemplate>
                     <MudCheckBox Size="@Size.Small"
@@ -82,7 +84,7 @@
                         Title=@AppLocalization[Lang.Delete]
                         Sortable="false">
             <CellTemplate>
-                <MudIconButton Disabled=@(context.Item.Id>100000)
+                <MudIconButton Disabled=@(context.Item.Id > 100000)
                                Size="@Size.Small"
                                Icon="@Icons.Material.Outlined.Delete"
                                OnClick="@(async()=>{await Delete(context.Item);})" />
@@ -92,7 +94,8 @@
 </MudDataGrid>
 
 <AppModal @ref=addFieldModal
-          Title="Add Field" Options=" new(){ MaxWidth=MaxWidth.ExtraSmall, CloseButton=true, FullWidth=true}">
+          Title="Add Field"
+          Options=" new(){ MaxWidth=MaxWidth.ExtraSmall, CloseButton=true, FullWidth=true}">
     <AddFieldModalContent FieldCreated="FieldCreated" />
 </AppModal>
 @code {
@@ -141,27 +144,40 @@
     }
     async Task<DataGridEditFormAction> SaveChanges(CustomActiveDirectoryField changedField)
     {
-        if (Context == null)
+        using var context = await DbFactory.CreateDbContextAsync();
+        if (context == null)
         {
             return DataGridEditFormAction.KeepOpen;
         }
-
-        foreach (var field in ADFields)
+        var matchingField = await context.CustomActiveDirectoryFields.FirstOrDefaultAsync(x => x.Id == changedField.Id);
+        if (matchingField != null)
         {
-            for (int x = 0; x < field.ObjectTypes.Count; x++)
-            {
-                var trackedObjType = await Context.ActiveDirectoryFieldObjectMappings.FirstOrDefaultAsync(
-                    oType => oType.ObjectType == field.ObjectTypes[x].ObjectType &&
-                             oType.ActiveDirectoryFieldId == field.Id);
-
-                if (trackedObjType != null)
+            matchingField.DisplayName = changedField.DisplayName;
+            matchingField.FieldName = changedField.FieldName;
+            matchingField.FieldType = changedField.FieldType;
+            var objectTypesToRemove = matchingField.ObjectTypes
+            .Where(ot => !changedField.ObjectTypes.Any(cfot => cfot.ObjectType == ot.ObjectType))
+            .ToList();
+            objectTypesToRemove.ForEach(ot =>
                 {
-                    field.ObjectTypes[x] = trackedObjType;
+                    matchingField.ObjectTypes.Remove(ot);
+
                 }
+            );
+            for (int x = 0; x < changedField.ObjectTypes.Count; x++)
+            {
+                if (!matchingField.ObjectTypes.Any(ot => ot.ObjectType == changedField.ObjectTypes[x].ObjectType))
+                {
+                    matchingField.ObjectTypes.Add(changedField.ObjectTypes[x]);
+
+                }
+
+
             }
         }
 
-        if (await Context.SaveChangesAsync() > 0)
+        var result = await context.SaveChangesAsync();
+        if (result > 0)
         {
             SnackBarService.Success("Field Updated");
             return DataGridEditFormAction.Close;
