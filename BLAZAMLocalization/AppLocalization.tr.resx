@@ -1389,4 +1389,7 @@
   <data name="Language" xml:space="preserve">
     <value>Dil</value>
   </data>
+  <data name="Enter_value_here" xml:space="preserve">
+    <value>Değeri buraya girin</value>
+  </data>
 </root>
