@@ -1,4 +1,5 @@
 ﻿@inherits MudField
+@inject IStringLocalizer<AppLocalization> AppLocalization
 @typeparam T
 
 @switch (_type?.Name)
@@ -58,6 +59,90 @@
                        Date="@dateValue"
                        DateChanged=@((date) =>{dateValue = date;})
                        Disabled=@Disabled />
+        break;
+    case "List`1":
+        <MudField Label="@Label"
+                  Class=@Class
+                  HelperText="@HelperText"
+                  Disabled=@Disabled>
+            <MudList Disabled=@Disabled
+                     T="string"
+                     Dense=true
+                     Style="max-height:200px; overflow-y:auto;">
+                @foreach (string val in StringValues)
+                {
+
+                    <MudListItem OnClick="@(() => { _selectedStringListItem = val; })">
+                        <ChildContent>
+                            <MudStack Row=true>
+                                @if (_selectedStringListItem != null && _selectedStringListItem == val)
+                                {
+                                    <MudTextField T="string"
+                                                  Value="@val"
+                                                  Immediate=false
+                                                  OnBlur="@(()=>{_selectedStringListItem = null;})"
+                                                  ValueChanged="@((newVal)=>{UpdateListItem(val,newVal);})" />
+                                }
+                                else
+                                {
+                                    <MudText>@val</MudText>
+                                }
+                                <MudSpacer />
+                                <MudIconButton Disabled=@Disabled
+                                               Size="Size.Small"
+                                               OnClick="@(async()=>{await RemoveListItem(val);})"
+                                               Class="align-end align-middle"
+                                               Color=Color.Error
+                                               Icon="@Icons.Material.Filled.Close" />
+
+                            </MudStack>
+                        </ChildContent>
+                    </MudListItem>
+
+                }
+                <MudListItem OnClick="@(() => { _selectedStringListItem = _newItem; })">
+                    <ChildContent>
+                        <MudStack Row=true>
+                            @if (_newItem != null)
+                            {
+                                <MudTextField T="string"
+                                              Placeholder="@AppLocalization[Lang.Enter_value_here]"
+                                              AutoFocus="@(_newItem==String.Empty)"
+                                              @bind-Value="@_newItem"
+                                              Immediate=false
+                                              OnBlur="@(()=>{_selectedStringListItem = null;})" />
+                            }
+                            else
+                            {
+                                <MudText>@_newItem</MudText>
+                            }
+                            <MudSpacer />
+                            @if (_newItem == null)
+                            {
+                                <MudIconButton Disabled=@Disabled
+                                               Size="Size.Small"
+                                               OnClick="@(async()=>{_newItem=String.Empty;})"
+                                               Class="align-end align-middle"
+                                               Color=Color.Primary
+                                               Icon="@Icons.Material.Filled.Add" />
+                            }
+                            else
+                            {
+                                <MudIconButton Disabled=@Disabled
+                                               Size="Size.Small"
+                                               OnClick="@(async()=>{await AddListItem(_newItem);})"
+                                               Class="align-end align-middle"
+                                               Color=Color.Success
+                                               Icon="@Icons.Material.Filled.Save" />
+
+                            }
+                        </MudStack>
+                    </ChildContent>
+                </MudListItem>
+
+            
+            </MudList>
+        </MudField>
 
         break;
     default:
@@ -68,9 +153,11 @@
 
 
 @code {
+    private string? _newItem = null;
+    private T? _originalValue;
     private T? objValue;
-
-
+    private string? _selectedStringListItem = null;
+    private AppModal _listItemModal;
     [Parameter]
     public T? Value
     {
@@ -83,9 +170,35 @@
             {
                 return;
             }
+            if (_originalValue == null)
+            {
+                _originalValue = value;
+            }
             objValue = value;
-            ValueChanged.InvokeAsync(value);
+            if (value is IEnumerable<string> selectedValues)
+            {
+                var same = true;
+                var originalStrings = _originalValue as IEnumerable<string>;
+                if (!originalStrings.All(val => StringValues.Contains(val)))
+                {
+                    same = false;
+                }
+                if (!StringValues.All(val => originalStrings.Contains(val)))
+                {
+                    same = false;
+                }
+               
+                if (!same)
+                {
+                    ValueChanged.InvokeAsync(value);
+                }
+            }
+            else
+            {
+                ValueChanged.InvokeAsync(value);
+            }
 
+            
         }
     }
 
@@ -146,5 +259,38 @@
 
         }
     }
-
+    private IEnumerable<string> StringValues =>
+        Value is IEnumerable<string> selectedValues
+            ? selectedValues
+            : Enumerable.Empty<string>();
+    private async Task RemoveListItem(string item)
+    {
+        var workList = StringValues.ToList();
+        workList.Remove(item);
+        Value = (T?)(object)workList;
+    }
+    private async Task AddListItem(string item)
+    {
+        var workList = StringValues.ToList();
+        workList.Add(item);
+        Value = (T?)(object)workList;
+        _newItem = null;
+    }
+    private async Task UpdateListItem(string existingItem, string newItem)
+    {
+        var workList = StringValues.ToList();
+        var indexToReplace = workList.IndexOf(existingItem);
+        workList.Insert(indexToReplace + 1, newItem);
+        workList.RemoveAt(indexToReplace);
+        Value = (T?)(object)workList;
+    }
+    private async Task OnStringListChanged(IEnumerable<string> selectedValues)
+    {
+        Value = (T?)(object)selectedValues;
+    }
+    public void DiscardChanges()
+    {
+        _selectedStringListItem = null;
+        objValue = _originalValue;
+    }
 }

@@ -1389,4 +1389,7 @@
   <data name="Language" xml:space="preserve">
     <value>언어</value>
   </data>
+  <data name="Enter_value_here" xml:space="preserve">
+    <value>여기에 값을 입력하세요</value>
+  </data>
 </root>

@@ -1085,13 +1085,27 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public virtual T? GetCustomProperty<T>(string propertyName)
         {
-            try
+            if (typeof(T) == typeof(List<string>))
             {
-                return GetAttribute<T>(propertyName);
+                try
+                {
+                    return (T?)(object?)GetStringListAttribute(propertyName);
+                }
+                catch
+                {
+                    return default;
+                }
             }
-            catch
+            else
             {
-                return default;
+                try
+                {
+                    return GetAttribute<T>(propertyName);
+                }
+                catch
+                {
+                    return default;
+                }
             }
         }
 

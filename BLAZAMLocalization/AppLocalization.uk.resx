@@ -1389,4 +1389,7 @@
   <data name="Language" xml:space="preserve">
     <value>Мова</value>
   </data>
+  <data name="Enter_value_here" xml:space="preserve">
+    <value>Введіть значення тут</value>
+  </data>
 </root>

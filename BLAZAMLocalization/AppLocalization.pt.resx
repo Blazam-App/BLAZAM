@@ -1389,4 +1389,7 @@
   <data name="Language" xml:space="preserve">
     <value>Idioma</value>
   </data>
+  <data name="Enter_value_here" xml:space="preserve">
+    <value>Insira o valor aqui</value>
+  </data>
 </root>

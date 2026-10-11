@@ -172,6 +172,7 @@ namespace BLAZAM.Localization
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
         public static readonly string Allow_Edit_Request = "Allow Edit Request";
         public static readonly string In_App = "In App";
+        public static readonly string Enter_value_here = "Enter value here";
         public static readonly string To_Email = "To Email";
         public static readonly string Memory_Chart = "Memory Chart";
         public static readonly string CPU_Chart = "CPU Chart";
