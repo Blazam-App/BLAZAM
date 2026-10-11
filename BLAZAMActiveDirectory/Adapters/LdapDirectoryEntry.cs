@@ -171,7 +171,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
                 return true;
             }
-return Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
+            return Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
         }
 
         public void RemovePropertyValue(string propertyName, object? value)
@@ -777,9 +777,9 @@ return Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
                     var dirAttr = new DirectoryAttribute(attr.Key);
                     if (attr.Value is string strValue) dirAttr.Add(strValue);
                     else if (attr.Value is byte[] byteValue) dirAttr.Add(byteValue);
-                    else if (attr.Value is string[] strArray)
+                    else if (attr.Value is IEnumerable<string> stringValues)
                     {
-                        foreach (var val in strArray) dirAttr.Add(val);
+                        foreach (var val in stringValues) dirAttr.Add(val);
                     }
                     else if (attr.Value != null) dirAttr.Add(attr.Value.ToString());
 
@@ -890,7 +890,11 @@ return Invoke(propertyName, DirectoryAttributeOperation.Replace, value);
             {
                 attributeModification.Add(integer.ToString());
             }
-
+            else if (value is IEnumerable<string> stringValues)
+            {
+                foreach (var val in stringValues)
+                    attributeModification.Add(val);
+            }
             var modifyRequest = new ModifyRequest(DN, attributeModification);
             var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);
 
