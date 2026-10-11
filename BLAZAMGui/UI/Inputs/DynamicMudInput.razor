@@ -179,22 +179,15 @@
             {
                 var same = true;
                 var originalStrings = _originalValue as IEnumerable<string>;
-                foreach (var val in originalStrings)
+                if (!originalStrings.All(val => StringValues.Contains(val)))
                 {
-                    if (!StringValues.Contains(val))
-                    {
-                        same = false;
-                        break;
-                    }
+                    same = false;
                 }
-                foreach (var val in StringValues)
+                if (!StringValues.All(val => originalStrings.Contains(val)))
                 {
-                    if (!originalStrings.Contains(val))
-                    {
-                        same = false;
-                        break;
-                    }
+                    same = false;
                 }
+               
                 if (!same)
                 {
                     ValueChanged.InvokeAsync(value);
