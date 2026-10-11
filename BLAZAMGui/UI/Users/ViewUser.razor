@@ -102,7 +102,10 @@
                             {
                                 @if (CanReadField(field))
                                 {
-                                    <CustomDirectoryField Disabled=@(!EditMode || !CanEditField(field)) Entry="GroupableEntry" Field="@field" />
+                                    <CustomDirectoryField 
+                                        Disabled=@(!EditMode || !CanEditField(field)) 
+                                    Entry="GroupableEntry" 
+                                    Field="@field" />
 
 
                                 }
