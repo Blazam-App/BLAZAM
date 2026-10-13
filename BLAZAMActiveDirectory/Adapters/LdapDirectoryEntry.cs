@@ -68,7 +68,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         private bool _isNew = false;
-        // NEW: Private constructor for creating a new, in-memory entry.
+        //Private constructor for creating a new, in-memory entry.
         private LdapDirectoryEntry(string proposedDn, IActiveDirectoryContext directory, bool isNew)
         {
             DN = proposedDn;
@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             // Immediately place a new attribute dictionary into the static DirectoryCache for this proposed DN.
             var initialAttributes = new Dictionary<string, object?> { { "distinguishedname", proposedDn } };
 
-            DirectoryCache.SetEntryCache(proposedDn, initialAttributes);
+            DirectoryCache.SetEntryCache(proposedDn, initialAttributes, 20);
         }
         /// <summary>
         /// Creates a new directory entry in memory. Call CommitChanges() to save it to the directory.

@@ -12,14 +12,16 @@ namespace BLAZAM.ActiveDirectory.Services
     {
         private static bool _purgerRunning = false;
         private static Timer? _purgerTimer = null;
-        public const int CacheExpirationMinutes = 10;
+        public const int CacheExpirationMinutes = 1;
         private static ConcurrentDictionary<string, EntryCache> DirectoryEntries = new();
-
+        public static int Count=> DirectoryEntries.Count;
+        
         public static EntryCache? GetEntryCache(string dn)
         {
             if (!_purgerRunning)
             {
-                _purgerTimer = new Timer(PurgeExpiredEntries,null,TimeSpan.FromMinutes());
+                _purgerRunning = true;
+                _purgerTimer = new Timer(PurgeExpiredEntries,null,TimeSpan.FromMinutes(CacheExpirationMinutes),TimeSpan.FromMinutes(DirectoryCache.CacheExpirationMinutes));
             }
             if (DirectoryEntries.ContainsKey(dn)){
                 if (DateTime.Now > DirectoryEntries[dn].ExpiresAt)
@@ -35,12 +37,33 @@ namespace BLAZAM.ActiveDirectory.Services
 
         private static void PurgeExpiredEntries(object? state)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cacheCopy = DirectoryEntries.ToList();
+                foreach (var entry in cacheCopy)
+                {
+                    if (DateTime.Now > entry.Value.ExpiresAt)
+                    {
+                        try
+                        {
+                            Clear(entry.Key);
+                        }
+                        catch (Exception ex)
+                        {
+                            Loggers.ActiveDirectoryLogger.Error(ex, "Error purging expired entry from DirectoryCache for DN:{DN}", entry.Key);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error purging expired entries from DirectoryCache");
+            }
         }
 
-        public static void SetEntryCache(string dn, Dictionary<string, object?> attributes)
+        public static void SetEntryCache(string dn, Dictionary<string, object?> attributes, int lifetimeInMinutes=CacheExpirationMinutes)
         {
-            DirectoryEntries[dn] = new EntryCache(attributes);
+            DirectoryEntries[dn] = new EntryCache(attributes, lifetimeInMinutes);
         }
         public static void ClearAll()
         {
@@ -63,10 +86,10 @@ namespace BLAZAM.ActiveDirectory.Services
         internal DateTime ExpiresAt { get; set; }
         internal Dictionary<string, object?> Attributes { get; set; }
 
-        public EntryCache(Dictionary<string, object?> attributes)
+        public EntryCache(Dictionary<string, object?> attributes, int lifetimeInMinutes=DirectoryCache.CacheExpirationMinutes)
         {
             Attributes = attributes;
-            ExpiresAt = DateTime.Now.AddMinutes(DirectoryCache.CacheExpirationMinutes);
+            ExpiresAt = DateTime.Now.AddMinutes(lifetimeInMinutes);
             Created = DateTime.Now;
         }
     }
