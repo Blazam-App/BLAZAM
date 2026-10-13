@@ -1,5 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Helpers;
 using System.Security;
 
@@ -30,5 +29,5 @@ namespace BLAZAM.Tests.ActiveDirectory
             var expectedDate = DateTime.FromFileTimeUtc(fileTime);
             Assert.Equal(expectedDate, credential.CreationTime);
         }
-    }
+        }
 }
