@@ -170,7 +170,7 @@
             {
                 return;
             }
-            if (_originalValue == null)
+            if (EqualityComparer<T?>.Default.Equals(_originalValue, default(T?)))
             {
                 _originalValue = value;
             }
