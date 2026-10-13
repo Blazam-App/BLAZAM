@@ -23,7 +23,7 @@
         /// <summary>
         /// Custom fields configured for the currently displayed entry's object type.
         /// </summary>
-        protected IList<CustomActiveDirectoryField> CustomFields { get; set; }
+        protected IList<CustomActiveDirectoryField> CustomFields { get; set; } = [];
 
         protected AppModal? AssignToModal { get; set; }
         protected AppModal? MoveToModal { get; set; }
