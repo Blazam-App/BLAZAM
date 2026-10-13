@@ -82,9 +82,9 @@ namespace BLAZAM.ActiveDirectory.Services
     }
     public class EntryCache
     {
-        internal DateTime Created { get; set; }
-        internal DateTime ExpiresAt { get; set; }
-        internal Dictionary<string, object?> Attributes { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime ExpiresAt { get; set; }
+        public Dictionary<string, object?> Attributes { get; set; }
 
         public EntryCache(Dictionary<string, object?> attributes, int lifetimeInMinutes = DirectoryCache.CacheExpirationMinutes)
         {
