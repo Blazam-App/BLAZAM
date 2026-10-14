@@ -1,0 +1,16 @@
+
+@inherits AppComponentBase
+<MudTextField T="string"
+Class="mb-8"
+Clearable="true"
+AutoFocus=true
+Immediate="true"
+@bind-Value="@Text" />
+
+@code {
+    [Parameter]
+    public string? Text{ get; set; }
+   
+ 
+   
+}

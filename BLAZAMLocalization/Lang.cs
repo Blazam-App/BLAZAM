@@ -172,6 +172,7 @@ namespace BLAZAM.Localization
         public static readonly string Group_Membership_Changes = "Group Membership Changes";
         public static readonly string Allow_Edit_Request = "Allow Edit Request";
         public static readonly string In_App = "In App";
+        public static readonly string Enter_value_here = "Enter value here";
         public static readonly string To_Email = "To Email";
         public static readonly string Memory_Chart = "Memory Chart";
         public static readonly string CPU_Chart = "CPU Chart";
@@ -346,6 +347,7 @@ namespace BLAZAM.Localization
         public static readonly string Pass_Change = "Pass Change";
         public static readonly string Password_Expiration = "Password Expiration";
         public static readonly string Lockout_Time = "Lockout Time";
+        public static readonly string AD_Entry_Cache_Count = "AD Entry Cache Count";
         public static readonly string Last_Logon = "Last Logon";
         public static readonly string LAPS_Password = "LAPS Password";
         public static readonly string Password_Never_Expires = "Password Never Expires";

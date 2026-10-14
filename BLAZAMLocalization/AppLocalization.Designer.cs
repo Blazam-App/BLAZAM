@@ -1420,6 +1420,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter value here.
+        /// </summary>
+        public static string Enter_value_here {
+            get {
+                return ResourceManager.GetString("Enter_value_here", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Message.
         /// </summary>
         public static string Error_Message {

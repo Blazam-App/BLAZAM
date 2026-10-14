@@ -64,6 +64,19 @@
 
     <PluginComponents Page="@PageType.OU" Location="@PageLocation.Details" />
 
+    @if (OU.CanReadAnyCustomFields && CustomFields.Count > 0)
+    {
+        <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
+            @foreach (var field in CustomFields)
+            {
+                @if (OU.CanReadField(field))
+                {
+                    <CustomDirectoryField Disabled=@(!EditMode || !OU.CanEditField(field)) Entry="OU" Field="@field" />
+                }
+            }
+        </ViewSection>
+    }
+
     <PluginComponents Page="@PageType.OU" Location="@PageLocation.NewSection" />
 }
 

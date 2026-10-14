@@ -169,6 +169,20 @@
 
                 </ViewSection>
             </MudItem>
+            @if (Group.CanReadAnyCustomFields && CustomFields.Count > 0)
+            {
+                <MudItem xs="12" md="12">
+                    <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
+                        @foreach (var field in CustomFields)
+                        {
+                            @if (Group.CanReadField(field))
+                            {
+                                <CustomDirectoryField Disabled=@(!EditMode || !Group.CanEditField(field)) Entry="Group" Field="@field" />
+                            }
+                        }
+                    </ViewSection>
+                </MudItem>
+            }
             <PluginComponents Page="@PageType.Group" Location="@PageLocation.NewSection" />
         </MudGrid>
 
