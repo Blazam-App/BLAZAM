@@ -157,48 +157,30 @@
     private T? _originalValue;
     private T? objValue;
     private string? _selectedStringListItem = null;
-    private AppModal _listItemModal;
     [Parameter]
     public T? Value
     {
         get => objValue;
         set
         {
-            if (objValue?.Equals(value) == true
-            || (EqualityComparer<T?>.Default.Equals(objValue, default(T?))
-            && EqualityComparer<T?>.Default.Equals(value, default(T?))))
-            {
+            var comparer = EqualityComparer<T?>.Default;
+
+            if (comparer.Equals(objValue, value))
                 return;
-            }
-            if (_originalValue == null)
-            {
+
+            if (comparer.Equals(_originalValue, default))
                 _originalValue = value;
-            }
+
             objValue = value;
+
             if (value is IEnumerable<string> selectedValues)
             {
-                var same = true;
-                var originalStrings = _originalValue as IEnumerable<string>;
-                if (!originalStrings.All(val => StringValues.Contains(val)))
-                {
-                    same = false;
-                }
-                if (!StringValues.All(val => originalStrings.Contains(val)))
-                {
-                    same = false;
-                }
-               
-                if (!same)
-                {
-                    ValueChanged.InvokeAsync(value);
-                }
-            }
-            else
-            {
-                ValueChanged.InvokeAsync(value);
+                var original = _originalValue as IEnumerable<string> ?? [];
+                if (new HashSet<string>(original).SetEquals(selectedValues))
+                    return;
             }
 
-            
+            ValueChanged.InvokeAsync(value);
         }
     }
 
