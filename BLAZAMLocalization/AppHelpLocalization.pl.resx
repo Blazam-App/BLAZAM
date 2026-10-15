@@ -312,4 +312,10 @@ Spróbuj skonfigurować niestandardowe poświadczenia aktualizacji.</value>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Jeśli powyższy link nie działa, skopiuj poniższe do paska adresu.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>To spowoduje odrzucenie wszystkich innych wprowadzonych zmian</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Twoje hasło wygaśnie za {0} dni.</value>
+  </data>
 </root>

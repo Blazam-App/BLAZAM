@@ -32,6 +32,7 @@
         public static readonly string Password_Reset_Body = "Password_Reset_Body";
         public static readonly string Password_Reset_Link_Text = "Password_Reset_Link_Text";
         public static readonly string Password_Reset_Expiration_Text = "Password_Reset_Expiration_Text";
+        public static readonly string Your_password_expires_in_X_days = "Your_password_expires_in_X_days";
         public static readonly string Debug_Enabled_Warning = "Debug_Enabled_Warning";
         public static readonly string Continue_Processing_Rules = "Continue_Processing_Rules";
         public static readonly string Delete_Auth_Token_Confirmation = "Delete_Auth_Token_Confirmation";

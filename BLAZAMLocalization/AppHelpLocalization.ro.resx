@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Dacă link-ul de mai sus nu funcționează, copiați următoarele în bara de adrese.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Acest lucru va anula orice alte modificări efectuate</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Parola dvs. va expira în {0} zile.</value>
+  </data>
 </root>

@@ -148,8 +148,11 @@ namespace BLAZAM.Update.Services
 
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
 
-
-
+            var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.Credentials = new Credentials(token);
+            }
 
             //Get the releases from the repo
             var releases = await client.Repository.Release.GetAll(Publisher_Name, Repository_Name);
