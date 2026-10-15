@@ -3,6 +3,7 @@ using BLAZAM.Global.Data;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
 using System.Diagnostics;
+using System.IO;
 
 namespace BLAZAM.Tests.Mocks
 {
@@ -10,10 +11,10 @@ namespace BLAZAM.Tests.Mocks
     {
         public Mock_UpdateService() : base(new()
         {
-            ApplicationRoot = new SystemDirectory("C:\\temp"),
+            ApplicationRoot = new SystemDirectory(Path.Combine(Path.GetTempPath(), "blazam-tests")),
             RunningProcess = Process.GetCurrentProcess(),
             RunningVersion = new ApplicationVersion("0.0.1"),
-            TempDirectory = new SystemDirectory("C:\\temp")
+            TempDirectory = new SystemDirectory(Path.Combine(Path.GetTempPath(), "blazam-tests"))
         }, null)
         {
 
