@@ -29,7 +29,9 @@ jobs:
           PlaywrightTests/bin/Debug/net10.0/playwright.ps1 install; 
           
       - name: Test application
-        run: dotnet test -c Release
+        run: dotnet test -c Release --no-build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
     runs-on: windows-latest
     permissions: write-all
