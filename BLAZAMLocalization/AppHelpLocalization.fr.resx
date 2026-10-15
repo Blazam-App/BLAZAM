@@ -312,4 +312,10 @@ Essayez de configurer des informations d'identification de mise à jour personna
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Si le lien ci-dessus ne fonctionne pas, copiez ce qui suit dans la barre d'adresse.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Cela annulera toutes les autres modifications apportées</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Votre mot de passe expirera dans {0} jours.</value>
+  </data>
 </root>

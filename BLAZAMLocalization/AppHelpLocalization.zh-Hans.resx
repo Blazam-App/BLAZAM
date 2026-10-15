@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>如果上面的链接无法使用，请将以下内容复制到地址栏。</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>这将丢弃其他所做的任何更改</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>您的密码将在 {0} 天后过期。</value>
+  </data>
 </root>

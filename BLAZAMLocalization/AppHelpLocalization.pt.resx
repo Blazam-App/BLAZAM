@@ -312,4 +312,10 @@ Tente configurar credenciais de atualização personalizadas.</value>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Se o link acima não funcionar, copie o seguinte para a barra de endereço.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Isto descartará quaisquer outras alterações feitas</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Sua senha expirará em {0} dias.</value>
+  </data>
 </root>
