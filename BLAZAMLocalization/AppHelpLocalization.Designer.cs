@@ -648,5 +648,14 @@ namespace BLAZAM.Localization {
                 return ResourceManager.GetString("Updated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your password will expire in {0} days..
+        /// </summary>
+        public static string Your_password_expires_in_X_days {
+            get {
+                return ResourceManager.GetString("Your_password_expires_in_X_days", resourceCulture);
+            }
+        }
     }
 }

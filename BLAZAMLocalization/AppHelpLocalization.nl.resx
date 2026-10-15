@@ -312,4 +312,10 @@ Probeer aangepaste updatereferenties te configureren.</value>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Als de bovenstaande link niet werkt, kopieer dan het volgende in de adresbalk.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Dit verwijdert alle andere aangebrachte wijzigingen.</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Uw wachtwoord verloopt over {0} dagen.</value>
+  </data>
 </root>
