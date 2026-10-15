@@ -1,6 +1,4 @@
-﻿
-
-using BLAZAM.Localization;
+﻿using BLAZAM.Localization;
 using Microsoft.Extensions.Localization;
 
 namespace BLAZAM.Services.Background
@@ -28,28 +26,24 @@ namespace BLAZAM.Services.Background
         /// random time between 15 and 45 seconds after launch.</param>
         public virtual void Start(bool immediate = false)
         {
-            if (!started)
-            {
-                int delay = 0;
-                if (!immediate)
-                {
-                    Random rand = new();
-                    int jitter = rand.Next(-15, 15);
-                    delay = 30 + jitter;
+            if (started) return;
+            started = true; // set before scheduling to avoid a race
 
-                }
-                if (Interval != TimeSpan.Zero)
-                {
-                    Timer = new Timer(Execute, null, TimeSpan.FromSeconds(delay), Interval);
-                }
-                else
-                {
-                    Task.Delay(delay).ContinueWith((task) =>
-                    {
-                        Execute();
-                    });
-                }
-                started = true;
+            TimeSpan startDelay = TimeSpan.Zero;
+            if (!immediate)
+            {
+                int jitter = Random.Shared.Next(-15, 15);
+                startDelay = TimeSpan.FromSeconds(30 + jitter);
+            }
+
+            if (Interval != TimeSpan.Zero)
+            {
+                Timer = new Timer(Execute, null, startDelay, Interval);
+            }
+            else
+            {
+                _ = Task.Delay(startDelay).ContinueWith(_ => Execute(),
+                    TaskScheduler.Default);
             }
         }
         /// <summary>

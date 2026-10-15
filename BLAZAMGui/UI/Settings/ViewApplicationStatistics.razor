@@ -1,5 +1,6 @@
 @inherits AppComponentBase
 @using System.Diagnostics
+@using BLAZAM.ActiveDirectory.Services
 <SettingsField Label=@AppLocalization[Lang.CPU]>
     @if (ApplicationStatistics.CPUUsage.Count > 2)
     {
@@ -24,6 +25,9 @@
 </SettingsField>
 <SettingsField Label="@AppLocalization[Lang.AD_Connections]">
     @ApplicationStatistics.LdapConnectionCount
+</SettingsField>
+<SettingsField Label="@AppLocalization[Lang.AD_Entry_Cache_Count]">
+    @DirectoryCache.Count
 </SettingsField>
 <SettingsField Label="@AppLocalization[Lang.DB_Connections]">
     @ApplicationStatistics.DBContextCount

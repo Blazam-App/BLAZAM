@@ -187,7 +187,7 @@ namespace BLAZAM.Database.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DatabaseHelpers.ConfigureModel(modelBuilder, this);
+            modelBuilder.ConfigureModel(this);
         }
 
 

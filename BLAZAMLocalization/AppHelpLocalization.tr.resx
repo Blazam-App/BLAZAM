@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Yukarıdaki bağlantı çalışmıyorsa aşağıdakini adres çubuğuna kopyalayın.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Bu, yapılan diğer değişiklikleri iptal edecek</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Parolanız {0} gün sonra sona erecek.</value>
+  </data>
 </root>

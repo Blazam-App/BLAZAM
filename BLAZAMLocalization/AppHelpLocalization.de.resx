@@ -172,7 +172,7 @@
     <value>Bitte erlauben Sie Entwickleranalysen, damit wir besser verstehen können, wie Blazam verwendet wird, und unsere Entwicklungsarbeit auf die Bereiche konzentrieren können, die unseren Benutzern am wichtigsten sind.</value>
   </data>
   <data name="Developer_Logs_Suggestion" xml:space="preserve">
-      <value>Bitte erlauben Sie die Entwicklerprotokollierung, damit wir Blazam schnell und transparent verbessern und unsere Entwicklungsarbeit unterstützen können.</value>
+    <value>Bitte erlauben Sie die Entwicklerprotokollierung, damit wir Blazam schnell und transparent verbessern und unsere Entwicklungsarbeit unterstützen können.</value>
   </data>
   <data name="Duplicate_Delegate" xml:space="preserve">
     <value>Dieser Delegierte existiert bereits.</value>
@@ -314,5 +314,8 @@ Konfigurieren Sie benutzerdefinierte Update-Anmeldeinformationen.</value>
   </data>
   <data name="Discard_Other_Changes_Warning" xml:space="preserve">
     <value>Alle anderen vorgenommenen Änderungen werden verworfen.</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Ihr Passwort läuft in {0} Tagen ab.</value>
   </data>
 </root>

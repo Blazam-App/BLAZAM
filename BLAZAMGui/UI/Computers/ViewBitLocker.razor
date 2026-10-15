@@ -4,6 +4,18 @@
 
 
 <BitLockerViewer Computer="_computer"/>
+@if (BitLocker != null && BitLocker.CanReadAnyCustomFields && CustomFields.Count > 0)
+{
+    <ViewSection Title=@AppLocalization[Lang.Additional_Fields]>
+        @foreach (var field in CustomFields)
+        {
+            @if (BitLocker.CanReadField(field))
+            {
+                <CustomDirectoryField Disabled="true" Entry="BitLocker" Field="@field" />
+            }
+        }
+    </ViewSection>
+}
 <LoadingData Loading=LoadingData />
 
 
