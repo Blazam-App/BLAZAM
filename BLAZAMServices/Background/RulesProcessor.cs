@@ -242,6 +242,7 @@ namespace BLAZAM.Services.Background
                 if (await entry.ShouldSkipEntry(dbFactory, directory))
                 {
                     _audit.RuleMatchSkipped(rule, entry);
+                    entry.Dispose();
                     continue;
                 }
                 Job entryJob = new Job($"Execute on {entry.CanonicalName}");
@@ -260,7 +261,7 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(logCompletionStep);
 
-            _ = scheduledRuleJob.RunAsync();
+            await scheduledRuleJob.RunAsync();
             return scheduledRuleJob;
         }
 
@@ -277,14 +278,14 @@ namespace BLAZAM.Services.Background
         private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            Task.Delay(50).Wait();
+            //Task.Delay(50).Wait();
 
             Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
             ruleForEvent.ExecutionId = Guid.NewGuid();
 
             _audit.RuleExecutionStarted(ruleForEvent);
 
-            Task.Delay(50).Wait();
+            //Task.Delay(50).Wait();
 
             if (OrFiltersPass(ruleForEvent, entry))
             {
@@ -297,7 +298,7 @@ namespace BLAZAM.Services.Background
                     var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                     contextRule.LastExcecuted = DateTime.UtcNow;
                     context.SaveChanges();
-                    Task.Delay(50).Wait();
+                    //Task.Delay(50).Wait();
 
                 }
                 catch (Exception ex)
@@ -327,13 +328,13 @@ namespace BLAZAM.Services.Background
                 if (ruleForEvent.StopOnThisRule)
                 {
                     Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
-
+                    entry.Dispose();
                     return false;
                 }
             }
             Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
             _audit.RuleExecutionFinished(ruleForEvent, sw.Elapsed);
-
+            entry.Dispose();
             return true;
         }
 
