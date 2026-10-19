@@ -5,6 +5,7 @@ using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 
 namespace BLAZAM.Helpers
 {
@@ -30,16 +31,14 @@ namespace BLAZAM.Helpers
                     }
                 }
             
-            List<IDirectoryEntryAdapter> matchedEntries2 = new();
-
-            foreach (var entry in matchedEntries)
-            {
-                if (!(await ShouldSkipEntry(entry,dbFactory,directory)))
+            ConcurrentBag<IDirectoryEntryAdapter> matchedEntries2 = new();
+            await Parallel.ForEachAsync(matchedEntries, async(entry, ct) => {
+                if (!(await ShouldSkipEntry(entry, dbFactory, directory)))
                 {
                     matchedEntries2.Add(entry);
                 }
-            }
-            return matchedEntries2;
+            });
+            return matchedEntries2.OrderBy(e=>e.CanonicalName).ToList();
         }
 
 

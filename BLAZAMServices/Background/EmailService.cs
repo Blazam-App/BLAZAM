@@ -108,7 +108,7 @@ namespace BLAZAM.Services.Background
 
         }
 
-        private EmailTemplateRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => (EmailTemplateRenderer<TComponent>) new EmailTemplateRenderer<TComponent>().AddService(dbFactory);
+        private EmailTemplateRenderer<TComponent> GetRenderer<TComponent>() where TComponent : IComponent => (EmailTemplateRenderer<TComponent>)new EmailTemplateRenderer<TComponent>().AddService(dbFactory);
 
 
 
@@ -221,7 +221,6 @@ namespace BLAZAM.Services.Background
             {
                 MessageId = Guid.NewGuid().ToString()
             };
-
             if (!IsConfigured)
             {
                 throw new EmailException("Email settings are invalid.");
@@ -251,7 +250,7 @@ namespace BLAZAM.Services.Background
             return email;
         }
 
-        private void SetSender(MimeMessage email, EmailSettings settings)
+        private static void SetSender(MimeMessage email, EmailSettings settings)
         {
             if (settings.UseSMTPAuth && settings.FromAddress.IsNullOrEmpty())
             {
@@ -270,7 +269,7 @@ namespace BLAZAM.Services.Background
             email.From.Add(email.Sender);
         }
 
-        private void AddRecipients(MimeMessage email, string to, string? cc, string? bcc, EmailSettings settings)
+        private static void AddRecipients(MimeMessage email, string to, string? cc, string? bcc, EmailSettings settings)
         {
             if (to != null)
             {
@@ -315,7 +314,7 @@ namespace BLAZAM.Services.Background
         {
             var response = await client.SendAsync(message);
 
-            _audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody, response);
+            await _audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody, response);
             return true;
         }
         /// <summary>
@@ -337,9 +336,9 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var client = await GetSmtpClientAsync();
+                using var client = await GetSmtpClientAsync();
 
-                var message = BuildGenericMessage(subject, to, header, body, cc, bcc);
+                using var message = BuildGenericMessage(subject, to, header, body, cc, bcc);
 
                 return await TrySend(client, message);
             }
@@ -367,10 +366,10 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var client = await GetSmtpClientAsync();
+                using var client = await GetSmtpClientAsync();
 
 
-                var message = BuildMessage<T>(subject, to, cc, bcc);
+                using var message = BuildMessage<T>(subject, to, cc, bcc);
 
                 return await TrySend(client, message);
             }
@@ -399,10 +398,10 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var client = await GetSmtpClientAsync();
+                using var client = await GetSmtpClientAsync();
 
 
-                var message = BuildMessage(subject, to, body.Render(), cc, bcc);
+                using var message = BuildMessage(subject, to, body.Render(), cc, bcc);
 
                 return await TrySend(client, message);
             }
@@ -423,10 +422,10 @@ namespace BLAZAM.Services.Background
         {
             try
             {
-                var client = await GetSmtpClientAsync();
+                using var client = await GetSmtpClientAsync();
 
 
-                var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
+                using var message = BuildMessage<TestEmailMessage>("BLAZAM Test Email", to);
 
                 return await TrySend(client, message);
             }
@@ -440,7 +439,7 @@ namespace BLAZAM.Services.Background
 
         }
 
-        public async Task<bool> SendPasswordResetEmail(string to, string resetUri,DateTime? expires=null, string? ipAddress=null, string? browser=null)
+        public async Task<bool> SendPasswordResetEmail(string to, string resetUri, DateTime? expires = null, string? ipAddress = null, string? browser = null)
         {
             try
             {
@@ -448,8 +447,8 @@ namespace BLAZAM.Services.Background
                 {
                     ResetUri = resetUri,
                     Expires = expires,
-                     Browser=browser,
-                     IpAddress=ipAddress
+                    Browser = browser,
+                    IpAddress = ipAddress
 
                 };
                 return await SendMessage("Password Reset", emailMessage, to);
