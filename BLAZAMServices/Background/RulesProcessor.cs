@@ -239,12 +239,6 @@ namespace BLAZAM.Services.Background
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
-                if (await entry.ShouldSkipEntry(dbFactory, directory))
-                {
-                    _audit.RuleMatchSkipped(rule, entry);
-                    entry.Dispose();
-                    continue;
-                }
                 Job entryJob = new Job($"Execute on {entry.CanonicalName}");
                 JobStep execApplicableEntriesStep = new($"Execute", (step) =>
                 {
@@ -261,7 +255,7 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(logCompletionStep);
 
-            await scheduledRuleJob.RunAsync();
+            scheduledRuleJob.Run();
             return scheduledRuleJob;
         }
 
@@ -314,7 +308,7 @@ namespace BLAZAM.Services.Background
                         ExecuteAction(ruleForEvent, action, entry, ruleJob);
                         _audit.RuleActionExecuted(ruleForEvent, entry, action.ToJson());
 
-                        Task.Delay(250).Wait();
+                        //Task.Delay(250).Wait();
 
                     }
                     catch (Exception ex)
