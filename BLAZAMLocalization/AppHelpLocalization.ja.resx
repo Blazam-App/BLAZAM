@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>上記のリンクが機能しない場合は、以下をアドレスバーにコピーしてください。</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>これにより他に行った変更はすべて破棄されます</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>あなたのパスワードはあと {0} 日で期限切れになります.</value>
+  </data>
 </root>

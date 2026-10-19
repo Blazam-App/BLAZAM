@@ -311,4 +311,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>إذا لم يعمل الرابط أعلاه، انسخ ما يلي في شريط العنوان.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>سيؤدي هذا إلى تجاهل أي تغييرات أخرى تم إجراؤها</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>ستنتهي صلاحية كلمة المرور الخاصة بك خلال {0} يومًا.</value>
+  </data>
 </root>

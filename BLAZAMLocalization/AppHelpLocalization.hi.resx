@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>यदि उपरोक्त लिंक काम नहीं करता है तो निम्नलिखित को पता बार में कॉपी करें।</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>यह किए गए किसी भी अन्य परिवर्तनों को रद्द कर देगा</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>आपका पासवर्ड {0} दिनों में समाप्त हो जाएगा.</value>
+  </data>
 </root>

@@ -312,4 +312,10 @@
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Если ссылка выше не работает, скопируйте следующее в адресную строку.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Это отменит любые другие внесённые изменения</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Срок действия вашего пароля истечёт через {0} дней.</value>
+  </data>
 </root>

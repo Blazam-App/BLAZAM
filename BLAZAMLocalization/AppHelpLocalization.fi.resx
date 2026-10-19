@@ -312,4 +312,10 @@ Yritä määrittää mukautetut päivityksen tunnistetiedot.</value>
   <data name="Password_Reset_URL_Text" xml:space="preserve">
     <value>Jos yllä oleva linkki ei toimi, kopioi seuraava osoiteriville.</value>
   </data>
+  <data name="Discard_Other_Changes_Warning" xml:space="preserve">
+    <value>Tämä hylkää kaikki muut tehdyt muutokset</value>
+  </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Salasanasi vanhenee {0} päivän kuluttua.</value>
+  </data>
 </root>

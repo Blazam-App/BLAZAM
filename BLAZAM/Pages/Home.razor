@@ -6,7 +6,7 @@
 @using BLAZAM.Gui.UI.Outputs.Jobs;
 
 <AppPageTitle>@AppLocalization[Lang.Home]</AppPageTitle>
-
+<PasswordExpirationWarningAlertProvider/>
 @if (MOTD.HasValue && MOTD.Value.ToString() != "")
 {
     _motdShown = true;

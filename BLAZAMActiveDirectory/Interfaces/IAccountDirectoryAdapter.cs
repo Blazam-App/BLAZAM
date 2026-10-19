@@ -98,12 +98,12 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         bool PasswordNeverExpires { get; set; }
 
         /// <summary>
-        /// The last logon timestamp as replicated across domain controllers.
+        /// The last UTC logon timestamp as replicated across domain controllers.
         /// </summary>
         DateTime? LastLogonTimestamp { get; }
 
         /// <summary>
-        /// The time when the password will expire, if applicable.
+        /// The UTC time when the password will expire, if applicable.
         /// </summary>
         DateTime? PasswordExpirationTime { get; }
 

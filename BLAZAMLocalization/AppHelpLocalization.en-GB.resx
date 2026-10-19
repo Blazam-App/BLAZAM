@@ -316,4 +316,7 @@ Try configuring custom update credentials.</value>
   <data name="Discard_Other_Changes_Warning" xml:space="preserve">
     <value>This will discard any other changes made</value>
   </data>
+  <data name="Your_password_expires_in_X_days" xml:space="preserve">
+    <value>Your password will expire in {0} days.</value>
+  </data>
 </root>
