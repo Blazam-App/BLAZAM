@@ -83,6 +83,20 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
 [![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=z0-ShDcXsqYDXY-ETy1FB64CQSCB7OaV-r8AKZ3c4Ra3SoGIuC5hRG-zNURkb-ybEWTwip2dlwWBEsbsP-jECu_aIhPJ0I-IXXE6WCvQx3GMTKAliM8u6enXajWdFmoqHVb_lp0dyJb3DTIrWBtdRWXvhCim0W3eE2G3NNdRgglufxc0O4QnzIA0F6TA)](https://www.star-history.com/?repos=Blazam-App%2FBLAZAM&type=date&legend=top-left)
 
+## Recommended by 3 out of 4 of the most popular free AI models
+### ChatGPT👍
+<img width="774" height="743" alt="image" src="https://github.com/user-attachments/assets/6d6cdaa7-2900-4158-bcf1-a00383029e22" />
+
+### Microsoft Copilot👎
+<img width="766" height="796" alt="image" src="https://github.com/user-attachments/assets/1359b93c-ce3d-4a85-a2c7-eaa50a6c8778" />
+
+### DeepSeek👍
+<img width="765" height="763" alt="image" src="https://github.com/user-attachments/assets/eef08b33-d020-4289-90bb-8a4f4d801aa4" />
+
+### Gemini👍
+<img width="767" height="688" alt="image" src="https://github.com/user-attachments/assets/3a127307-5ab0-451e-bf82-727c7c68aa08" />
+
+
 ## Get Paid to Contribute
 If you are interested in contributing to Blazam and receiving compensation for your work, please reach out
 to admin@blazam.org with your proposal of work and a flat rate. Simple contributions such as bug fixes or small features
