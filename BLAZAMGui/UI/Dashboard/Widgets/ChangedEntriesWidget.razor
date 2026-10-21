@@ -1,53 +1,63 @@
 ﻿@inherits TimeFrameWidget
 @attribute [Authorize]
+@if (CurrentUserDashboardWidgets.EditMode)
+{
 <MudTimeFramePicker TimeFrame=@_timeFrame
                     TimeFrameChanged=SetTimeFrame
                     Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
                     Class="mx-3" />
-<MudDataGrid T="IDirectoryEntryAdapter"
-             Items="ChangedEntries"
-             RowClick="@RowClicked"
-             RowClass="cursor-pointer"
-             Dense=true
-             Filterable=true
-             RowsPerPage="@ItemsPerPage"
-             RowsPerPageChanged="@SetRowsPerPage"
-             FilterMode="DataGridFilterMode.Simple"
-             Loading=@LoadingData
-             Square=true
-             ColumnResizeMode="ResizeMode.Column"
-             Virtualize=true
-             Class="py-0"
-             RowContextMenuClick="@RowContextMenuClicked"
-             SortMode="SortMode.Single">
-    <Columns>
-        <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
-            <CellTemplate>
-                <DirectoryEntryTypeIcon Size="Size.Small" Entry=context.Item />
+}
+@if (ChangedEntries.Count > 0)
+{
+    <MudDataGrid T="IDirectoryEntryAdapter"
+    Items="ChangedEntries"
+    RowClick="@RowClicked"
+    RowClass="cursor-pointer"
+    Dense=true
+    Filterable=true
+    RowsPerPage="@ItemsPerPage"
+    RowsPerPageChanged="@SetRowsPerPage"
+    FilterMode="DataGridFilterMode.Simple"
+    Loading=@LoadingData
+    Square=true
+    ColumnResizeMode="ResizeMode.Column"
+    Virtualize=true
+    Class="py-0"
+    RowContextMenuClick="@RowContextMenuClicked"
+    SortMode="SortMode.Single">
+        <Columns>
+            <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
+                <CellTemplate>
+                    <DirectoryEntryTypeIcon Size="Size.Small" Entry=context.Item />
 
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Name]>
-            <CellTemplate>
-                <DirectoryEntryLink Typo="Typo.caption"
-                                    Entry="@context.Item"
-                                    OnChanged="RefreshDataAsync" />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Changed]>
-            <CellTemplate>
-                <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
-               
-            </CellTemplate>
-        </TemplateColumn>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title=@AppLocalization[Lang.Name]>
+                <CellTemplate>
+                    <DirectoryEntryLink Typo="Typo.caption"
+                    Entry="@context.Item"
+                    OnChanged="RefreshDataAsync" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title=@AppLocalization[Lang.Changed]>
+                <CellTemplate>
+                    <WidgetTimestamp Timestamp="context.Item?.LastChanged" />
 
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
-    </PagerContent>
-    <NoRecordsContent>
-        <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
-    </NoRecordsContent>
-</MudDataGrid>
-<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
+                </CellTemplate>
+            </TemplateColumn>
+
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
+        </PagerContent>
+        <NoRecordsContent>
+            
+        </NoRecordsContent>
+    </MudDataGrid>
+    <DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
+}
+else
+{
+    <MudText Align="Align.Center" Class="mb-4">@AppLocalization[Lang.No_matching_results]</MudText>
+}
 

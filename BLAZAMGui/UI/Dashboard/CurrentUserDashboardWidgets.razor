@@ -80,10 +80,12 @@
                                                    Tooltip=@AppLocalization[Lang.Refresh]
                                                    OnClick="@(()=>{OnRefreshWidget?.Invoke(widget);})" />
 
-
-                                    <AppCloseButton Disabled="!EditMode"
-                                                    Tooltip=@AppLocalization[Lang.Remove]
-                                                    OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                    @if (EditMode)
+                                    {
+                                        <AppCloseButton Disabled="!EditMode"
+                                                        Tooltip=@AppLocalization[Lang.Remove]
+                                                        OnClick=@(async()=>{await RemoveWidget(context);}) />
+                                    }
 
                                 </MudCardHeader>
                                 <CascadingValue Value="this">
