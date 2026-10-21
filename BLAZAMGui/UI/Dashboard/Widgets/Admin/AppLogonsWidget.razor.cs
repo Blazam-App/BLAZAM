@@ -24,25 +24,29 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets.Admin
             {
                 if (widget.WidgetType.Equals(WidgetType))
                 {
-                    _ = RefreshDataAsync();
+                    RefreshDataAsync();
 
                 }
 
             };
         }
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-            LoadingData = true;
-            try
+            _ = Task.Run(() =>
             {
-                UserLogons = (await Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToListAsync());
-            }
-            catch (Exception ex)
-            {
-                Loggers.SystemLogger.Error(ex, "Failed to load user logons for AppLogonsWidget");
-            }
-            LoadingData = false;
+                LoadingData = true;
+                try
+                {
+                    UserLogons = Context.LogonAuditLog.OrderByDescending(u => u.Timestamp).Take(50).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Error(ex, "Failed to load user logons for AppLogonsWidget");
+                }
+                LoadingData = false;
+            });
+
         }
     }
 }

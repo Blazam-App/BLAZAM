@@ -16,14 +16,16 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             set => CurrentUser.State.Cache.Set(this.GetType(), value);
         }
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-            LoadingData = true;
+            _ = Task.Run(() =>
+            {
+                LoadingData = true;
 
-            NewGroups = (await Directory.Groups.FindNewGroupsAsync((int)_timeFrame!.Value.TotalDays)).Where(u => u.CanRead).ToList();
+                NewGroups = Directory.Groups.FindNewGroups((int)_timeFrame!.Value.TotalDays).Where(u => u.CanRead).ToList();
 
-            LoadingData = false;
-
+                LoadingData = false;
+            });
         }
         private void GoTo(DataGridRowClickEventArgs<IADGroup> args)
         {
