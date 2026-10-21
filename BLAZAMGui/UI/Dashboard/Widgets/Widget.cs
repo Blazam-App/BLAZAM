@@ -30,11 +30,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             {
                 CurrentUserDashboardWidgets.OnRefreshWidget += RefreshWidget;
             }
-            _ = Task.Run(() =>
-            {
-                _ = RefreshDataAsync();
+            RefreshDataAsync();
 
-            });
         }
 
         public override void Dispose()
@@ -50,12 +47,12 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         {
             if (widget.WidgetType.Equals(WidgetType))
             {
-                _ = RefreshDataAsync();
+                RefreshDataAsync();
 
             }
         }
 
-        protected abstract Task RefreshDataAsync();
+        protected abstract void RefreshDataAsync();
 
         protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
         {

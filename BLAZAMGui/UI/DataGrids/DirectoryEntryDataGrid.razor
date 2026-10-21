@@ -1,5 +1,4 @@
-﻿@using BLAZAM.Gui.UI.Dashboard.Widgets
-@inherits AppComponentBase
+﻿@inherits AppComponentBase
 <MudDataGrid T="IDirectoryEntryAdapter"
              Items="Entries"
              RowClick="@RowClicked"
@@ -38,7 +37,10 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
+        @if (ShowPagination)
+        {
+            <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IDirectoryEntryAdapter" />
+        }
     </PagerContent>
     <NoRecordsContent>
         <MudText>@NoResultsMessage</MudText>
@@ -62,6 +64,9 @@
 
     [Parameter]
     public bool IsLoadingData { get => LoadingData; set => LoadingData = value; }
+
+    [Parameter]
+    public bool ShowPagination { get; set; }
 
     [Parameter]
     public EventCallback<int> ItemsPerPageChanged { get; set; }

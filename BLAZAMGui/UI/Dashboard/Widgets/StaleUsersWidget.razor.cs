@@ -17,20 +17,20 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         }
 
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-
-            LoadingData = true;
-            ADSearch searcher = new ADSearch(Directory);
-            searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
-            searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
-            searcher.EnabledOnly = true;
-            searcher.MaxResults = 200;
-            var results = await searcher.SearchAsync();
-            StaleUsers = results.Where(u => u.CanRead).Cast<IADUser>().OrderByDescending(u => u.LastLogonTimestamp).ToList();
-            LoadingData = false;
-
-
+            _ = Task.Run(() =>
+            {
+                LoadingData = true;
+                ADSearch searcher = new ADSearch(Directory);
+                searcher.Fields.LastLogonTime = (DateTime.UtcNow - TimeSpan.FromDays(180)).ToFileTimeUtc();
+                searcher.ObjectTypeFilter = ActiveDirectoryObjectType.User;
+                searcher.EnabledOnly = true;
+                searcher.MaxResults = 200;
+                var results = searcher.Search();
+                StaleUsers = results.Where(u => u.CanRead).Cast<IADUser>().OrderByDescending(u => u.LastLogonTimestamp).ToList();
+                LoadingData = false;
+            });
         }
         private void GoTo(DataGridRowClickEventArgs<IADUser> args)
         {

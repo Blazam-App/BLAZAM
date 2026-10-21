@@ -17,12 +17,15 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         }
 
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-            LoadingData = true;
-            NewOUs = (await Directory.OUs.FindNewOUsAsync((int)_timeFrame!.Value.TotalDays)).Where(u => u.CanRead).ToList();
+            _ = Task.Run(() =>
+            {
+                LoadingData = true;
+                NewOUs = Directory.OUs.FindNewOUs((int)_timeFrame!.Value.TotalDays).Where(u => u.CanRead).ToList();
+                LoadingData = false;
+            });
 
-            LoadingData = false;
 
         }
         private void GoTo(DataGridRowClickEventArgs<IADOrganizationalUnit> args)

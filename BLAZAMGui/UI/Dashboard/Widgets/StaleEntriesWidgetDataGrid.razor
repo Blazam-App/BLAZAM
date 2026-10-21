@@ -38,7 +38,10 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="@T" />
+        @if (Items?.Count() > 5)
+        {
+            <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="@T" />
+        }
     </PagerContent>
     <NoRecordsContent>
         <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
