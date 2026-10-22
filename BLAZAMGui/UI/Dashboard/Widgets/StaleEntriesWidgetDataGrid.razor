@@ -21,11 +21,9 @@
     <Columns>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-
-                <DirectoryEntryLink Typo="Typo.caption"
-                                    Entry="@context.Item" 
-                                    OnChanged="OnChanged" />
-
+                <MudText Typo="Typo.caption">
+                    @context.Item.CanonicalName
+                </MudText>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Last_Logon]>
