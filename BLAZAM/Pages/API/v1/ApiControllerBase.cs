@@ -152,5 +152,96 @@ namespace BLAZAM.Pages.API.v1
 
             return group;
         }
+
+        /// <summary>
+        /// Finds a user by SID, DN, username, or string search.
+        /// </summary>
+        /// <param name="userIdentifier">The SID, DN, username, or string identifier</param>
+        /// <returns>The matching user or null</returns>
+        /// <exception cref="DirectorySearchUniquenessException"></exception>
+        protected IADUser? FindUserByIdentifier(string userIdentifier)
+        {
+            var user = (IADUser?)Directory.FindGlobalEntryBySid(userIdentifier);
+            user ??= (IADUser?)Directory.GetDirectoryEntryByDN(userIdentifier);
+            user ??= Directory.Users.FindUserByUsername(userIdentifier, ignoreDisabledUsers: false, exactMatch: true);
+            if (user == null)
+            {
+                var matches = Directory.Users.FindUsersByString(userIdentifier, ignoreDisabledUsers: false, exactMatch: true);
+                if (matches != null && matches.Count > 0)
+                {
+                    if (matches.Count > 1)
+                    {
+                        throw new DirectorySearchUniquenessException(userIdentifier);
+                    }
+
+                    user = matches[0];
+                }
+            }
+
+            return user;
+        }
+
+        /// <summary>
+        /// Finds a computer by SID, DN, or computer name.
+        /// </summary>
+        /// <param name="computerIdentifier">The SID, DN, or computer name</param>
+        /// <returns>The matching computer or null</returns>
+        /// <exception cref="DirectorySearchUniquenessException"></exception>
+        protected IADComputer? FindComputerByIdentifier(string computerIdentifier)
+        {
+            var computer = (IADComputer?)Directory.FindGlobalEntryBySid(computerIdentifier);
+            computer ??= (IADComputer?)Directory.GetDirectoryEntryByDN(computerIdentifier);
+            if (computer == null)
+            {
+                var matches = Directory.Computers.FindByString(computerIdentifier, ignoreDisabled: false);
+                if (matches != null && matches.Count > 0)
+                {
+                    var exact = matches.Where(c => string.Equals(c.CanonicalName, computerIdentifier, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(c.SAMAccountName, computerIdentifier, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(c.SAMAccountName, computerIdentifier + "$", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    if (exact.Count == 1)
+                    {
+                        computer = exact[0];
+                    }
+                    else if (exact.Count > 1 || matches.Count > 1)
+                    {
+                        throw new DirectorySearchUniquenessException(computerIdentifier);
+                    }
+                    else
+                    {
+                        computer = matches[0];
+                    }
+                }
+            }
+
+            return computer;
+        }
+
+        /// <summary>
+        /// Finds an Organizational Unit by DN or name.
+        /// </summary>
+        /// <param name="ouIdentifier">The DN or OU name</param>
+        /// <returns>The matching Organizational Unit or null</returns>
+        /// <exception cref="DirectorySearchUniquenessException"></exception>
+        protected IADOrganizationalUnit? FindOuByIdentifier(string ouIdentifier)
+        {
+            var ou = Directory.OUs.FindOuByDN(ouIdentifier);
+            if (ou == null)
+            {
+                var matches = Directory.OUs.FindOuByString(ouIdentifier);
+                if (matches != null && matches.Count > 0)
+                {
+                    if (matches.Count > 1)
+                    {
+                        throw new DirectorySearchUniquenessException(ouIdentifier);
+                    }
+
+                    ou = matches[0];
+                }
+            }
+
+            return ou;
+        }
     }
 }
