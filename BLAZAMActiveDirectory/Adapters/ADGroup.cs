@@ -187,14 +187,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (MembersToRemove.Count > 0)
             {
-                    MembersToRemove.ForEach(g =>
+                MembersToRemove.ForEach(g =>
+                {
+                    PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
                     {
-                        PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
-                        {
-                            g.Group.Invoke("Remove", new object[] { g.Member.DN });
-                            return true;
-                        }));
-                    });
+                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                        return true;
+                    }));
+                });
                 _members = null;
                 MembersToRemove.Clear();
             }
@@ -321,8 +321,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
 
                 });
-             
-                Parallel.ForEach(MembersToAdd, m => {
+
+                Parallel.ForEach(MembersToAdd, m =>
+                {
                     lock (_effectiveMembersLock)
                     {
                         if (!effectiveMembers.Contains(m.Member))
@@ -331,7 +332,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         }
                     }
                 });
-             
+
                 return effectiveMembers;
             }
         }

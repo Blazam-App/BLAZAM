@@ -17,28 +17,29 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="rule">The automation rule containing filters.</param>
         /// <returns>List of matching directory entries.</returns>
-        public static async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(this List<AutomationRuleOrFilter> filters,ActiveDirectoryObjectType searchObjectType, IAppDatabaseFactory dbFactory, IActiveDirectoryContext directory)
+        public static async Task<List<IDirectoryEntryAdapter>> GetFilteredEntries(this List<AutomationRuleOrFilter> filters, ActiveDirectoryObjectType searchObjectType, IAppDatabaseFactory dbFactory, IActiveDirectoryContext directory)
         {
             List<IDirectoryEntryAdapter> matchedEntries = [];
 
-           
-                foreach (var orFilter in filters)
+
+            foreach (var orFilter in filters)
+            {
+                // Each OR filter is processed independently; results are accumulated
+                if (!GetFilteredOrEntries(orFilter, searchObjectType, matchedEntries, directory))
                 {
-                    // Each OR filter is processed independently; results are accumulated
-                    if (!GetFilteredOrEntries(orFilter, searchObjectType, matchedEntries, directory))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
-            
+            }
+
             ConcurrentBag<IDirectoryEntryAdapter> matchedEntries2 = new();
-            await Parallel.ForEachAsync(matchedEntries, async(entry, ct) => {
+            await Parallel.ForEachAsync(matchedEntries, async (entry, ct) =>
+            {
                 if (!(await ShouldSkipEntry(entry, dbFactory, directory)))
                 {
                     matchedEntries2.Add(entry);
                 }
             });
-            return matchedEntries2.OrderBy(e=>e.CanonicalName).ToList();
+            return matchedEntries2.OrderBy(e => e.CanonicalName).ToList();
         }
 
 
@@ -46,7 +47,7 @@ namespace BLAZAM.Helpers
         /// <summary>
         /// Applies a single OR filter to the directory and adds matching entries to the result list.
         /// </summary>
-        public static bool GetFilteredOrEntries(AutomationRuleOrFilter filter,ActiveDirectoryObjectType searchObjectType, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory)
+        public static bool GetFilteredOrEntries(AutomationRuleOrFilter filter, ActiveDirectoryObjectType searchObjectType, List<IDirectoryEntryAdapter> matchedEntries, IActiveDirectoryContext directory)
         {
             ADSearch search = new ADSearch(directory);
 
@@ -63,11 +64,11 @@ namespace BLAZAM.Helpers
             }
             search.AddAndFilters(filter);
             var rawResults = search.Search();
-            matchedEntries.AddRange(rawResults.Where(e=>e.CanRead));
+            matchedEntries.AddRange(rawResults.Where(e => e.CanRead));
             return true;
         }
 
-        private static void AddAndFilters(this ADSearch search,AutomationRuleOrFilter filter)
+        private static void AddAndFilters(this ADSearch search, AutomationRuleOrFilter filter)
         {
             foreach (var andFilter in filter.AndFilters)
             {
@@ -79,7 +80,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-       
+
 
         /// <summary>
         /// Adds a single AND filter as a search field to the ADSearch object.
@@ -150,10 +151,10 @@ namespace BLAZAM.Helpers
             }
             return true;
         }
-        public static async Task<bool> ShouldSkipEntry(this IDirectoryEntryAdapter entry,  IAppDatabaseFactory dbFactory, IActiveDirectoryContext directory)
+        public static async Task<bool> ShouldSkipEntry(this IDirectoryEntryAdapter entry, IAppDatabaseFactory dbFactory, IActiveDirectoryContext directory)
         {
             using var context = await dbFactory.CreateDbContextAsync();
-            if (IsApplicationIdentity(entry,dbFactory))
+            if (IsApplicationIdentity(entry, dbFactory))
             {
                 return true;
             }
@@ -162,7 +163,7 @@ namespace BLAZAM.Helpers
                 var ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
                 if (ruleSetttings == null)
                 {
-                    await SeedExcludedGroups(dbFactory,directory);
+                    await SeedExcludedGroups(dbFactory, directory);
                     ruleSetttings = await context.GlobalAutomationRuleSettings.FirstOrDefaultAsync();
                 }
                 foreach (var groupGuid in ruleSetttings.ExcludedGroups)
@@ -189,7 +190,7 @@ namespace BLAZAM.Helpers
 
 
                 // Try to resolve the actual SIDs for the current domain/forest
-                
+
 
                 if (directory.Status != DirectoryConnectionStatus.OK)
                 {
@@ -239,7 +240,7 @@ namespace BLAZAM.Helpers
         /// Determines if the given directory entry represents the application identity,
         /// to prevent rules from acting on the application's own account.
         /// </summary>
-        private static bool IsApplicationIdentity(IDirectoryEntryAdapter entry,IAppDatabaseFactory dbFactory)
+        private static bool IsApplicationIdentity(IDirectoryEntryAdapter entry, IAppDatabaseFactory dbFactory)
         {
             using var context = dbFactory.CreateDbContext();
             var adUsername = context.ActiveDirectorySettings.FirstOrDefault()?.Username;

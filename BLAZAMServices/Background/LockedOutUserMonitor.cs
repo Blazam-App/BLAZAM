@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
-using BLAZAM.Global.Interfaces;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Services.Events;

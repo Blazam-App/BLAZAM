@@ -2,7 +2,6 @@
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
-using System.Web;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -197,11 +196,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         }
         public virtual bool CanCreateType(ActiveDirectoryObjectType objectType)
-        {          
-                return HasActionPermission(ObjectActions.Create, objectType);
+        {
+            return HasActionPermission(ObjectActions.Create, objectType);
         }
-        public virtual bool CanCreateUser=>CanCreateType(ActiveDirectoryObjectType.User);
-       
+        public virtual bool CanCreateUser => CanCreateType(ActiveDirectoryObjectType.User);
+
         public virtual bool CanCreateUserInSubOUs
         {
             get

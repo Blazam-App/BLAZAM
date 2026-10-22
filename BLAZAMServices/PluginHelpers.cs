@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using BLAZAM.Plugins;
+﻿using BLAZAM.Plugins;
 using Microsoft.AspNetCore.Components;
 using System.Reflection;
 

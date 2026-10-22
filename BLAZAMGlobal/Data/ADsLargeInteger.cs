@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Global.Data
 {
-   
+
     /// <summary>
     /// Represents the ADSI LargeInteger structure, used for date/time and other large integer values in Active Directory.
     /// This interface is used for COM interop with ADSI.

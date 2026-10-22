@@ -245,12 +245,12 @@ namespace BLAZAM.Session
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
                         dbUserSettings.Username = Username;
-                        if(Preferences.PasswordResetSettings !=null && Preferences.PasswordResetSettings.Id > 0)
+                        if (Preferences.PasswordResetSettings != null && Preferences.PasswordResetSettings.Id > 0)
                         {
-                            var dbPasswordSettings =dbUserSettings.PasswordResetSettings;
+                            var dbPasswordSettings = dbUserSettings.PasswordResetSettings;
                             if (dbPasswordSettings != null)
                             {
-                                dbPasswordSettings.PIN = Preferences.PasswordResetSettings.PIN; 
+                                dbPasswordSettings.PIN = Preferences.PasswordResetSettings.PIN;
                                 dbPasswordSettings.Question1 = Preferences.PasswordResetSettings.Question1;
                                 dbPasswordSettings.Answer1 = Preferences.PasswordResetSettings.Answer1;
                                 dbPasswordSettings.Question2 = Preferences.PasswordResetSettings.Question2;
@@ -364,7 +364,7 @@ namespace BLAZAM.Session
         {
             get
             {
-                if (User?.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)==true)
+                if (User?.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin) == true)
                 {
                     return true;
                 }
@@ -624,7 +624,7 @@ namespace BLAZAM.Session
             return true;
         }
 
-        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy =>  new EffectivePasswordResetPolicy(PermissionDelegates);
+        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy => new EffectivePasswordResetPolicy(PermissionDelegates);
 
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {

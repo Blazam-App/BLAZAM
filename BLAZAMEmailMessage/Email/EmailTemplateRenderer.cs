@@ -1,18 +1,15 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.EmailMessage.Email.Messages;
 using BlazorTemplater;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace BLAZAM.EmailMessage.Email
 {
     public class EmailTemplateRenderer<TComponent> : ComponentRenderer<TComponent> where TComponent : IComponent
     {
 
-        public EmailTemplateRenderer() {
+        public EmailTemplateRenderer()
+        {
             this.UseLayout<DefaultEmailLayout>();
             this.AddServiceProvider(ApplicationInfo.services);
         }
@@ -20,7 +17,7 @@ namespace BLAZAM.EmailMessage.Email
         {
             if (!EqualityComparer<TValue>.Default.Equals(value, default(TValue)))
             {
-                base.Set(parameterSelector, value); 
+                base.Set(parameterSelector, value);
             }
             return this;
         }

@@ -6,7 +6,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.EmailMessage.Email.Messages;
-using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
@@ -353,7 +352,7 @@ namespace BLAZAM.Services.Background
                     }
 
                     notificationTitle += _appLocalization[Lang.Locked_Out];
-                    notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime!=null?sourceUser.LockoutTime?.ToLocalTime():DateTime.Now);
+                    notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime != null ? sourceUser.LockoutTime?.ToLocalTime() : DateTime.Now);
                     var lockedOutMessage = NotificationType.LockedOut.ToEmailNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
                     lockedOutMessage.EntryLink = source.SearchUri;

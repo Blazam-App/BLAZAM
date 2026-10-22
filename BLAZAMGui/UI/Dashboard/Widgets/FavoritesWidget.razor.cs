@@ -18,9 +18,9 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
         protected override void RefreshDataAsync()
         {
-         
-            _=Task.Run(() =>
-            {   
+
+            _ = Task.Run(() =>
+            {
                 LoadingData = true;
                 var favorites = new List<IDirectoryEntryAdapter>();
                 foreach (var entry in CurrentUser.State.Preferences.FavoriteEntries)
@@ -33,7 +33,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
                 }
                 FavoriteEntries = favorites;
-            LoadingData = false;
+                LoadingData = false;
             });
 
 

@@ -51,7 +51,7 @@
                 DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
                 if (Context != null)
                 {
-                    CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf=>cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
+                    CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf => cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
                 }
             }
 

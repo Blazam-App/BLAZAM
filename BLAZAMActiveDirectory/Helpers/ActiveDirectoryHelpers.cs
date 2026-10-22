@@ -1,9 +1,4 @@
-﻿using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Text;
-using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory;
+﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
@@ -15,6 +10,7 @@ using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Text;
 using System.Text.RegularExpressions;
 

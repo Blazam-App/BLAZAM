@@ -364,7 +364,7 @@ namespace BLAZAM.Services
                         }
                     }
                     };
-                    
+
                     var json = payload.ToJson();
                     var url = $"https://www.google-analytics.com/mp/collect?measurement_id={measurementId}&api_secret={apiSecret}";
 

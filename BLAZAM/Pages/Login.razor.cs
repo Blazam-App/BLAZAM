@@ -1,6 +1,5 @@
 // Import necessary namespaces for various functionalities
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Models;
 using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;

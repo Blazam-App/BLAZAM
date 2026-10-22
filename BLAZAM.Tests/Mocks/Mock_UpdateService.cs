@@ -3,7 +3,6 @@ using BLAZAM.Global.Data;
 using BLAZAM.Update;
 using BLAZAM.Update.Services;
 using System.Diagnostics;
-using System.IO;
 
 namespace BLAZAM.Tests.Mocks
 {

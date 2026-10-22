@@ -1,16 +1,16 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.Protocols;
-using System.Security;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -358,8 +358,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public DateTime? PasswordLastSet
         {
-            get=>GetDateTimeAttribute(pwdLastSet);
-            
+            get => GetDateTimeAttribute(pwdLastSet);
+
             set
             {
                 if (value == null)
@@ -401,10 +401,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (TryInvokeSetPassword(password))
                 {
-                    if(requireChange)
+                    if (requireChange)
                     {
                         RequirePasswordChange = true;
-                        return CommitChanges().Result==JobResult.Passed;
+                        return CommitChanges().Result == JobResult.Passed;
                     }
                     return true;
                 }

@@ -29,5 +29,5 @@ namespace BLAZAM.Tests.ActiveDirectory
             var expectedDate = DateTime.FromFileTimeUtc(fileTime);
             Assert.Equal(expectedDate, credential.CreationTime);
         }
-        }
+    }
 }

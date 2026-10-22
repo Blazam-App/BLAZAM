@@ -452,7 +452,7 @@ namespace PlaywrightTests
 
         private async Task OpenUserMenu()
         {
-           var userButton = Page.GetByRole(AriaRole.Button, new() { Name = "D", Exact = true });
+            var userButton = Page.GetByRole(AriaRole.Button, new() { Name = "D", Exact = true });
             await userButton.ClickAsync();
 
             var profileSettingsButton = Page.Locator("text=Profile Settings");

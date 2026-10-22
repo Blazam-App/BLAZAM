@@ -1,11 +1,11 @@
-﻿using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Text.Json.Serialization;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Jobs;
+using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
+using System.Text.Json.Serialization;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {

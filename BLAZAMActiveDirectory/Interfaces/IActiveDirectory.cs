@@ -1,8 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
@@ -192,7 +190,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <returns>The matching entry, otherwise null</returns>
         IDirectoryEntryAdapter? GetDirectoryEntryByDN(string? dn);
         Task CancelCheckConnection();
-        AppLdapConnection GetConnection(string? serverHostname=null);
+        AppLdapConnection GetConnection(string? serverHostname = null);
         Task<AppLdapConnection> GetConnectionAsync();
     }
 }

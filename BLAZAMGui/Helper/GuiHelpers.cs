@@ -1,6 +1,5 @@
 ﻿
 using ApplicationNews;
-using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Gui.UI.Modals;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
