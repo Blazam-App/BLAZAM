@@ -1,12 +1,11 @@
-﻿using System.Diagnostics;
-using System.DirectoryServices.Protocols;
-using System.Net;
-using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.Common.Exceptions;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Global;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
+using System.Diagnostics;
+using System.DirectoryServices.Protocols;
+using System.Net;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -142,7 +141,7 @@ namespace BLAZAM.ActiveDirectory
                 if (settings.ServerPort == 636) // Common LDAPS port
                 {
                     Loggers.ActiveDirectoryLogger.Information($"ADSettings: UseTLS is true, port is {settings.ServerPort}. Attempting LDAPS connection.");
-                    ConnectWithLdaps(settings, out connection,serverHostname);
+                    ConnectWithLdaps(settings, out connection, serverHostname);
                 }
                 else if (settings.ServerPort == 389) // Common LDAP port, suitable for StartTLS
                 {
@@ -267,7 +266,7 @@ namespace BLAZAM.ActiveDirectory
         /// <param name="password">The password for the user.</param>
         /// <param name="connection">The established LdapConnection object if successful, otherwise null.</param>
         /// <returns>True if the connection was successful, otherwise false.</returns>
-        public static bool ConnectWithLdaps(ADSettings settings, out LdapConnection? connection, string? serverHostname=null)
+        public static bool ConnectWithLdaps(ADSettings settings, out LdapConnection? connection, string? serverHostname = null)
         {
             connection = null;
             if (string.IsNullOrEmpty(settings.ServerAddress) || settings.ServerPort <= 0 || string.IsNullOrEmpty(settings.Username) || settings.Password == null)
@@ -281,7 +280,7 @@ namespace BLAZAM.ActiveDirectory
                 //TestConnectionMethods(settings);
 
                 // 1. Create LdapConnection object targeting the LDAPS port
-                LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(serverHostname??settings.ServerAddress, settings.ServerPort);
+                LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier(serverHostname ?? settings.ServerAddress, settings.ServerPort);
                 connection = new LdapConnection(identifier);
 
                 // 2. Specify that SSL should be used
@@ -413,7 +412,7 @@ namespace BLAZAM.ActiveDirectory
                 }
                 return false;
             }
-            
+
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Warning(ex, "General Exception during StartTLS connection");
@@ -431,7 +430,7 @@ namespace BLAZAM.ActiveDirectory
             if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
             lock (_tlsLock)
             {
-              currentConnection.SessionOptions.StartTransportLayerSecurity(null);
+                currentConnection.SessionOptions.StartTransportLayerSecurity(null);
                 return true;
             }
         }

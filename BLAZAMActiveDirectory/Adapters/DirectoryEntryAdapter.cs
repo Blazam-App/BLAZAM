@@ -1,12 +1,5 @@
-﻿using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory.Data;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -16,6 +9,12 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using System.Data;
+using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -946,7 +945,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                
+
                 if (!NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -957,7 +956,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
                 }
-                
+
                 if (NewEntry
                     && PostCommitSteps.Count > 0)
                 {
@@ -968,7 +967,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 }
 
                 var result = false;
-                
+
                 if (commitJob.Result != JobResult.Running && commitJob.Result != JobResult.Cancelled)
                 {
                     result = commitJob.Run();
@@ -1130,7 +1129,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             var list = new List<T?>();
 
-         
+
 
             return list;
 
@@ -1376,7 +1375,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             if (Guid.HasValue)
             {
                 return Directory.FindGlobalEntryByGuid(Guid.Value);
-            } else if (SID!=null && SID.Length > 0)
+            }
+            else if (SID != null && SID.Length > 0)
             {
                 return Directory.FindGlobalEntryBySid(SID);
 

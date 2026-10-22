@@ -1,11 +1,10 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
-using Octokit;
 
 namespace BLAZAM.Services.Audit
 {
-    public class BaseAuditLogger: IDisposable
+    public class BaseAuditLogger : IDisposable
     {
         public SystemAudit System { get; set; }
         public UserAudit User { get; set; }
@@ -47,7 +46,7 @@ namespace BLAZAM.Services.Audit
 
                 // If an actor is associated with the event, initialize the audit services
                 // that will log the changes.
-                if (args.Actor != null && args.Actor.AuditUsername!=null)
+                if (args.Actor != null && args.Actor.AuditUsername != null)
                 {
                     InitializeAuditServices(args.Actor);
                 }

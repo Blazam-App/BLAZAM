@@ -2,7 +2,6 @@
 global using BLAZAM.ActiveDirectory.Interfaces;
 global using BLAZAM.ActiveDirectory.Searchers;
 global using BLAZAM.Common.Data;
-global using BLAZAM.Common.Data.Services;
 global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Interfaces;
 global using BLAZAM.Database.Models;

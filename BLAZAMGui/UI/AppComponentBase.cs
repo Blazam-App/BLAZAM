@@ -156,7 +156,7 @@ namespace BLAZAM.Gui.UI
         /// <param name="state">Not used.</param>
         /// <param name="args">Not used.</param>
         protected void Refresh(object? state = null, object? args = null) => Refresh(false);
-    
+
 
 
         /// <summary>

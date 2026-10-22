@@ -1,21 +1,9 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Options;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
-using System.Management;
 using System.Management.Automation;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -136,9 +124,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         }
                     }
                 }
-                
 
-               
+
+
                 return 0; // Return default if no results, the property is not found, or an error occurred in RunScript
             }
         }
@@ -197,8 +185,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
             CimSession Session = CimSession.Create(target.CanonicalName, SessionOptions);
 
             powerShell.AddParameter("CimSession", Session);
-           // powerShell.AddParameter("ComputerName", target.CanonicalName)
-           //        .AddParameter("Credential", Credential); // Pass the credential object directly
+            // powerShell.AddParameter("ComputerName", target.CanonicalName)
+            //        .AddParameter("Credential", Credential); // Pass the credential object directly
 
 
 

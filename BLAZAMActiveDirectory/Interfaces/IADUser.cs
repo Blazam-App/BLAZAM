@@ -51,6 +51,6 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// <summary>
         /// Gets a list of failed logon events for the user.
         /// </summary>
-        List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job=null);
+        List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job = null);
     }
 }

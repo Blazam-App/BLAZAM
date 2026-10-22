@@ -1,14 +1,11 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
 using BLAZAM.Update.Services;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Security.Principal;
-using System.Text;
 
 namespace BLAZAM.Update
 {
@@ -39,9 +36,9 @@ namespace BLAZAM.Update
 
         private readonly UpdateService _updateService;
 
-       /// <summary>
-       /// Use <see cref="UpdateTempDirectory"/> instead
-       /// </summary>
+        /// <summary>
+        /// Use <see cref="UpdateTempDirectory"/> instead
+        /// </summary>
         private SystemDirectory? _updateTempDirectory;
         /// <summary>
         /// The application update directory, in temporary files
@@ -95,7 +92,7 @@ namespace BLAZAM.Update
                 return "Powershell";
             }
         }
-       
+
 
         /// <summary>
         /// Called when download progress has changed
@@ -108,7 +105,7 @@ namespace BLAZAM.Update
 
         public ApplicationUpdate(ApplicationInfo applicationInfo, UpdateService updateService)
         {
-       
+
             _updateService = updateService;
             _runningVersion = applicationInfo.RunningVersion;
             _applicationRootDirectory = applicationInfo.ApplicationRoot;
@@ -292,7 +289,7 @@ namespace BLAZAM.Update
             Loggers.UpdateLogger.Debug("Running as user: {Username}", _updateIdentity.ImpersonationUser?.Username ?? "Application");
 
             var proc = Process.Start("schtasks /run /tn \"Update Blazam\"");
-            
+
 
             Loggers.UpdateLogger.Information("File copy command executed with result: {Success} in {ElapsedMilliseconds}ms", proc.ExitCode == 0, stopwatch.ElapsedMilliseconds);
 

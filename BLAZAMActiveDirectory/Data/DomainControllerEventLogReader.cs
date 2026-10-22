@@ -5,7 +5,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
-using System.DirectoryServices;
 
 
 namespace BLAZAM.ActiveDirectory.Data

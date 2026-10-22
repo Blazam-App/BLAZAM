@@ -1,5 +1,3 @@
-using BLAZAM.Database.Models;
-
 namespace BLAZAM.Gui.UI.Dashboard.Widgets
 {
     public partial class DeletedEntriesWidget : TimeFrameWidget
@@ -8,7 +6,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         {
             Title = Localization.AppLocalization.Deleted_Entries;
             WidgetType = DashboardWidgetType.DeletedEntries;
-           
+
         }
 
         private List<IDirectoryEntryAdapter> DeletedEntries
@@ -19,7 +17,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
         protected override void RefreshDataAsync()
         {
-            _=Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 LoadingData = true;
 

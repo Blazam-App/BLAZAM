@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLAZAM.Database.Models.User
+﻿namespace BLAZAM.Database.Models.User
 {
-    public class UserPasswordResetSettings: AppDbSetBase
+    public class UserPasswordResetSettings : AppDbSetBase
     {
-        public AppUser User{ get; set; }
-        public int UserId{ get; set; }
+        public AppUser User { get; set; }
+        public int UserId { get; set; }
         /// <summary>
         /// Encrypted PIN for password reset
         /// </summary>
@@ -17,15 +11,15 @@ namespace BLAZAM.Database.Models.User
         /// <summary>
         /// Encrypted security questions and answers for password reset
         /// </summary>
-        public string? Question1{ get; set; }
+        public string? Question1 { get; set; }
         /// <summary>
         /// Encrypted security questions and answers for password reset
         /// </summary>
-        public string? Answer1{ get; set; }
+        public string? Answer1 { get; set; }
         /// <summary>
         /// Encrypted security questions and answers for password reset
         /// </summary>
-        public string? Question2{ get; set; }
+        public string? Question2 { get; set; }
         /// <summary>
         /// Encrypted security questions and answers for password reset
         /// </summary>
@@ -34,7 +28,7 @@ namespace BLAZAM.Database.Models.User
         /// Encrypted security questions and answers for password reset
         /// </summary>
 
-        public string? Question3{ get; set; }
+        public string? Question3 { get; set; }
         /// <summary>
         /// Encrypted security questions and answers for password reset
         /// </summary>

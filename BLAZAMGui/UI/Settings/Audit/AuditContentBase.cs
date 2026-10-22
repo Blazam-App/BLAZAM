@@ -1,7 +1,3 @@
-using BLAZAM.Database.Context;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
-
 namespace BLAZAM.Gui.UI.Settings.Audit
 {
     public abstract class AuditContentBase<T> : DatabaseComponentBase

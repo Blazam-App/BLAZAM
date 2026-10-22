@@ -1,12 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
-using System;
-using System.Collections.Generic;
-using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Interfaces
 {
@@ -49,8 +43,8 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         AuthType AuthenticationType { get; }
         CipherAlgorithmType EncryptionType { get; }
         bool SslEnabled { get; }
-        bool UsePropertyCache { get; set; } 
+        bool UsePropertyCache { get; set; }
         string? DN { get; set; }
-       
+
     }
 }

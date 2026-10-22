@@ -18,7 +18,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
         protected override void RefreshDataAsync()
         {
-            _=Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 LoadingData = true;
                 var search = new ADSearch(Directory);

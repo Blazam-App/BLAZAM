@@ -35,7 +35,8 @@ namespace BLAZAM.Gui.UI.Users
         }
         private async Task LoadFailedLogons()
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 if (_user != null)
                 {
                     LoadingData = true;
@@ -53,7 +54,7 @@ namespace BLAZAM.Gui.UI.Users
                     LoadingData = false;
                 }
             });
-          
+
 
         }
 

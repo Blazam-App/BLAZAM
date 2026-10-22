@@ -16,7 +16,7 @@ namespace BLAZAM.Helpers
             var permissionApplicator = new PermissionApplicator(userStateService, appDatabaseFactory, directory);
             var appUser = new ApplicationUserState(appDatabaseFactory);
             await permissionApplicator.LoadPermissions(appUser, entry as IADUser);
-            appUser.User = await appAuthenticationStateProvider.CreateDirectoryPrincipal(appUser,entry as IADUser);
+            appUser.User = await appAuthenticationStateProvider.CreateDirectoryPrincipal(appUser, entry as IADUser);
             appUser.GetUserSettingFromDB();
             return appUser;
         }

@@ -1,10 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Rules;
-using BLAZAM.Helpers;
-using Microsoft.JSInterop;
 using Serilog.Events;
-using System.Diagnostics;
 
 namespace BLAZAM.Services.Audit
 {
@@ -92,7 +89,7 @@ namespace BLAZAM.Services.Audit
                     EventType = eventType,
                     Level = level,
                     Message = message,
-                    ExecutionId= rule.ExecutionId,
+                    ExecutionId = rule.ExecutionId,
                     TargetGuid = target?.Guid.ToString(),
                     Timestamp = DateTime.Now,
                     StackTrace = stackTrace,

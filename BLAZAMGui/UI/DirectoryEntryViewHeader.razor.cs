@@ -63,7 +63,7 @@ namespace BLAZAM.Gui.UI
             LoadingData = true;
 
             _showRequestButton = ((await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowActionAccessRequest == true || (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowFieldAccessRequest == true)
-            && (await Context.GlobalPermissionRequestActions.CountAsync() > 0 || await  Context.GlobalPermissionRequestFields.CountAsync()>0);
+            && (await Context.GlobalPermissionRequestActions.CountAsync() > 0 || await Context.GlobalPermissionRequestFields.CountAsync() > 0);
             LoadingData = false;
 
         }

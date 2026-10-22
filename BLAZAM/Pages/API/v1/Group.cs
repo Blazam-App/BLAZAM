@@ -87,7 +87,7 @@ namespace BLAZAM.Pages.API.v1
 
         private void AssignToGroups(NewGroupDetails newGroupDetails, IADGroup newGroup)
         {
-            
+
             if (newGroupDetails.Groups != null)
             {
                 foreach (var groupIdentifier in newGroupDetails.Groups)

@@ -25,7 +25,7 @@ namespace BLAZAM.ActiveDirectory
         }
         ~ScopedActiveDirectoryContext()
         {
-                ApplicationStatistics.RemoveADContext();
+            ApplicationStatistics.RemoveADContext();
         }
         /// <summary>
         /// Removes all created <see cref="IActiveDirectoryContext"/>'s created by this user's factory

@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Services.Background;
 using BLAZAM.Services.Events;
-using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Services.Audit
 {
@@ -8,7 +7,7 @@ namespace BLAZAM.Services.Audit
     {
         public RulesAuditLogger(IAppDatabaseFactory factory) : base(factory, null)
         {
-            
+
             ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
 
         }

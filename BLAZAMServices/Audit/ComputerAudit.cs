@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Audit;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;

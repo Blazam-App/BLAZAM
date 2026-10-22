@@ -1,12 +1,8 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
+﻿using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -16,7 +12,6 @@ using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Data;
 using System.Diagnostics;
 
@@ -42,7 +37,7 @@ namespace BLAZAM.Services.Background
             _audit = new RuleAudit(dbFactory);
             Task.Delay(15000).ContinueWith(async (state) =>
             {
-                using var directory=activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
                 await dbFactory.SeedExcludedGroups(directory);
             });
             _ = new RulesAuditLogger(dbFactory);
@@ -143,7 +138,7 @@ namespace BLAZAM.Services.Background
             }
 
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-            if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
+            if (await args.Entry.ShouldSkipEntry(dbFactory, directory))
             {
                 return;
             }
@@ -234,7 +229,7 @@ namespace BLAZAM.Services.Background
             List<IDirectoryEntryAdapter> filteredEntries;
             IApplicationUserState rulesUserState = new RulesUserState(dbFactory);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
-            filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory,directory);
+            filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
@@ -260,7 +255,7 @@ namespace BLAZAM.Services.Background
         }
 
 
-      
+
 
         /// <summary>
         /// Processes a single directory entry for a given rule, executing all actions if filters pass.

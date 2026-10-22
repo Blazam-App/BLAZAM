@@ -5,8 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -238,7 +236,7 @@ namespace BLAZAM.Database.Models.Templates
 
 
         }
-     
+
         public string ReplaceVariables(string? toParse, NewUserName? newUser = null, string? username = null, int? incrementedNumber = null)
         {
             if (toParse.IsNullOrEmpty())
@@ -345,9 +343,9 @@ namespace BLAZAM.Database.Models.Templates
             }
 
             // First, apply the length constraint from the argument.
-            if (!string.IsNullOrEmpty(argument) 
-                && int.TryParse(argument, out int number) 
-                && number > 0 
+            if (!string.IsNullOrEmpty(argument)
+                && int.TryParse(argument, out int number)
+                && number > 0
                 && number <= value.Length)
             {
                 value = value.Substring(0, number);

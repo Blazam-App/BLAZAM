@@ -118,7 +118,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
 
 
         void StageEnable();
-        
+
         /// <summary>
         /// Stages a password change for this account, to be applied later.
         /// </summary>

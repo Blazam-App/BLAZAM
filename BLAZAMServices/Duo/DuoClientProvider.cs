@@ -1,12 +1,6 @@
 ﻿using BLAZAM.Logger;
-using BLAZAM.Services.Audit;
-using BLAZAM.Session;
 using DuoUniversal;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.DirectoryServices.ActiveDirectory;
-using System.Security.Claims;
 
 namespace BLAZAM.Services.Duo
 {
@@ -14,7 +8,7 @@ namespace BLAZAM.Services.Duo
     {
         Client GetDuoClient(string callbackUri);
         Task<bool> DoHealthCheckAsync();
-        Task<bool> VerifyCallback(string callbackUri,string username, string code);
+        Task<bool> VerifyCallback(string callbackUri, string username, string code);
     }
     public class DuoClientProvider : IDuoClientProvider
     {

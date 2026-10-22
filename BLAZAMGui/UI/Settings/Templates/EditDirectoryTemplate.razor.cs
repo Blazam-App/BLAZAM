@@ -67,7 +67,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
         }
 
-       
+
 
 
         protected bool fieldDrawerOpen;
@@ -151,11 +151,11 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 _passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
                 _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
                 _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
-                _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
+                _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail);
 
                 fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
                 fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
-                
+
                 using (var dropdownContext = await DbFactory.CreateDbContextAsync())
                 {
                     _dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
@@ -168,7 +168,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     await LoadParentOU();
                 }
-                
+
                 RefreshGroups();
                 await StateHasChangedAsync();
                 if (Form != null)

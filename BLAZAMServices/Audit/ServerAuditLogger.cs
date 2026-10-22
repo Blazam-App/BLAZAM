@@ -1,8 +1,5 @@
 ﻿using BLAZAM.Services.Events;
 using BLAZAM.Session;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
-using Octokit;
 
 namespace BLAZAM.Services.Audit
 {

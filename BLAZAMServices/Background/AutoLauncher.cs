@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Logger;
-using Serilog;
 
 namespace BLAZAM.Services.Background
 {
