@@ -1,6 +1,6 @@
 ﻿namespace BLAZAM.Gui.UI
 {
-    public abstract class DirectoryModelComponentElement : AppComponentBase
+    public abstract class DirectoryModelComponentElement : DatabaseComponentBase
     {
         [CascadingParameter]
         public IDirectoryEntryAdapter Entry { get; set; }
@@ -80,6 +80,31 @@
             {
                 return !IsAdmin && !Template.IsEditableField(field);
             }
+        }
+
+        protected CustomStringList? GetStringList(IActiveDirectoryField field)
+        {
+            if (Template != null)
+            {
+                var fv = Template.EffectiveFieldValues.FirstOrDefault(f =>
+                    (f.Field != null && f.Field.FieldName == field.FieldName) ||
+                    (f.CustomField != null && f.CustomField.FieldName == field.FieldName));
+                if (fv?.CustomStringList != null)
+                {
+                    return fv.CustomStringList;
+                }
+            }
+            if (Context != null)
+            {
+                var listField = Context.CustomStringListFields
+                    .Include(f => f.CustomStringList)
+                        .ThenInclude(l => l.Values)
+                    .FirstOrDefault(f =>
+                        (f.FieldId != null && f.Field != null && f.Field.FieldName == field.FieldName) ||
+                        (f.CustomFieldId != null && f.CustomField != null && f.CustomField.FieldName == field.FieldName));
+                return listField?.CustomStringList;
+            }
+            return null;
         }
     }
 }

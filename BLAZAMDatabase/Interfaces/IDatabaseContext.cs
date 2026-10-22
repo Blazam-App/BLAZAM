@@ -274,6 +274,10 @@ namespace BLAZAM.Database.Interfaces
         DbSet<GlobalPermissionRequestField> GlobalPermissionRequestFields { get; set; }
         DbSet<AutomationRuleAuditLog> AutomationRuleAuditLog { get; set; }
 
+        DbSet<CustomStringList> CustomStringLists { get; set; }
+        DbSet<CustomStringListItem> CustomStringListItems { get; set; }
+        DbSet<CustomStringListField> CustomStringListFields { get; set; }
+
         /// <summary>
         /// Exports all database tables to CSV files in the specified directory.
         /// </summary>

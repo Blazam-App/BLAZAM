@@ -176,6 +176,11 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
         public virtual DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
 
+        //Custom String Lists
+        public virtual DbSet<CustomStringList> CustomStringLists { get; set; }
+        public virtual DbSet<CustomStringListItem> CustomStringListItems { get; set; }
+        public virtual DbSet<CustomStringListField> CustomStringListFields { get; set; }
+
 
 
         public static ConfigurationManager Configuration { get; set; }

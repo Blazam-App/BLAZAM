@@ -11,6 +11,9 @@ namespace BLAZAM.Database.Models.Templates
 
         public string? Value { get; set; } = "";
 
+        public CustomStringList? CustomStringList { get; set; }
+        public int? CustomStringListId { get; set; }
+
         /// <summary>
         /// Indicates whether a regular user should be able to modify
         /// this field's value
@@ -35,6 +38,8 @@ namespace BLAZAM.Database.Models.Templates
                 Field = Field != null ? context.ActiveDirectoryFields.FirstOrDefault(f => f.Id == Field.Id) : null,
                 CustomField = CustomField != null ? context.CustomActiveDirectoryFields.FirstOrDefault(f => f.Id == CustomField.Id) : null,
                 Value = Value,
+                CustomStringListId = CustomStringListId,
+                CustomStringList = CustomStringList != null ? context.CustomStringLists.FirstOrDefault(c => c.Id == CustomStringList.Id) : null,
                 Editable = Editable,
                 Required = Required
             };
@@ -59,7 +64,7 @@ namespace BLAZAM.Database.Models.Templates
 
             if (obj is DirectoryTemplateFieldValue other)
             {
-                return other.FieldDisplayName == FieldDisplayName && other.Value == Value;
+                return other.FieldDisplayName == FieldDisplayName && other.Value == Value && other.CustomStringListId == CustomStringListId;
             }
             return false;
         }

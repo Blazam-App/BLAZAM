@@ -1,0 +1,335 @@
+@inherits DatabaseComponentBase
+
+<MudStack Class="my-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h5">@AppLocalization["Custom String Lists"]</MudText>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="OpenAddModal">
+            @AppLocalization["Add String List"]
+        </MudButton>
+    </MudStack>
+
+    <MudDataGrid Items="@stringLists"
+                 Dense="true"
+                 Striped="true"
+                 Bordered="true"
+                 Hover="true"
+                 Loading="@LoadingData">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="@AppLocalization["List Name"]" Sortable="true" />
+            <TemplateColumn Title="@AppLocalization["Items"]">
+                <CellTemplate Context="cellContext">
+                    <MudText Typo="Typo.body2">
+                        @string.Join(", ", cellContext.Item.Values.Select(v => v.Value))
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@AppLocalization["Assigned Fields"]">
+                <CellTemplate Context="cellContext">
+                    @{
+                        var assignedNames = cellContext.Item.AssignedFields
+                            .Select(f => f.CurrentField?.DisplayName)
+                            .Where(name => !string.IsNullOrEmpty(name));
+                    }
+                    <MudText Typo="Typo.body2">
+                        @string.Join(", ", assignedNames)
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@AppLocalization["Actions"]" CellClass="d-flex justify-end">
+                <CellTemplate Context="cellContext">
+                    <MudIconButton Size="Size.Small"
+                                   Icon="@Icons.Material.Outlined.Edit"
+                                   OnClick="@(() => OpenEditModal(cellContext.Item))" />
+                    <MudIconButton Size="Size.Small"
+                                   Icon="@Icons.Material.Outlined.Delete"
+                                   OnClick="@(() => DeleteList(cellContext.Item))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudStack>
+
+<AppModal @ref="listModal"
+          Title="@(editingList.Id == 0 ? AppLocalization["Add String List"] : AppLocalization["Edit String List"])"
+          Options="new() { MaxWidth = MaxWidth.Medium, CloseButton = true, FullWidth = true }">
+    <MudForm @ref="form">
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="editingList.Name"
+                          Label="@AppLocalization["List Name"]"
+                          Required="true"
+                          RequiredError="@AppLocalization["Name is required"]" />
+
+            <MudText Typo="Typo.subtitle1" Class="mt-2">@AppLocalization["Predefined String Values"]</MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudTextField @bind-Value="newItemValue"
+                              Label="@AppLocalization["New String Value"]"
+                              OnKeyDown="@HandleNewItemKeyDown" />
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Color="Color.Success"
+                               OnClick="AddItem" />
+            </MudStack>
+
+            <MudList T="string" Dense="true">
+                @foreach (var item in editingList.Values)
+                {
+                    <MudListItem>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                            <MudTextField T="string"
+                                          Value="@item.Value"
+                                          ValueChanged="@(val => item.Value = val)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           OnClick="@(() => RemoveItem(item))" />
+                        </MudStack>
+                    </MudListItem>
+                }
+            </MudList>
+
+            <MudText Typo="Typo.subtitle1" Class="mt-2">@AppLocalization["Assign to Fields"]</MudText>
+            <MudText Typo="Typo.caption">
+                @AppLocalization["Select Active Directory fields that can use this string list in templates."]
+            </MudText>
+            <MudGrid>
+                @foreach (var field in availableFields.OrderBy(f => f.DisplayName))
+                {
+                    bool isAssigned = IsFieldAssigned(field);
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudCheckBox T="bool"
+                                     Label="@field.DisplayName"
+                                     Value="@isAssigned"
+                                     ValueChanged="@(val => ToggleFieldAssignment(field, val))" />
+                    </MudItem>
+                }
+            </MudGrid>
+
+            <MudStack Row="true" Class="mt-4 d-flex justify-end">
+                <MudButton OnClick="CloseModal">@AppLocalization["Cancel"]</MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="SaveList">
+                    @AppLocalization["Save"]
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudForm>
+</AppModal>
+
+@code {
+    private List<CustomStringList> stringLists = new();
+    private List<IActiveDirectoryField> availableFields = new();
+    private CustomStringList editingList = new();
+    private string newItemValue = string.Empty;
+    private AppModal? listModal;
+    private MudForm? form;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        LoadingData = true;
+        if (Context != null)
+        {
+            stringLists = await Context.CustomStringLists
+                .Include(s => s.Values)
+                .Include(s => s.AssignedFields)
+                    .ThenInclude(f => f.Field)
+                .Include(s => s.AssignedFields)
+                    .ThenInclude(f => f.CustomField)
+                .Where(s => s.DeletedAt == null)
+                .ToListAsync();
+
+            availableFields = new List<IActiveDirectoryField>();
+            var adFields = await Context.ActiveDirectoryFields
+                .Where(f => f.FieldType == ActiveDirectoryFieldType.Text || f.FieldType == ActiveDirectoryFieldType.StringList)
+                .Cast<IActiveDirectoryField>()
+                .ToListAsync();
+            availableFields.AddRange(adFields);
+
+            var customFields = await Context.CustomActiveDirectoryFields
+                .Where(f => f.DeletedAt == null && (f.FieldType == ActiveDirectoryFieldType.Text || f.FieldType == ActiveDirectoryFieldType.StringList))
+                .Cast<IActiveDirectoryField>()
+                .ToListAsync();
+            availableFields.AddRange(customFields);
+        }
+        LoadingData = false;
+    }
+
+    private void OpenAddModal()
+    {
+        editingList = new CustomStringList();
+        newItemValue = string.Empty;
+        listModal?.ShowAsync();
+    }
+
+    private void OpenEditModal(CustomStringList list)
+    {
+        editingList = new CustomStringList
+        {
+            Id = list.Id,
+            Name = list.Name,
+            Values = list.Values.Select(v => new CustomStringListItem { Id = v.Id, CustomStringListId = v.CustomStringListId, Value = v.Value }).ToList(),
+            AssignedFields = list.AssignedFields.Select(af => new CustomStringListField
+            {
+                Id = af.Id,
+                CustomStringListId = af.CustomStringListId,
+                FieldId = af.FieldId,
+                Field = af.Field,
+                CustomFieldId = af.CustomFieldId,
+                CustomField = af.CustomField
+            }).ToList()
+        };
+        newItemValue = string.Empty;
+        listModal?.ShowAsync();
+    }
+
+    private void CloseModal()
+    {
+        listModal?.Close();
+    }
+
+    private void HandleNewItemKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddItem();
+        }
+    }
+
+    private void AddItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newItemValue))
+        {
+            editingList.Values.Add(new CustomStringListItem
+            {
+                Value = newItemValue.Trim()
+            });
+            newItemValue = string.Empty;
+        }
+    }
+
+    private void RemoveItem(CustomStringListItem item)
+    {
+        editingList.Values.Remove(item);
+    }
+
+    private bool IsFieldAssigned(IActiveDirectoryField field)
+    {
+        if (field is ActiveDirectoryField adField)
+        {
+            return editingList.AssignedFields.Any(af => af.FieldId == adField.Id);
+        }
+        else if (field is CustomActiveDirectoryField customField)
+        {
+            return editingList.AssignedFields.Any(af => af.CustomFieldId == customField.Id);
+        }
+        return false;
+    }
+
+    private void ToggleFieldAssignment(IActiveDirectoryField field, bool assign)
+    {
+        if (assign)
+        {
+            if (!IsFieldAssigned(field))
+            {
+                var assigned = new CustomStringListField();
+                assigned.CurrentField = field;
+                editingList.AssignedFields.Add(assigned);
+            }
+        }
+        else
+        {
+            if (field is ActiveDirectoryField adField)
+            {
+                editingList.AssignedFields.RemoveAll(af => af.FieldId == adField.Id || af.Field?.Id == adField.Id);
+            }
+            else if (field is CustomActiveDirectoryField customField)
+            {
+                editingList.AssignedFields.RemoveAll(af => af.CustomFieldId == customField.Id || af.CustomField?.Id == customField.Id);
+            }
+        }
+    }
+
+    private async Task SaveList()
+    {
+        if (form != null)
+        {
+            await form.ValidateAsync();
+            if (!form.IsValid) return;
+        }
+
+        if (Context != null)
+        {
+            try
+            {
+                if (editingList.Id == 0)
+                {
+                    Context.CustomStringLists.Add(editingList);
+                }
+                else
+                {
+                    var dbList = await Context.CustomStringLists
+                        .Include(s => s.Values)
+                        .Include(s => s.AssignedFields)
+                        .FirstOrDefaultAsync(s => s.Id == editingList.Id);
+
+                    if (dbList != null)
+                    {
+                        dbList.Name = editingList.Name;
+
+                        // Update items
+                        dbList.Values.Clear();
+                        foreach (var val in editingList.Values)
+                        {
+                            dbList.Values.Add(new CustomStringListItem { Value = val.Value });
+                        }
+
+                        // Update field assignments
+                        dbList.AssignedFields.Clear();
+                        foreach (var af in editingList.AssignedFields)
+                        {
+                            dbList.AssignedFields.Add(new CustomStringListField
+                            {
+                                FieldId = af.FieldId,
+                                CustomFieldId = af.CustomFieldId
+                            });
+                        }
+                    }
+                }
+
+                await Context.SaveChangesAsync();
+                SnackBarService.Success(AppLocalization["String list saved"]);
+                CloseModal();
+                await LoadData();
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error saving custom string list");
+                SnackBarService.Error(ex.Message);
+            }
+        }
+    }
+
+    private async Task DeleteList(CustomStringList list)
+    {
+        if (await MessageService.Confirm($"Are you sure you want to delete '{list.Name}'?", $"Delete {list.Name}"))
+        {
+            if (Context != null)
+            {
+                var dbList = await Context.CustomStringLists.FirstOrDefaultAsync(s => s.Id == list.Id);
+                if (dbList != null)
+                {
+                    dbList.DeletedAt = DateTime.UtcNow;
+                    await Context.SaveChangesAsync();
+                    SnackBarService.Success($"Deleted {list.Name}");
+                    await LoadData();
+                }
+            }
+        }
+    }
+}

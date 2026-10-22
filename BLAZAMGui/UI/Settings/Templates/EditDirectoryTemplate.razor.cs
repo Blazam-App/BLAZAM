@@ -73,6 +73,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected bool fieldDrawerOpen;
 
         protected List<IActiveDirectoryField> fields = [];
+        protected List<CustomStringList> customStringLists = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -152,6 +153,12 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
                 _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
                 _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail);
+
+                customStringLists = await Context.CustomStringLists
+                    .Include(c => c.Values)
+                    .Include(c => c.AssignedFields)
+                    .Where(c => c.DeletedAt == null)
+                    .ToListAsync();
 
                 fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
                 fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
@@ -308,6 +315,22 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             var fieldToModify = GetFieldToEdit(fieldValue);
             fieldToModify.Value = newValue;
+            if (!string.IsNullOrEmpty(newValue))
+            {
+                fieldToModify.CustomStringList = null;
+                fieldToModify.CustomStringListId = null;
+            }
+        }
+
+        protected void StringListChanged(CustomStringList? newList, DirectoryTemplateFieldValue fieldValue)
+        {
+            var fieldToModify = GetFieldToEdit(fieldValue);
+            fieldToModify.CustomStringList = newList;
+            fieldToModify.CustomStringListId = newList?.Id;
+            if (newList != null)
+            {
+                fieldToModify.Value = null;
+            }
         }
         protected void EditableChanged(bool newValue, DirectoryTemplateFieldValue fieldValue)
         {
@@ -374,6 +397,10 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                     else if (field.CustomField != null)
                     {
                         field.CustomField = await Context.CustomActiveDirectoryFields.FirstOrDefaultAsync(f => f.Id == field.CustomField.Id);
+                    }
+                    if (field.CustomStringList != null)
+                    {
+                        field.CustomStringList = await Context.CustomStringLists.FirstOrDefaultAsync(c => c.Id == field.CustomStringList.Id);
                     }
                 }
 

@@ -305,9 +305,29 @@
 
                                             </CellTemplate>
                                         </TemplateColumn>
+                                        <TemplateColumn Title=@AppLocalization["String List"]>
+                                            <CellTemplate Context="cellContext">
+                                                @{
+                                                    var availableLists = customStringLists.Where(sl =>
+                                                        sl.AssignedFields.Count == 0 ||
+                                                        sl.AssignedFields.Any(af => (cellContext.Item.FieldId != null && af.FieldId == cellContext.Item.FieldId) ||
+                                                                                   (cellContext.Item.CustomFieldId != null && af.CustomFieldId == cellContext.Item.CustomFieldId))
+                                                    ).ToList();
+                                                }
+                                                <MudSelectList T="CustomStringList"
+                                                               Clearable="true"
+                                                               Value="@cellContext.Item.CustomStringList"
+                                                               ValueChanged="@((newList) => StringListChanged(newList, cellContext.Item))"
+                                                               Options="@availableLists"
+                                                               Label="@AppLocalization["Select List"]" />
+                                            </CellTemplate>
+                                        </TemplateColumn>
                                         <TemplateColumn Title=@AppLocalization[Lang.Value]>
                                             <CellTemplate Context="cellContext">
-                                                <MudTextField T=string Value=cellContext.Item.Value
+                                                <MudTextField T=string
+                                                              Value="@cellContext.Item.Value"
+                                                              Disabled="@(cellContext.Item.CustomStringList != null)"
+                                                              Placeholder="@(cellContext.Item.CustomStringList != null ? AppLocalization["Using String List: "] + cellContext.Item.CustomStringList.Name : null)"
                                                               ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
 
                                             </CellTemplate>

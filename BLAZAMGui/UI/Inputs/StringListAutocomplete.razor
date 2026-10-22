@@ -1,0 +1,62 @@
+@inherits AppComponentBase
+
+<MudAutocomplete T="string"
+                 Label="@Label"
+                 Value="@Value"
+                 ValueChanged="@OnValueChanged"
+                 SearchFunc="@SearchValues"
+                 CoerceText="@CoerceText"
+                 CoerceValue="@CoerceValue"
+                 Disabled="@Disabled"
+                 Required="@Required"
+                 ResetValueOnEmptyText="true"
+                 AdornmentIcon="@Icons.Material.Filled.ArrowDropDown"
+                 Class="@Class" />
+
+@code {
+    [Parameter]
+    public CustomStringList? StringList { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool Required { get; set; }
+
+    [Parameter]
+    public bool AllowCustomInput { get; set; } = true;
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    private bool CoerceText => AllowCustomInput;
+    private bool CoerceValue => AllowCustomInput;
+
+    private async Task OnValueChanged(string? newValue)
+    {
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+    }
+
+    private Task<IEnumerable<string>> SearchValues(string value, CancellationToken token)
+    {
+        if (StringList == null || StringList.Values == null)
+            return Task.FromResult(Enumerable.Empty<string>());
+
+        var items = StringList.Values.Select(v => v.Value).Where(v => !string.IsNullOrEmpty(v));
+
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(items);
+
+        return Task.FromResult(items.Where(x => x.Contains(value, StringComparison.OrdinalIgnoreCase)));
+    }
+}

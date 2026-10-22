@@ -10,88 +10,95 @@
     <MudText>@AppLocalization[Lang.Fields]</MudText>
 </SetHeader>
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Fields] <AppDocumentationButton Page="/admin/fields" /></MudText>
-<MudDataGrid @ref="fieldGrid"
-             T="CustomActiveDirectoryField"
-             ServerData="RefreshData"
-             ReadOnly="false"
-             EditMode="DataGridEditMode.Form"
-             CommittedItemChanges="SaveChanges"
-             FixedHeader="true"
-             EditTrigger="DataGridEditTrigger.Manual">
-    <ToolBarContent>
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Add"
-                       Color=@Color.Success
-                       OnClick="@(()=>{addFieldModal?.ShowAsync();})" />
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="@AppLocalization["Custom Fields"]">
+        <MudDataGrid @ref="fieldGrid"
+                     T="CustomActiveDirectoryField"
+                     ServerData="RefreshData"
+                     ReadOnly="false"
+                     EditMode="DataGridEditMode.Form"
+                     CommittedItemChanges="SaveChanges"
+                     FixedHeader="true"
+                     EditTrigger="DataGridEditTrigger.Manual">
+            <ToolBarContent>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Color=@Color.Success
+                               OnClick="@(()=>{addFieldModal?.ShowAsync();})" />
 
-    </ToolBarContent>
+            </ToolBarContent>
 
-    <Columns>
+            <Columns>
 
-        <TemplateColumn Context="cellContext"
-                        CellClass="d-flex justify-end"
-                        Title=@AppLocalization[Lang.Edit]
-                        Sortable="false">
-            <CellTemplate>
-                <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.Edit"
-                               OnClick="@cellContext.Actions.StartEditingItemAsync" />
-            </CellTemplate>
-        </TemplateColumn>
+                <TemplateColumn Context="cellContext"
+                                CellClass="d-flex justify-end"
+                                Title=@AppLocalization[Lang.Edit]
+                                Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Size="@Size.Small"
+                                       Icon="@Icons.Material.Outlined.Edit"
+                                       OnClick="@cellContext.Actions.StartEditingItemAsync" />
+                    </CellTemplate>
+                </TemplateColumn>
 
-        <PropertyColumn Sortable="true"
-                        Property="x => x.DisplayName"
-                        Title=@AppLocalization[Lang.Display_Name] />
+                <PropertyColumn Sortable="true"
+                                Property="x => x.DisplayName"
+                                Title=@AppLocalization[Lang.Display_Name] />
 
-        <PropertyColumn Sortable="true"
-                        Property="x => x.FieldName"
-                        Title=@AppLocalization[Lang.Field_Name] />
+                <PropertyColumn Sortable="true"
+                                Property="x => x.FieldName"
+                                Title=@AppLocalization[Lang.Field_Name] />
 
-        <TemplateColumn Title=@AppLocalization[Lang.Field_Type]
-                        Sortable="true">
-            <EditTemplate>
-                <FieldTypeSelect Variant="@Variant.Outlined"
-                                 @bind-Value=context.Item.FieldType />
+                <TemplateColumn Title=@AppLocalization[Lang.Field_Type]
+                                Sortable="true">
+                    <EditTemplate>
+                        <FieldTypeSelect Variant="@Variant.Outlined"
+                                         @bind-Value=context.Item.FieldType />
 
-            </EditTemplate>
-            <CellTemplate>
-                <MudText>@context.Item?.FieldType</MudText>
+                    </EditTemplate>
+                    <CellTemplate>
+                        <MudText>@context.Item?.FieldType</MudText>
 
-            </CellTemplate>
-        </TemplateColumn>
-        @foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(en => en != ActiveDirectoryObjectType.All))
-        {
+                    </CellTemplate>
+                </TemplateColumn>
+                @foreach (var objectType in Enum.GetValues<ActiveDirectoryObjectType>().Where(en => en != ActiveDirectoryObjectType.All))
+                {
 
-            <TemplateColumn Title="@AppLocalization[objectType.ToString()]" Sortable="false">
-                <EditTemplate>
-                    <MudCheckBox T="bool"
-                                 Label="@objectType.ToString()"
-                                 Size="@Size.Small"
-                                 Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))"
-                                 ValueChanged="@((val) =>
-                             {
-                                 ToggleObjectType(context.Item, objectType, val);
-                             })" />
-                </EditTemplate>
-                <CellTemplate>
-                    <MudCheckBox Size="@Size.Small"
-                                 ReadOnly=true
-                                 Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))" />
-                </CellTemplate>
-            </TemplateColumn>
-        }
-        <TemplateColumn CellClass="d-flex justify-end"
-                        Title=@AppLocalization[Lang.Delete]
-                        Sortable="false">
-            <CellTemplate>
-                <MudIconButton Disabled=@(context.Item.Id > 100000)
-                               Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.Delete"
-                               OnClick="@(async()=>{await Delete(context.Item);})" />
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+                    <TemplateColumn Title="@AppLocalization[objectType.ToString()]" Sortable="false">
+                        <EditTemplate>
+                            <MudCheckBox T="bool"
+                                         Label="@objectType.ToString()"
+                                         Size="@Size.Small"
+                                         Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))"
+                                         ValueChanged="@((val) =>
+                                     {
+                                         ToggleObjectType(context.Item, objectType, val);
+                                     })" />
+                        </EditTemplate>
+                        <CellTemplate>
+                            <MudCheckBox Size="@Size.Small"
+                                         ReadOnly=true
+                                         Value="@(context.Item.ObjectTypes.Any(ot=>ot.ObjectType==objectType))" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                }
+                <TemplateColumn CellClass="d-flex justify-end"
+                                Title=@AppLocalization[Lang.Delete]
+                                Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Disabled=@(context.Item.Id > 100000)
+                                       Size="@Size.Small"
+                                       Icon="@Icons.Material.Outlined.Delete"
+                                       OnClick="@(async()=>{await Delete(context.Item);})" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+    </MudTabPanel>
+    <MudTabPanel Text="@AppLocalization["String Lists"]">
+        <CustomStringListEditor />
+    </MudTabPanel>
+</MudTabs>
 
 <AppModal @ref=addFieldModal
           Title="Add Field"

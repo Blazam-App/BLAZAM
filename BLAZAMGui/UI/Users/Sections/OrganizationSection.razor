@@ -15,46 +15,105 @@
 
     @if (ShowField(ActiveDirectoryFields.Description))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Description]"
-                         @bind-Value="@Contact.Description"
+        var stringList = GetStringList(ActiveDirectoryFields.Description);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Description]"
+                                    @bind-Value="@Contact.Description"
+                                    Required="@(RequireField(ActiveDirectoryFields.Description))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.Description))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Description]"
+                             @bind-Value="@Contact.Description"
                              Required=@(RequireField(ActiveDirectoryFields.Description))
-
                              Disabled=@(DisableField(ActiveDirectoryFields.Description)) />
+        }
     }
 
-        @if (ShowField(ActiveDirectoryFields.Mail) && Template != null)
+    @if (ShowField(ActiveDirectoryFields.Mail) && Template != null)
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Email_Address]"
-                         @bind-Value="@Contact.Email"
+        var stringList = GetStringList(ActiveDirectoryFields.Mail);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Email_Address]"
+                                    @bind-Value="@Contact.Email"
+                                    Required="@(RequireField(ActiveDirectoryFields.Mail))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.Mail))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Email_Address]"
+                             @bind-Value="@Contact.Email"
                              Required=@(RequireField(ActiveDirectoryFields.Mail))
                              Disabled=@(DisableField(ActiveDirectoryFields.Mail)) />
+        }
     }
 
     @if (ShowField(ActiveDirectoryFields.EmployeeId))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Employee_Id]"
-                         @bind-Value="@Contact.EmployeeId"
+        var stringList = GetStringList(ActiveDirectoryFields.EmployeeId);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Employee_Id]"
+                                    @bind-Value="@Contact.EmployeeId"
+                                    Required="@(RequireField(ActiveDirectoryFields.EmployeeId))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.EmployeeId))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Employee_Id]"
+                             @bind-Value="@Contact.EmployeeId"
                              Required=@(RequireField(ActiveDirectoryFields.EmployeeId))
-                         Disabled=@(DisableField(ActiveDirectoryFields.EmployeeId)) />
+                             Disabled=@(DisableField(ActiveDirectoryFields.EmployeeId)) />
+        }
     }
     @if (ShowField(ActiveDirectoryFields.Department))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Department]"
-                         @bind-Value="@Contact.Department"
+        var stringList = GetStringList(ActiveDirectoryFields.Department);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Department]"
+                                    @bind-Value="@Contact.Department"
+                                    Required="@(RequireField(ActiveDirectoryFields.Department))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.Department))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Department]"
+                             @bind-Value="@Contact.Department"
                              Required=@(RequireField(ActiveDirectoryFields.Department))
-                         Disabled=@(DisableField(ActiveDirectoryFields.Department)) />
+                             Disabled=@(DisableField(ActiveDirectoryFields.Department)) />
+        }
     }
     @if (ShowField(ActiveDirectoryFields.Company))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Company]"
-                         @bind-Value="@Contact.Company"
+        var stringList = GetStringList(ActiveDirectoryFields.Company);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Company]"
+                                    @bind-Value="@Contact.Company"
+                                    Required="@(RequireField(ActiveDirectoryFields.Company))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.Company))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Company]"
+                             @bind-Value="@Contact.Company"
                              Required=@(RequireField(ActiveDirectoryFields.Company))
-                         Disabled=@(DisableField(ActiveDirectoryFields.Company)) />
+                             Disabled=@(DisableField(ActiveDirectoryFields.Company)) />
+        }
     }
     @if (ShowField(ActiveDirectoryFields.Manager))
     {
@@ -67,19 +126,43 @@
     }
     @if (ShowField(ActiveDirectoryFields.Title))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Job_Title]"
-                         @bind-Value="@Contact.Title"
+        var stringList = GetStringList(ActiveDirectoryFields.Title);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Job_Title]"
+                                    @bind-Value="@Contact.Title"
+                                    Required="@(RequireField(ActiveDirectoryFields.Title))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.Title))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Job_Title]"
+                             @bind-Value="@Contact.Title"
                              Required=@(RequireField(ActiveDirectoryFields.Title))
-                         Disabled=@(DisableField(ActiveDirectoryFields.Title)) />
+                             Disabled=@(DisableField(ActiveDirectoryFields.Title)) />
+        }
     }
     @if (ShowField(ActiveDirectoryFields.PhysicalDeliveryOffice))
     {
-        <DynamicMudInput T=string
-                         Label="@AppLocalization[Lang.Office]"
-                         @bind-Value="@Contact.PhysicalDeliveryOfficeName"
+        var stringList = GetStringList(ActiveDirectoryFields.PhysicalDeliveryOffice);
+        if (stringList != null)
+        {
+            <StringListAutocomplete StringList="stringList"
+                                    Label="@AppLocalization[Lang.Office]"
+                                    @bind-Value="@Contact.PhysicalDeliveryOfficeName"
+                                    Required="@(RequireField(ActiveDirectoryFields.PhysicalDeliveryOffice))"
+                                    Disabled="@(DisableField(ActiveDirectoryFields.PhysicalDeliveryOffice))" />
+        }
+        else
+        {
+            <DynamicMudInput T=string
+                             Label="@AppLocalization[Lang.Office]"
+                             @bind-Value="@Contact.PhysicalDeliveryOfficeName"
                              Required=@(RequireField(ActiveDirectoryFields.PhysicalDeliveryOffice))
-                         Disabled=@(DisableField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+                             Disabled=@(DisableField(ActiveDirectoryFields.PhysicalDeliveryOffice)) />
+        }
     }
 
     <PluginComponents Page="@PageType.User" Location="@PageLocation.Organization" />

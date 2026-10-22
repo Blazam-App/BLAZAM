@@ -1,12 +1,23 @@
-@inherits AppComponentBase
+@inherits DatabaseComponentBase
 @switch (Field.FieldType)
 {
     case ActiveDirectoryFieldType.Text:
-        <DynamicMudInput T="string"
-                         Disabled=@Disabled
-                         Label="@Field.DisplayName"
-                         Value="(string)_value"
-                         ValueChanged="@((val)=>{SetValue(val);})" />
+        if (_customStringList != null)
+        {
+            <StringListAutocomplete StringList="_customStringList"
+                                    Disabled="@Disabled"
+                                    Label="@Field.DisplayName"
+                                    Value="@((string)_value)"
+                                    ValueChanged="@((val) => SetValue(val))" />
+        }
+        else
+        {
+            <DynamicMudInput T="string"
+                             Disabled=@Disabled
+                             Label="@Field.DisplayName"
+                             Value="(string)_value"
+                             ValueChanged="@((val)=>{SetValue(val);})" />
+        }
         break;
     case ActiveDirectoryFieldType.Date:
         <DynamicMudInput T="DateTime?"
@@ -30,6 +41,7 @@
 @code {
 
     private DynamicMudInput<List<string>>? _stringListDynamicInput;
+    private CustomStringList? _customStringList;
 
     [Parameter]
     public IDirectoryEntryAdapter Entry { get; set; }
@@ -40,10 +52,33 @@
     [Parameter]
     public CustomActiveDirectoryField Field { get; set; }
 
+    [CascadingParameter]
+    public DirectoryTemplate? Template { get; set; }
+
     private object? _value = null;
-    protected override void OnInitialized()
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
+
+        if (Template != null)
+        {
+            var fv = Template.EffectiveFieldValues.FirstOrDefault(f =>
+                f.CustomFieldId == Field.Id || (f.CustomField != null && f.CustomField.FieldName == Field.FieldName));
+            if (fv?.CustomStringList != null)
+            {
+                _customStringList = fv.CustomStringList;
+            }
+        }
+
+        if (_customStringList == null && Context != null && Field != null)
+        {
+            var listField = await Context.CustomStringListFields
+                .Include(f => f.CustomStringList)
+                    .ThenInclude(l => l.Values)
+                .FirstOrDefaultAsync(f => f.CustomFieldId == Field.Id && f.CustomStringList.DeletedAt == null);
+            _customStringList = listField?.CustomStringList;
+        }
 
         Entry.OnChangesDiscarded.Delegate += DiscardChanges;
         GetValue();
