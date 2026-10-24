@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>あなたのパスワードはあと {0} 日で期限切れになります.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>この{0}に加えた変更は保存されました。</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>この機能は現在も開発中です</value>
+  </data>
 </root>

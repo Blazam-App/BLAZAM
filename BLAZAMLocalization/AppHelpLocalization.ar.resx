@@ -317,4 +317,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>ستنتهي صلاحية كلمة المرور الخاصة بك خلال {0} يومًا.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>تم حفظ التغييرات التي أُجريت على هذا {0}.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>هذه الميزة لا تزال قيد الإنشاء</value>
+  </data>
 </root>

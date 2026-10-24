@@ -318,4 +318,10 @@ Prova a configurare credenziali di aggiornamento personalizzate.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>La password scadrà tra {0} giorni.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Le modifiche apportate a questo {0} sono state salvate.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Questa funzionalità è ancora in fase di sviluppo</value>
+  </data>
 </root>

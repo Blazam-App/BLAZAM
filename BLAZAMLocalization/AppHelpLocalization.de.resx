@@ -318,4 +318,10 @@ Konfigurieren Sie benutzerdefinierte Update-Anmeldeinformationen.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Ihr Passwort läuft in {0} Tagen ab.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Die an diesem {0} vorgenommenen Änderungen wurden gespeichert.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Diese Funktion befindet sich noch in der Entwicklung</value>
+  </data>
 </root>

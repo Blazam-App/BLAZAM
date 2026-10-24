@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>비밀번호가 {0}일 후에 만료됩니다.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>이 {0}에 대한 변경 내용이 저장되었습니다.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>이 기능은 아직 개발 중입니다</value>
+  </data>
 </root>

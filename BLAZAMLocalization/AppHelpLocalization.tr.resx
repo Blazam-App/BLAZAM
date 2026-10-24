@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Parolanız {0} gün sonra sona erecek.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Bu {0} üzerinde yapılan değişiklikler kaydedildi.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Bu özellik hâlâ geliştirme aşamasında</value>
+  </data>
 </root>
