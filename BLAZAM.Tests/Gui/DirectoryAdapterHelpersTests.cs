@@ -1,4 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces; // Assuming this is the namespace for DirectoryAdapterHelpers
+using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using Moq;
 using MudBlazor;

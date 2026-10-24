@@ -1,5 +1,6 @@
 using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models;
+using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI;
 using Moq;
 

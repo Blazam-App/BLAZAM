@@ -2,6 +2,7 @@
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Global.Data;
+using BLAZAM.Global.Enums;
 using BLAZAM.Global.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -79,6 +80,8 @@ namespace BLAZAM.Tests.Mocks
 
         public AuditLogActor AuditActor => throw new NotImplementedException();
 
+        public Guid SessionId => throw new NotImplementedException();
+
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
             throw new NotImplementedException();
@@ -133,6 +136,7 @@ namespace BLAZAM.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
     }
 
 }
