@@ -20,7 +20,7 @@ namespace BLAZAM.Services.Audit
             OU = new OUAudit(factory, userStateService.CurrentUserState.AuditActor, jSRuntime);
             Printer = new PrinterAudit(factory, userStateService.CurrentUserState.AuditActor, jSRuntime);
             Logon = new LogonAudit(factory, userStateService.CurrentUserState.AuditActor, jSRuntime);
-            BitLocker = new BitLockerAudit(factory, userStateService.CurrentUserState.AuditActor    , jSRuntime);
+            BitLocker = new BitLockerAudit(factory, userStateService.CurrentUserState.AuditActor, jSRuntime);
         }
         public WebUserAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState, IJSRuntime jSRuntime) : base(factory, null)
         {
@@ -35,7 +35,7 @@ namespace BLAZAM.Services.Audit
             BitLocker = new BitLockerAudit(factory, userState.AuditActor, jSRuntime);
         }
 
-        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             if (_customUserState || _userStateService.CurrentUserState?.SessionId.Equals(args.Actor.SessionId) == true)
             {

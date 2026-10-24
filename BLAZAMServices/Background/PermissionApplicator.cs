@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;

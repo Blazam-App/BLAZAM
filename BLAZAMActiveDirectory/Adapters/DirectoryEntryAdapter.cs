@@ -1,6 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -9,14 +7,12 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
-using System.Collections;
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -924,7 +920,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     propertyJob.AddStep(auditAttributeStep);
 
-                   
+
                     commitJob.AddStep(propertyJob);
                 }
                 else
@@ -954,13 +950,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         propertyJob.AddStep(propertyStep);
                     }
 
-                   
+
 
                     if (propertyJob.Steps.Count > 0)
                     {
                         commitJob.AddStep(propertyJob);
                     }
                     commitJob.AddStep(commitStep);
+
+                    var auditStep = new JobStep("Audit Creation", (step) =>
+                    {
+                        var entry = (IADUser?)Directory.GetDirectoryEntryByDN(DN)!;
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Create,
+                            Entry = entry,
+                            Actor = CurrentUser.AuditActor
+
+                        });
+                        return true;
+                    });
+
+                    commitJob.AddStep(auditStep);
                 }
 
 
@@ -1064,7 +1075,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             }
 
                         }
-                        
+
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
                         ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {

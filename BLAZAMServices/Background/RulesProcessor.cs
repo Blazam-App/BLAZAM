@@ -1,7 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Services;
+﻿using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
@@ -120,7 +118,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Handles directory entry change events and processes applicable rules.
         /// </summary>
-        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
 
             if (sender != null && sender.Equals(this))

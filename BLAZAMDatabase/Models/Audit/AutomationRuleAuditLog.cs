@@ -1,5 +1,4 @@
-﻿using BLAZAM.Database.Models.Notifications;
-using BLAZAM.Database.Models.Rules;
+﻿using BLAZAM.Database.Models.Rules;
 using Serilog.Events;
 
 namespace BLAZAM.Database.Models.Audit

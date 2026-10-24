@@ -1,6 +1,5 @@
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
-using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
 {
@@ -102,13 +101,13 @@ namespace BLAZAM.Gui.UI.Users
                         SnackBarService.Error("Unable to save changes. No entry loaded.");
                         return;
                     }
-                
+
                     var jobResults = await GroupableEntry.CommitChangesAsync();
 
                     if (jobResults.Result == JobResult.Passed)
                     {
                         EditMode = false;
-                        SnackBarService.Success(AppHelpLocalization[HelpLang.Changes_Have_Been_Saved,AppLocalization[DirectoryEntry.ObjectType.ToString().ToLower()]]);
+                        SnackBarService.Success(AppHelpLocalization[HelpLang.Changes_Have_Been_Saved, AppLocalization[DirectoryEntry.ObjectType.ToString().ToLower()]]);
                     }
                     else
                     {

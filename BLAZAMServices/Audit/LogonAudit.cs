@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Session;
-using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 using System.Security.Claims;
 
@@ -25,7 +24,7 @@ namespace BLAZAM.Services.Audit
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
             UserState = ApplicationUserState.CreateUserState(impersonateee, factory).AuditActor;
-            
+
             return await Log("Impersonation", ipAddress);
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)

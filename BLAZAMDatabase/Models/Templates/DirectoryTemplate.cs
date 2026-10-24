@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Global.Data;
+﻿using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;

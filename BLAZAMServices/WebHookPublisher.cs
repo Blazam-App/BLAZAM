@@ -1,9 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
-using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Cryptography;

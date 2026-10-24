@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using System.Collections;
+﻿using System.Collections;
 using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Adapters

@@ -1,11 +1,9 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Global.Enums;
-using BLAZAM.Helpers;
-using System.Net;
 
 namespace BLAZAM.Global.Events
 {
-    public class BaseEventArgs : EventArgs
+    public class BaseAuditEventArgs : EventArgs
     {
         /// <summary>
         /// Used to check for duplicate events in scoped recievers

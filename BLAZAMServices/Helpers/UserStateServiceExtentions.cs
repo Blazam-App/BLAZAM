@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Services;
+﻿using BLAZAM.Services;
 using BLAZAM.Services.Background;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;

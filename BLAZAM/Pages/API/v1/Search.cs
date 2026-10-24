@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
+﻿using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Services.Audit;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +52,7 @@ namespace BLAZAM.Pages.API.v1
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
 
-            foreach(var entry in data2)
+            foreach (var entry in data2)
             {
                 ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {

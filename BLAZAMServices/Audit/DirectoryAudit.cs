@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models.Audit;
-using BLAZAM.Session.Interfaces;
+﻿using BLAZAM.Database.Models.Audit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 

@@ -1,8 +1,6 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
+﻿using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Data;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims; // Required for ClaimsPrincipal
 

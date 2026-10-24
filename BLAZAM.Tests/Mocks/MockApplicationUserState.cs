@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
+﻿using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Global.Data;
@@ -17,7 +16,7 @@ namespace BLAZAM.Tests.Mocks
         // interacts with IApplicationUserState in ways that need to be controlled during tests.
         // For the current MFARequest class, it's primarily just being stored.
 
-        public int Id =>5;
+        public int Id => 5;
 
 
         public string AuditUsername => "test";

@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models.Audit;
+﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Database.Models.Rules;
 using Serilog.Events;
 

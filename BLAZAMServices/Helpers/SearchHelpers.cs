@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Rules;

@@ -12,6 +12,7 @@
     </MudCard>
     <MudButton Color=Color.Success OnClick="CommitChanges">@AppLocalization[Lang.Create]</MudButton>
 }
+<LoadingData Loading="LoadingData"/>
 @code {
 
     [Parameter]
@@ -24,22 +25,17 @@
     {
         if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_OU_Creation], AppLocalization[Lang.Create_OU]))
         {
+            LoadingData = true;
             var results = await OU.CommitChangesAsync();
             if (results.FailedSteps.Count == 0)
             {
-                OU = await Directory.OUs.FindOuByDNAsync(OU.DN);
                 SnackBarService.Success(AppLocalization[Lang.OU_created]);
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Create,
-                        Entry = OU,
-                    Actor = CurrentUser.State.AuditActor
-
-                    });
-               
                 await Confirmed.InvokeAsync(OU);
                 Nav.NavigateTo("/create/ou", true);
             }
+
+            LoadingData = false;
+
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
@@ -409,12 +407,12 @@ namespace BLAZAM.Session
 
         public string LastUri { get; set; }
 
-        public AuditLogActor  AuditActor
+        public AuditLogActor AuditActor
         {
             get => new AuditLogActor
             {
                 Actor = Username,
-                SessionId = SessionId,  
+                SessionId = SessionId,
                 Impersonator = Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value,
                 IPAddress = IPAddress,
                 Id = Id

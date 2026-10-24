@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {

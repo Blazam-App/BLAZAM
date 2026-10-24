@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Global.Enums;
-using BLAZAM.Global.Events;
 
 namespace BLAZAM.Helpers
 {

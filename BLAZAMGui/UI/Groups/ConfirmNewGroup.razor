@@ -13,6 +13,8 @@
         @AppLocalization[Lang.Create]
     </MudButton>
 }
+<LoadingData Loading="LoadingData" />
+
 @code {
 
 
@@ -28,6 +30,8 @@
     {
         if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Group_Creation], AppLocalization[Lang.Create_Group]))
         {
+            LoadingData = true;
+
             var assignTo = Group.MembersToAdd;
             disableCreateGroupButton = true;
             await StateHasChangedAsync();
@@ -36,39 +40,16 @@
             createGroupJob.ShowJobDetailsDialog(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);
 
-            disableCreateGroupButton = false;
-            await StateHasChangedAsync();
             if (result.FailedSteps.Count == 0)
             {
-                foreach (var assignment in assignTo)
-                {
-                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                        {
-                            EventType = ApplicationEventType.Assign,
-                            Entry = assignment.Member,
-                            Target = assignment.Group,
-                        Actor = CurrentUser.State.AuditActor
-
-                        });
-                    //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
-                    //await AuditLogger.Group.MemberAdded(assignment.Group, assignment.Member);
-                   
-                }
-
-                Group = (IADGroup)Directory.GetDirectoryEntryByDN(Group.DN);
-
                 SnackBarService.Success(AppLocalization[Lang.Group_created]);
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Create,
-                        Entry = Group,
-                    Actor = CurrentUser.State.AuditActor
-
-                    });
-               
                 await Confirmed.InvokeAsync(Group);
             }
-
+            else
+            {
+                disableCreateGroupButton = false;
+            }
+            LoadingData = false;
         }
     }
 }
