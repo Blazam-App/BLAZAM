@@ -60,4 +60,8 @@
     <ProjectReference Include="..\BLAZAMPlugins\BLAZAMPlugins.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
+
 </Project>
