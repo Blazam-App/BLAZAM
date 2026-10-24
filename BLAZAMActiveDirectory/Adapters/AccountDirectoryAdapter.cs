@@ -143,16 +143,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-
-                try
-                {
-                    return (UAC & ADS_UF_ACCOUNTDISABLE) == ADS_UF_ACCOUNTDISABLE;
-                }
-                catch
-                {
-                    // handle NullReferenceException
-                }
-                return true;
+                return (UAC & ADS_UF_ACCOUNTDISABLE) == ADS_UF_ACCOUNTDISABLE;
             }
             set
             {
@@ -172,16 +163,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-
-                try
-                {
-                    return (UAC & ADS_UF_DONT_EXPIRE_PASSWD) == ADS_UF_DONT_EXPIRE_PASSWD;
-                }
-                catch
-                {
-                    //Ignore error
-                }
-                return true;
+                return (UAC & ADS_UF_DONT_EXPIRE_PASSWD) == ADS_UF_DONT_EXPIRE_PASSWD;
             }
             set
             {
@@ -405,6 +387,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         RequirePasswordChange = true;
                         return CommitChanges().Result == JobResult.Passed;
                     }
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.PasswordChange,
+                        Entry = this,
+                        Actor = CurrentUser.AuditActor
+                    });
                     return true;
                 }
 
@@ -488,6 +476,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 up.Save();
             }
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+            {
+                EventType = ApplicationEventType.PasswordChange,
+                Entry = this,
+                Actor = CurrentUser.AuditActor
+            });
             return true;
         }
         public void StageEnable()

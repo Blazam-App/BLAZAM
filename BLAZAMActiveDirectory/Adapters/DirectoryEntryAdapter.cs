@@ -474,8 +474,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 parentOUToMoveTo.EnsureDirectoryEntry();
                 if (parentOUToMoveTo.DirectoryEntry != null)
                 {
+                    var originalOU = GetParent() as IADOrganizationalUnit;
                     DirectoryEntry?.MoveTo(parentOUToMoveTo.DirectoryEntry);
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.Move,
+                        Entry = this,
+                        Target = parentOUToMoveTo,
+                        Origin = originalOU,
+                        Actor = CurrentUser.AuditActor
 
+                    });
                     return true;
                 }
                 return false;
