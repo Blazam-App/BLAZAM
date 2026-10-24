@@ -32,7 +32,7 @@
     private void SendEvent(ApplicationEventType eventType)
     {
 
-        var ev = new DirectoryEntryChangedArgs()
+        var ev = new DirectoryEntryChangedEventArgs()
         {
             Actor = CurrentUser.State.AuditActor,
             Entry = DirectoryEntry,

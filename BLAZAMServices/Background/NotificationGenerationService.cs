@@ -34,7 +34,7 @@ namespace BLAZAM.Services.Background
             ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
-        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             lock (_notificationLock)
             {
@@ -102,7 +102,7 @@ namespace BLAZAM.Services.Background
                    eventType == ApplicationEventType.Scheduled;
         }
 
-        private void PostNotification(DirectoryEntryChangedArgs args, NotificationType notificationType, bool isSQLite, IDirectoryEntryAdapter? target = null)
+        private void PostNotification(DirectoryEntryChangedEventArgs args, NotificationType notificationType, bool isSQLite, IDirectoryEntryAdapter? target = null)
         {
             if (isSQLite)
             {

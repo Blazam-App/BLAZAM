@@ -35,7 +35,7 @@ namespace BLAZAM.Services.Audit
             BitLocker = new BitLockerAudit(factory, userState.AuditActor, jSRuntime);
         }
 
-        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             if (_customUserState || _userStateService.CurrentUserState?.SessionId.Equals(args.Actor.SessionId) == true)
             {

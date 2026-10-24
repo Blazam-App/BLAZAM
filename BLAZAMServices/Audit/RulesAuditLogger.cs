@@ -11,7 +11,7 @@ namespace BLAZAM.Services.Audit
 
         }
 
-        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             if (sender != null && sender is RulesProcessor)
             {

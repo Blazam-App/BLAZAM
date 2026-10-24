@@ -120,7 +120,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Handles directory entry change events and processes applicable rules.
         /// </summary>
-        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
 
             if (sender != null && sender.Equals(this))

@@ -3,7 +3,7 @@ using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory.Events
 {
-    public class DirectoryEntryChangedArgs : BaseEventArgs
+    public class DirectoryEntryChangedEventArgs : BaseAuditEventArgs
     {
         public IDirectoryEntryAdapter Entry { get; set; }
 
