@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Permissions;
+﻿using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Logger;
 
 namespace BLAZAM.ActiveDirectory.Data

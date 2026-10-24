@@ -6,7 +6,6 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Models;
-using BLAZAM.Global.Enums;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;

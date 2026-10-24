@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace BLAZAM.ActiveDirectory.Adapters

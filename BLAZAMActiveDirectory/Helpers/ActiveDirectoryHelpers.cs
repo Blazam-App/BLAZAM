@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;

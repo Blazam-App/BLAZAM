@@ -1,5 +1,4 @@
 using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Gui.UI;
 using Moq;

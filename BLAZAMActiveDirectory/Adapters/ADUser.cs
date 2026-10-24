@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;

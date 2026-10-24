@@ -1,5 +1,4 @@
 using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.Common.Data;
 using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers

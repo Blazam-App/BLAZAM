@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 using System.Text.Json.Serialization;
