@@ -1,4 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.EmailMessage.Email.Messages;
 using BLAZAM.Gui.Helpers;
@@ -6,7 +6,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
-using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -184,13 +183,13 @@ namespace BLAZAM.Pages.API.v1
 
         private async Task AuditAndNotify(NewUserPayload newUserDetails, DirectoryTemplate? template, IADUser entry, SecureString password)
         {
-            if (CurrentUserState != null)
+            if (CurrentUser != null)
             {
                 ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                 {
                     EventType = ApplicationEventType.Create,
                     Entry = entry,
-                    Actor = CurrentUserState
+                    Actor = CurrentUser.AuditActor
 
                 });
             }
