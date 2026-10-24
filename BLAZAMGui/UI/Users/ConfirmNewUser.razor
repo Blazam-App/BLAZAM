@@ -116,6 +116,8 @@ else
           Title="@AppLocalization[Lang.Send_login_credentials]">
     <SendNewUserWelcomeToModalContent OnSubmitEmail="SendWelcomeEmail" />
 </AppModal>
+<LoadingData Loading="LoadingData" />
+
 @code {
     [Parameter]
     public DirectoryTemplate? DirectoryTemplate { get; set; }
@@ -139,6 +141,8 @@ else
     {
         try
         {
+            LoadingData = true;
+
             if (User is null && Contact is not null)
             {
                 disableCreateUserButton = true;
@@ -164,14 +168,6 @@ else
                     Confirmed = true;
                     await OnConfirmed.InvokeAsync();
                     Contact = (IADContact?)Directory.GetDirectoryEntryByDN(Contact.DN)!;
-                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Create,
-                        Entry = Contact,
-                        Actor = CurrentUser.State.AuditActor
-
-                    });
-
                 }
 
             }
@@ -202,20 +198,14 @@ else
                     SnackBarService.Success(AppHelpLocalization[HelpLang.Created, AppLocalization[Lang.User]]);
                     Confirmed = true;
                     await OnConfirmed.InvokeAsync();
-                    User = (IADUser?)Directory.GetDirectoryEntryByDN(User.DN)!;
-                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                    {
-                        EventType = ApplicationEventType.Create,
-                        Entry = User,
-                        Actor = CurrentUser.State.AuditActor
-
-                    });
                     try
                     {
                         if (DirectoryTemplate?.EffectiveSendWelcomeEmail == true)
                         {
                             if (DirectoryTemplate.EffectiveAskForAlternateEmail == true || User.Email.IsNullOrEmpty())
                             {
+                                LoadingData = false;
+
                                 await SendWelcomeModal!.ShowAsync();
                             }
                             else
@@ -235,6 +225,7 @@ else
         {
             await MessageService.Error(ex.Message);
         }
+        LoadingData = false;
 
 
     }
@@ -242,6 +233,7 @@ else
     {
         try
         {
+
             NewUserWelcomeEmailMessage message = new NewUserWelcomeEmailMessage();
             message.Domain = Entry.Directory.ConnectionSettings?.FQDN;
             message.Username = _username;
@@ -259,6 +251,7 @@ else
             Loggers.SystemLogger.Error(ex, "Error sending welcome email");
             SnackBarService.Error(ex.Message);
         }
+
         //emailPreview = EmailService.PrepareHTMLForEmail(html);
     }
     async Task Print()

@@ -954,13 +954,28 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         propertyJob.AddStep(propertyStep);
                     }
 
-                   
+                
 
                     if (propertyJob.Steps.Count > 0)
                     {
                         commitJob.AddStep(propertyJob);
                     }
                     commitJob.AddStep(commitStep);
+
+                    var auditStep = new JobStep("Audit Creation", (step) =>
+                    {
+                        var entry = (IADUser?)Directory.GetDirectoryEntryByDN(DN)!;
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Create,
+                            Entry = entry,
+                            Actor = CurrentUser.AuditActor
+
+                        });
+                        return true;
+                    });
+
+                    commitJob.AddStep(auditStep);
                 }
 
 
