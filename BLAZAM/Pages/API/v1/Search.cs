@@ -52,6 +52,18 @@ namespace BLAZAM.Pages.API.v1
             };
             var data = search.Search();
             var data2 = data.Where(de => de.CanRead).ToList();
+
+            foreach(var entry in data2)
+            {
+                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                {
+                    EventType = ApplicationEventType.Search,
+                    Entry = entry,
+                    Actor = CurrentUser.AuditActor
+
+                });
+            }
+
             return FormatData(data2);
         }
 
