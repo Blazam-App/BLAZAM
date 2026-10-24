@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;

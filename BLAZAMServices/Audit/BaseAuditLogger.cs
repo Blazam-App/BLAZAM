@@ -1,7 +1,4 @@
-﻿
-using BLAZAM.Session.Interfaces;
-
-namespace BLAZAM.Services.Audit
+﻿namespace BLAZAM.Services.Audit
 {
     public class BaseAuditLogger : IDisposable
     {

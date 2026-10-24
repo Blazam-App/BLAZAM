@@ -1,7 +1,4 @@
 ﻿using BLAZAM.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BLAZAM.Global.Data
 {

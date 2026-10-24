@@ -1,5 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data.Services;
 using BLAZAM.Notifications.Services;
 

@@ -409,12 +409,12 @@ namespace BLAZAM.Session
 
         public string LastUri { get; set; }
 
-        public AuditLogActor  AuditActor
+        public AuditLogActor AuditActor
         {
             get => new AuditLogActor
             {
                 Actor = Username,
-                SessionId = SessionId,  
+                SessionId = SessionId,
                 Impersonator = Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value,
                 IPAddress = IPAddress,
                 Id = Id

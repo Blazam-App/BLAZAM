@@ -1,7 +1,5 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models.Audit;
+﻿using BLAZAM.Database.Models.Audit;
 using BLAZAM.Logger;
-using BLAZAM.Session.Interfaces;
 using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit

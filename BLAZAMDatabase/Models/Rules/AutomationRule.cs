@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;

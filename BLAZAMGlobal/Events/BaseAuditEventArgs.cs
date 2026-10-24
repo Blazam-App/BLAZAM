@@ -1,7 +1,5 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Global.Enums;
-using BLAZAM.Helpers;
-using System.Net;
 
 namespace BLAZAM.Global.Events
 {

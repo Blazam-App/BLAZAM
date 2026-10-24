@@ -1,11 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
+﻿using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Channels;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -179,7 +176,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
 
 
-public override IJob CommitChanges(IJob? commitJob = null)
+        public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (MembersToAdd.Count > 0)
             {

@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-
-namespace BLAZAM.Services.Background
+﻿namespace BLAZAM.Services.Background
 {
     public class PasswordResetService
     {

@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Logger;
 using System.DirectoryServices;
 

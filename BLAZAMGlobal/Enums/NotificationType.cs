@@ -1,5 +1,5 @@
 ﻿namespace BLAZAM.Global.Enums
-{ 
+{
     public enum NotificationType
     {
         Create,

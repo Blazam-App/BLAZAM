@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-
-namespace BLAZAM.Gui.UI
+﻿namespace BLAZAM.Gui.UI
 {
     /// <summary>
     /// Provides a generic <see cref="IDirectoryEntryAdapter"/> parameter and the modals used on view pages.
@@ -82,8 +80,9 @@ namespace BLAZAM.Gui.UI
         private bool _savingChanges;
         protected bool SavingChanges
         {
-            get=>_savingChanges; 
-            set {
+            get => _savingChanges;
+            set
+            {
                 if (_savingChanges == value)
                 {
                     return;

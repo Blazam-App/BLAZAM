@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
 using BLAZAM.Logger;

@@ -7,7 +7,6 @@ using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.Rules;
 using BLAZAM.Database.Models.Templates;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLAZAM.Database.Interfaces

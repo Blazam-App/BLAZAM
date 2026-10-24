@@ -2,7 +2,6 @@
 
 using AngleSharp.Dom;
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;

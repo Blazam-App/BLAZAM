@@ -1,4 +1,5 @@
-﻿namespace BLAZAM.Global.Events
+﻿namespace BLAZAM.Global.Enums
+
 {
     public enum ApplicationEventType
     {

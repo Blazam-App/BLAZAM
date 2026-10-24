@@ -8,7 +8,7 @@
 
         public AuditChangeLog Clone()
         {
-            return new AuditChangeLog() { Field=Field, OldValue=OldValue,NewValue=NewValue };
+            return new AuditChangeLog() { Field = Field, OldValue = OldValue, NewValue = NewValue };
         }
     }
 }

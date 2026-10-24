@@ -1,4 +1,3 @@
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
 using BLAZAM.Pages.API.Data;
 using BLAZAM.Services.Audit;
