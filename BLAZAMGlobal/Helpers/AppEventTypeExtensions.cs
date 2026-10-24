@@ -1,6 +1,7 @@
-﻿using BLAZAM.Database.Models.Notifications;
+﻿using BLAZAM.Global.Enums;
+using BLAZAM.Global.Events;
 
-namespace BLAZAM.Services.Events
+namespace BLAZAM.Helpers
 {
     public static class AppEventTypeExtensions
     {

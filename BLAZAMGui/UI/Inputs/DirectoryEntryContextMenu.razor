@@ -66,7 +66,7 @@
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,
                 Changes = changes,
-                Actor = CurrentUser.State
+                Actor = CurrentUser.State.AuditActor
 
             });
             if (unlockJob.Result == JobResult.Passed)
@@ -96,7 +96,7 @@
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,
                 Changes = changes,
-                Actor = CurrentUser.State
+                Actor = CurrentUser.State.AuditActor
 
             });
             if (unlockJob.Result == JobResult.Passed)
@@ -127,7 +127,7 @@
                 EventType = ApplicationEventType.Modify,
                 Entry = userToUnlock,
                 Changes = changes,
-                Actor = CurrentUser.State
+                Actor = CurrentUser.State.AuditActor
 
             });
 

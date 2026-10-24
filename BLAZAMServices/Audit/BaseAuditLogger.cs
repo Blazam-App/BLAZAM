@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Services.Events;
+﻿
 using BLAZAM.Session.Interfaces;
 
 namespace BLAZAM.Services.Audit
@@ -17,7 +16,7 @@ namespace BLAZAM.Services.Audit
         public EmailAudit Email { get; set; }
         protected readonly IAppDatabaseFactory _factory;
 
-        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
+        public BaseAuditLogger(IAppDatabaseFactory factory, AuditLogActor userState)
         {
             _factory = factory;
             ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
@@ -46,7 +45,7 @@ namespace BLAZAM.Services.Audit
 
                 // If an actor is associated with the event, initialize the audit services
                 // that will log the changes.
-                if (args.Actor != null && args.Actor.AuditUsername != null)
+                if (args.Actor != null)
                 {
                     InitializeAuditServices(args.Actor);
                 }
@@ -62,7 +61,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Creates instances of all audit services for a given actor.
         /// </summary>
-        private void InitializeAuditServices(IApplicationUserState actor)
+        private void InitializeAuditServices(AuditLogActor actor)
         {
             User = new UserAudit(_factory, actor);
             Group = new GroupAudit(_factory, actor);

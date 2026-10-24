@@ -7,7 +7,6 @@ using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
-using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -562,7 +561,7 @@ namespace BLAZAM.Services.Background
 
                 ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
-                    Actor = new RulesUserState(dbFactory, rule.Name),
+                    Actor = new RulesUserState(dbFactory, rule.Name).AuditActor,
                     Changes = changes,
                     Entry = entry,
                     Target = target,
