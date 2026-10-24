@@ -1,6 +1,7 @@
 ﻿using BLAZAM.ActiveDirectory.Interfaces;
+using BLAZAM.Common.Data;
 
-namespace BLAZAM.Services.Events
+namespace BLAZAM.ActiveDirectory.Events
 {
     public class DirectoryEntryChangedArgs : BaseEventArgs
     {

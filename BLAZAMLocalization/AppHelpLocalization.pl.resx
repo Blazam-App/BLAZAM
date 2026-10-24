@@ -318,4 +318,10 @@ Spróbuj skonfigurować niestandardowe poświadczenia aktualizacji.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Twoje hasło wygaśnie za {0} dni.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Zmiany wprowadzone w tym {0} zostały zapisane.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Ta funkcja jest nadal w budowie</value>
+  </data>
 </root>

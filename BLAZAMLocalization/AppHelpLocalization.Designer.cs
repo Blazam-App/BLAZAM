@@ -115,6 +115,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The changes made to this {0} have been saved..
+        /// </summary>
+        public static string Changes_Have_Been_Saved {
+            get {
+                return ResourceManager.GetString("Changes_Have_Been_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to create this group?.
         /// </summary>
         public static string Confirm_Group_Creation {
@@ -138,6 +147,15 @@ namespace BLAZAM.Localization {
         public static string Confirm_Save_Changes {
             get {
                 return ResourceManager.GetString("Confirm_Save_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This feature is still under construction.
+        /// </summary>
+        public static string Construction_Notice {
+            get {
+                return ResourceManager.GetString("Construction_Notice", resourceCulture);
             }
         }
         

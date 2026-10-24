@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Gui.UI
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace BLAZAM.Gui.UI
 {
     /// <summary>
     /// Provides a generic <see cref="IDirectoryEntryAdapter"/> parameter and the modals used on view pages.
@@ -77,10 +79,18 @@
         {
             EditMode = !EditMode;
         }
-
+        private bool _savingChanges;
         protected bool SavingChanges
         {
-            get; set;
+            get=>_savingChanges; 
+            set {
+                if (_savingChanges == value)
+                {
+                    return;
+                }
+                _savingChanges = value;
+                _ = RefreshEntryComponents();
+            }
         }
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted

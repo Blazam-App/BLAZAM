@@ -28,6 +28,7 @@ namespace BLAZAM.Session
 
 
         public ClaimsPrincipal? Impersonator { get; set; }
+        public string? ImpersonatorUsername { get => Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value; }
 
 
         public List<PermissionDelegate> PermissionDelegates { get; set; } = [];
@@ -53,6 +54,8 @@ namespace BLAZAM.Session
 
 
         public int Id => Preferences != null ? Preferences.Id : 0;
+
+        public Guid SessionId { get; } = Guid.NewGuid();
 
 
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
@@ -406,7 +409,17 @@ namespace BLAZAM.Session
 
         public string LastUri { get; set; }
 
-
+        public AuditLogActor  AuditActor
+        {
+            get => new AuditLogActor
+            {
+                Actor = Username,
+                SessionId = SessionId,  
+                Impersonator = Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value,
+                IPAddress = IPAddress,
+                Id = Id
+            };
+        }
         public override int GetHashCode()
         {
             return User?.GetHashCode() ?? 0;

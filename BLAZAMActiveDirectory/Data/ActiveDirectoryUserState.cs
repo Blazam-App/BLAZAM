@@ -7,6 +7,8 @@ namespace BLAZAM.ActiveDirectory.Data
     public class ActiveDirectoryUserState
     {
         public string Username { get; set; }
+
+        public AuditLogActor AuditActor { get; set; }
         public List<PermissionMapping> PermissionMappings { get; set; }
         public bool IsSuperAdmin { get; set; }
 

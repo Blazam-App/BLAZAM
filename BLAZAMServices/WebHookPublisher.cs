@@ -145,7 +145,7 @@ namespace BLAZAM.Services
         public async Task PublishWebhook(WebHookSubscription subscription,
             IDirectoryEntryAdapter source,
             NotificationType notificationType,
-            IApplicationUserState? actor = null,
+            AuditLogActor? actor = null,
             IDirectoryEntryAdapter? target = null)
         {
             var eventType = source.ObjectType.ToString().ToLower() + "." + notificationType.ToString().ToLower();
@@ -167,7 +167,7 @@ namespace BLAZAM.Services
                 Dictionary<string, object?> data = new()
                 {
                   { "id", msgId },
-                  { "actor", actor?.Username }, // Use ?. to handle null actor
+                  { "actor", actor?.AuditUsername }, // Use ?. to handle null actor
                     { "entry", source?.CanonicalName }, // Use ?. to handle null source
                     { "entryOU", source?.OU }, // Use ?. to handle null source
                     { "entryDN", source?.DN }, // Use ?. to handle null source

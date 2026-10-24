@@ -168,7 +168,7 @@ else
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = Contact,
-                        Actor = CurrentUser.State
+                        Actor = CurrentUser.State.AuditActor
 
                     });
 
@@ -207,7 +207,7 @@ else
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = User,
-                        Actor = CurrentUser.State
+                        Actor = CurrentUser.State.AuditActor
 
                     });
                     try

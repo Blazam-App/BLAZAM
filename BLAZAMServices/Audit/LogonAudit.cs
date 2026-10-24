@@ -8,7 +8,7 @@ namespace BLAZAM.Services.Audit
 {
     public class LogonAudit : CommonAudit
     {
-        public LogonAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
+        public LogonAudit(IAppDatabaseFactory factory, AuditLogActor? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 
@@ -19,21 +19,18 @@ namespace BLAZAM.Services.Audit
 
         public async Task<bool> AttemptedLogin(ClaimsPrincipal user, string? iPAddress = null)
         {
-            UserState = ApplicationUserState.CreateUserState(user, factory);
+            UserState = ApplicationUserState.CreateUserState(user, factory).AuditActor;
             return await Log("Attempted Login", iPAddress);
         }
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
-            UserState = ApplicationUserState.CreateUserState(impersonateee, factory);
-            if (UserState != null)
-            {
-                UserState.Impersonator = impersonator;
-            }
+            UserState = ApplicationUserState.CreateUserState(impersonateee, factory).AuditActor;
+            
             return await Log("Impersonation", ipAddress);
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)
         {
-            UserState = ApplicationUserState.CreateUserState(user, factory);
+            UserState = ApplicationUserState.CreateUserState(user, factory).AuditActor;
             return await Log("Login", ipAddress);
         }
         public async Task<bool> Logout() => await Log("Logout");

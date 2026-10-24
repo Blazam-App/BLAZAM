@@ -318,4 +318,10 @@ Probeer aangepaste updatereferenties te configureren.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Uw wachtwoord verloopt over {0} dagen.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>De wijzigingen die aan deze {0} zijn aangebracht, zijn opgeslagen.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Deze functie is nog in ontwikkeling</value>
+  </data>
 </root>

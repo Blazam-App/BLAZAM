@@ -1,5 +1,3 @@
-using BLAZAM.Services.Events;
-
 namespace BLAZAM.Gui.UI
 {
     public partial class ExpiredLogonPasswordModalContent : AppModalContent
@@ -42,7 +40,7 @@ namespace BLAZAM.Gui.UI
                         {
                             EventType = ApplicationEventType.PasswordChange,
                             Entry = User,
-                            Actor = CurrentUser.State
+                            Actor = CurrentUser.State.AuditActor
 
 
                         });

@@ -44,7 +44,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// The current API user state
         /// </summary>
-        protected IApplicationUserState? CurrentUserState { get; }
+        protected IApplicationUserState? CurrentUser { get; }
 
         private readonly JsonSerializerOptions _jsonOptions;
 
@@ -74,9 +74,9 @@ namespace BLAZAM.Pages.API.v1
 
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
-            CurrentUserState = UserStateService.CurrentUserState;
+            CurrentUser = UserStateService.CurrentUserState;
 
-            Directory = adFactory.CreateActiveDirectoryContext(CurrentUserState.ToActiveDirectoryUserState());
+            Directory = adFactory.CreateActiveDirectoryContext(CurrentUser.ToActiveDirectoryUserState());
             DbFactory = appDatabaseFactory;
 
 

@@ -47,7 +47,7 @@
                             EventType = ApplicationEventType.Assign,
                             Entry = assignment.Member,
                             Target = assignment.Group,
-                            Actor = CurrentUser.State
+                        Actor = CurrentUser.State.AuditActor
 
                         });
                     //await AuditLogger.User.Assigned(assignment.Member, assignment.Group);
@@ -62,7 +62,7 @@
                     {
                         EventType = ApplicationEventType.Create,
                         Entry = Group,
-                        Actor = CurrentUser.State
+                    Actor = CurrentUser.State.AuditActor
 
                     });
                

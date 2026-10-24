@@ -1,4 +1,4 @@
-﻿namespace BLAZAM.Services.Events
+﻿namespace BLAZAM.ActiveDirectory.Events
 {
     public static class ActiveDirectoryEvents
     {

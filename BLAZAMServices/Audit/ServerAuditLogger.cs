@@ -1,5 +1,4 @@
-﻿using BLAZAM.Services.Events;
-using BLAZAM.Session;
+﻿using BLAZAM.Session;
 
 namespace BLAZAM.Services.Audit
 {

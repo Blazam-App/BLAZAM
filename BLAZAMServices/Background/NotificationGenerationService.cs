@@ -10,7 +10,6 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -125,7 +124,7 @@ namespace BLAZAM.Services.Background
         /// <param name="actor"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
             await Task.Run(() =>
             {
@@ -141,7 +140,7 @@ namespace BLAZAM.Services.Background
         /// <param name="actor"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
 
             NotificationMessage notification;
@@ -173,7 +172,7 @@ namespace BLAZAM.Services.Background
         }
         private void ProcessUserNotification(IDirectoryEntryAdapter source,
                                             NotificationType notificationType,
-                                            IApplicationUserState? actor,
+                                            AuditLogActor? actor,
                                             AppUser user,
                                             NotificationMessage notification,
                                             string notificationTitle,
@@ -227,7 +226,7 @@ namespace BLAZAM.Services.Background
                 _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
             }
         }
-        private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
             using var context = Context;
             var webhooks = await context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
@@ -264,7 +263,7 @@ namespace BLAZAM.Services.Background
         /// <param name="notification"></param>
         /// <param name="notificationTitle"></param>
         /// <param name="emailMessage"></param>
-        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out EmailNotificationTemplateComponent? emailMessage)
+        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out EmailNotificationTemplateComponent? emailMessage)
         {
             notification = new NotificationMessage();
             notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
@@ -369,7 +368,7 @@ namespace BLAZAM.Services.Background
             notification.Title = notificationTitle;
             notification.Message = notificationBody;
             notification.Dismissable = true;
-            notification.CreatorId = actor?.Preferences?.Id;
+            notification.CreatorId = actor?.Id;
             notification.Level = NotificationLevel.Info;
         }
 

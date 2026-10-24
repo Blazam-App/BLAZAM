@@ -6,7 +6,7 @@ namespace BLAZAM.Services.Audit
 {
     public class BitLockerAudit : DirectoryAudit
     {
-        public BitLockerAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
+        public BitLockerAudit(IAppDatabaseFactory factory, AuditLogActor? userState = null, IJSRuntime? jSRuntime = null) : base(factory, userState, jSRuntime)
         {
         }
 

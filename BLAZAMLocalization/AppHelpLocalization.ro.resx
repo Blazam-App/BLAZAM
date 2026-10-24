@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Parola dvs. va expira în {0} zile.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Modificările efectuate la acest {0} au fost salvate.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Această funcționalitate este încă în construcție</value>
+  </data>
 </root>

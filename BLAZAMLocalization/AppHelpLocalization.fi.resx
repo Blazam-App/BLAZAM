@@ -318,4 +318,10 @@ Yritä määrittää mukautetut päivityksen tunnistetiedot.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Salasanasi vanhenee {0} päivän kuluttua.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Tähän {0} tehty muutokset on tallennettu.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Tämä ominaisuus on vielä rakenteilla</value>
+  </data>
 </root>

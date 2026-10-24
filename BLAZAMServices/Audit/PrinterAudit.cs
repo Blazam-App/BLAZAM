@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class PrinterAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
+    public class PrinterAudit(IAppDatabaseFactory factory, AuditLogActor? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
         public async Task<bool> Moved(IDirectoryEntryAdapter movedPrinter, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {

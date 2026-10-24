@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>您的密碼將在 {0} 天後過期.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>對此 {0} 所做的變更已儲存。</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>此功能仍在建置中</value>
+  </data>
 </root>

@@ -319,4 +319,10 @@ Try configuring custom update credentials.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Your password will expire in {0} days.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>The changes made to this {0} have been saved.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>This feature is still under construction</value>
+  </data>
 </root>
