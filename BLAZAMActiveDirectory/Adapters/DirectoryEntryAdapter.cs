@@ -9,12 +9,14 @@ using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
+using System.Collections;
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.Protocols;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -868,6 +870,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             " entry is somehow missing on commit.");
                         throw new AppException("DirectoryEntry is null");
                     }
+                    var commitedChanges = new List<AuditChangeLog>();
+                    var cachedChangeList = Changes.ToList();
                     foreach (var p in NewEntryProperties)
                     {
                         propertyStep = new JobStep("Set AD attribute [" + p.Key + "]", (step) =>
@@ -893,16 +897,35 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                     DirectoryEntry.SetPropertyValue(p.Key, p.Value);
 
                                 }
+                                commitedChanges.Add(cachedChangeList.First(c => c.Field.Equals(p.Key)).Clone());
+
                             }
                             return true;
                         });
                         propertyJob.AddStep(propertyStep);
 
                     }
-                    if (propertyJob.Steps.Count > 0)
+                    //Audit Attributes Step
+                    var auditAttributeStep = new JobStep("Audit Attributes", (step) =>
                     {
-                        commitJob.AddStep(propertyJob);
-                    }
+                        if (commitedChanges.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName))
+                        {
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Modify,
+                                Entry = this,
+                                Changes = commitedChanges.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
+                                Actor = CurrentUser.AuditActor
+
+                            });
+                        }
+                        return true;
+                    });
+
+                    propertyJob.AddStep(auditAttributeStep);
+
+                   
+                    commitJob.AddStep(propertyJob);
                 }
                 else
                 {
@@ -930,6 +953,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         });
                         propertyJob.AddStep(propertyStep);
                     }
+
+                   
+
                     if (propertyJob.Steps.Count > 0)
                     {
                         commitJob.AddStep(propertyJob);
@@ -1011,6 +1037,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     case ActiveDirectoryObjectType.Group:
                     case ActiveDirectoryObjectType.Printer:
                     case ActiveDirectoryObjectType.Computer:
+                        var clone = Clone();
                         if (forceDeleteChildren && DirectoryEntry != null)
                         {
                             var children = DirectoryEntry.Children;
@@ -1018,12 +1045,34 @@ namespace BLAZAM.ActiveDirectory.Adapters
                             {
                                 foreach (IDirectoryEntry child in children)
                                 {
+                                    IDirectoryEntryAdapter? childAdapter = new DirectoryEntryAdapter();
+                                    childAdapter.Parse(Directory, child);
+                                    childAdapter = childAdapter.Clone();
+
                                     DirectoryEntry.Children.Remove(child);
+                                    if (childAdapter != null)
+                                    {
+                                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                                        {
+                                            EventType = ApplicationEventType.Delete,
+                                            Entry = childAdapter,
+                                            Actor = CurrentUser.AuditActor
+
+                                        });
+                                    }
                                 }
                             }
 
                         }
+                        
                         DirectoryEntry?.Parent.Children.Remove(DirectoryEntry);
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Delete,
+                            Entry = clone,
+                            Actor = CurrentUser.AuditActor
+
+                        });
                         IsDeleted = true;
                         OnModelDeleted?.Invoke();
                         break;

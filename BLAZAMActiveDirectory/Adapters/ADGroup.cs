@@ -4,6 +4,8 @@ using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -169,7 +171,15 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
-        public override IJob CommitChanges(IJob? commitJob = null)
+
+
+
+
+
+
+
+
+public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (MembersToAdd.Count > 0)
             {
@@ -178,6 +188,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         PostCommitSteps.Add(new JobStep($"Add {g.Member} to {g.Group}", (JobStep? step) =>
                         {
                             g.Group.Invoke("Add", new object[] { g.Member.DN });
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Assign,
+                                Entry = g.Member,
+                                Target = g.Group,
+                                Actor = CurrentUser.AuditActor
+
+                            });
                             return true;
                         }));
 
@@ -192,6 +210,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
                     {
                         g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                        {
+                            EventType = ApplicationEventType.Unassign,
+                            Entry = g.Member,
+                            Target = g.Group,
+                            Actor = CurrentUser.AuditActor
+
+                        });
                         return true;
                     }));
                 });

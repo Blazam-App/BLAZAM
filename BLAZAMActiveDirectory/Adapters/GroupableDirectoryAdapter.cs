@@ -1,4 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
+﻿
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -161,6 +161,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (g.Group.Invoke("Add", [g.Member.DN]))
                         {
                             ToAssignTo.Remove(g);
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Assign,
+                                Entry = g.Member,
+                                Target = g.Group,
+                                Actor = CurrentUser.AuditActor
+
+                            });
                             refreshGroups = true;
                         }
                     }
@@ -172,6 +180,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     return ToAssignTo.Count == 0;
                 }));
             }
+
+          
+
+
+
+
             if (ToUnassignFrom.Count > 0)
             {
                 CommitSteps.Add(new JobStep("Unassign from groups", (step) =>
@@ -183,6 +197,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         if (g.Group.Invoke("Remove", [g.Member.DN]))
                         {
                             ToUnassignFrom.Remove(g);
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Unassign,
+                                Entry = g.Member,
+                                Target = g.Group,
+                                Actor = CurrentUser.AuditActor
+
+                            });
                             refreshGroups = true;
                         }
                     }
