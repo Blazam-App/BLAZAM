@@ -247,7 +247,7 @@ namespace BLAZAM.Services.Background
             });
             scheduledRuleJob.AddStep(logCompletionStep);
 
-            scheduledRuleJob.Run();
+            _ = scheduledRuleJob.RunAsync();
             return scheduledRuleJob;
         }
 

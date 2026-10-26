@@ -37,7 +37,7 @@
             await StateHasChangedAsync();
             var createGroupJob = new Job(AppLocalization[Lang.Create_Group]);
             createGroupJob.StopOnFailedStep = true;
-            createGroupJob.ShowJobDetailsDialog(MessageService);
+            await createGroupJob.ShowJobDetailsDialogAsync(MessageService);
             var result = await Group.CommitChangesAsync(createGroupJob);
 
             if (result.FailedSteps.Count == 0)

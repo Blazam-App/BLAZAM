@@ -33,6 +33,7 @@
     private void Update()
     {
         _cts.Cancel();
+        _cts?.Dispose();
         _cts = new();
         _ = Task.Run(async () =>
         {
@@ -47,5 +48,10 @@
             LoadingData = false;
         },_cts.Token);
 
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _cts?.Dispose();
     }
 }
