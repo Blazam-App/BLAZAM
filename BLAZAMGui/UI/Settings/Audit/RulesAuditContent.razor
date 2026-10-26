@@ -1,0 +1,83 @@
+﻿@using BLAZAM.Database.Models.Audit
+@using BLAZAM.Gui.UI.Shared
+@inherits AuditContentBase<DirectoryEntryAuditLog>
+<TimeframeSelector OnTimeframeChanged="TimeframeChanged" />
+<AppConstructionNotice/>
+
+<MudDataGrid Height="600px"
+             ColumnResizeMode="ResizeMode.Container"
+             FixedHeader=true
+             Hideable=true
+             Items="@_auditEntries.OrderByDescending(ae => ae.Timestamp)"
+             Filterable="false"
+             SortMode="@SortMode.Multiple"
+             Groupable="false">
+    <Columns>
+        <PropertyColumn Property="x => x.Timestamp"
+                        Title=@AppLocalization[Lang.Timestamp]
+                        Sortable="true">
+            <CellTemplate>
+                <MudText>
+                    @context.Item.Timestamp.ToLocalTime()
+                </MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.AutomationRule.Name"
+                        T="AutomationRuleAuditLog"
+                        TProperty="string"
+                        Filterable="true"
+                        Title="@AppLocalization[Lang.Name]" />
+
+        <PropertyColumn Property="x => x.EventType"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Type]">
+            <CellTemplate>
+                <MudText>@AppLocalization[context.Item.EventType.ToString()]</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.Level"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Version]">
+            <CellTemplate>
+                <MudText>@AppLocalization[context.Item.Level.ToString()]</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.Message"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Message]">
+            <CellTemplate>
+                <MudText>@context.Item.Message</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.TargetGuid"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Target]">
+            <CellTemplate>
+                <MudText>@context.Item.TargetGuid</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.MatchesFilter"
+                        Filterable=true
+                        Title="@AppLocalization[Lang.Approve]">
+            <CellTemplate>
+                <MudText>@context.Item.MatchesFilter</MudText>
+            </CellTemplate>
+        </PropertyColumn>
+
+
+    </Columns>
+</MudDataGrid>
+@code {
+    List<AutomationRuleAuditLog> _auditEntries = [];
+    protected override async Task FetchData()
+    {
+        if (StartDate == null || EndDate == null) return;
+        _auditEntries = await Context.AutomationRuleAuditLog.Include(e => e.AutomationRule).Where(e => e.Timestamp >= StartDate.Value.ToUniversalTime() && e.Timestamp < EndDate.Value.AddDays(1).ToUniversalTime()).OrderByDescending(e => e.Timestamp).ToListAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+}

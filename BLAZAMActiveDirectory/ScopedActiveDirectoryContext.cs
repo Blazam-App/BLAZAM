@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 
 namespace BLAZAM.ActiveDirectory
 {
@@ -25,7 +24,7 @@ namespace BLAZAM.ActiveDirectory
         }
         ~ScopedActiveDirectoryContext()
         {
-                ApplicationStatistics.RemoveADContext();
+            ApplicationStatistics.RemoveADContext();
         }
         /// <summary>
         /// Removes all created <see cref="IActiveDirectoryContext"/>'s created by this user's factory

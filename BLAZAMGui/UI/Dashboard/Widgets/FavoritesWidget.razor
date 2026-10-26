@@ -4,6 +4,7 @@
 <DirectoryEntryDataGrid Entries="FavoriteEntries"
                         RowClicked="RowClicked"
                         IsLoadingData="LoadingData"
+                        ShowPagination="@(FavoriteEntries.Count>5)"
                         ItemsPerPage="ItemsPerPage"
                         ItemsPerPageChanged="SetRowsPerPage"
                         EntryChanged="RefreshDataAsync"

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Global.Enums;
-using BLAZAM.Pages.Error;
+﻿using BLAZAM.Pages.Error;
 
 namespace BLAZAM.Middleware
 {

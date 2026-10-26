@@ -7,15 +7,15 @@ namespace BLAZAM.Update
         /// <summary>
         /// Gets the direct download URL for the associated release asset, if available.
         /// </summary>
-        public string? DownloadURL=> ReleaseAsset?.BrowserDownloadUrl;
+        public string? DownloadURL => ReleaseAsset?.BrowserDownloadUrl;
         /// <summary>
         /// Gets the URL of the associated release, if available.
         /// </summary>
-        public string? ReleaseURL=> GitHubRelease?.HtmlUrl;
+        public string? ReleaseURL => GitHubRelease?.HtmlUrl;
 
 
         public long? ExpectedSize => ReleaseAsset?.Size;
-            
+
         public string Branch { get; set; }
         public string? ReleaseNotes => GitHubRelease?.Body;
 

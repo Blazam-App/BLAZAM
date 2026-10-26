@@ -18,12 +18,10 @@ using BLAZAM.Services.Chat;
 using BLAZAM.Services.Duo;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
-using BLAZAM.Update.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -33,7 +31,6 @@ using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using System.Diagnostics;
-using System.Globalization;
 using System.Management;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -157,7 +154,7 @@ namespace BLAZAM
             builder.Services.AddLocalization(); // Add localization services
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
-               // Set the supported cultures for request processing and UI rendering
+                // Set the supported cultures for request processing and UI rendering
                 options.SupportedCultures = Lang.SupportedCultures;
                 options.SupportedUICultures = Lang.SupportedCultures;
                 // Could set DefaultRequestCulture here if needed
@@ -746,7 +743,7 @@ namespace BLAZAM
             }
         }
 
-     
+
 
         private static void PreloadWebHookPublisher(WebApplication application)
         {

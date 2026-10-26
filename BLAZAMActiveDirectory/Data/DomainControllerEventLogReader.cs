@@ -1,11 +1,9 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
-using System.DirectoryServices;
 
 
 namespace BLAZAM.ActiveDirectory.Data

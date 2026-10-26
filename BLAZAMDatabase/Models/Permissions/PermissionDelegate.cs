@@ -1,6 +1,5 @@
 ﻿
 using BLAZAM.Helpers;
-using System.ComponentModel;
 
 namespace BLAZAM.Database.Models.Permissions
 {
@@ -11,7 +10,7 @@ namespace BLAZAM.Database.Models.Permissions
         public List<PermissionMapping> PermissionsMaps { get; set; }
         public string? DelegateName { get; set; }
 
-        public bool AllowPasswordReset { get; set; } 
+        public bool AllowPasswordReset { get; set; }
         public bool RequireEmailOnPasswordReset { get; set; } = true;
         public bool RequirePINOnPasswordReset { get; set; }
 

@@ -1,10 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class OUAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
+    public class OUAudit(IAppDatabaseFactory factory, AuditLogActor? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
         public async Task<bool> Moved(IDirectoryEntryAdapter movedOU, IADOrganizationalUnit ouMovedFrom, IADOrganizationalUnit ouMovedTo)
         {

@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>आपका पासवर्ड {0} दिनों में समाप्त हो जाएगा.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>इस {0} में किए गए परिवर्तन सहेज लिए गए हैं।</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>यह सुविधा अभी भी निर्माणाधीन है</value>
+  </data>
 </root>

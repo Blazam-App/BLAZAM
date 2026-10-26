@@ -1,11 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Services.Events;
-using BLAZAM.Session.Interfaces;
-using Octokit;
-
-namespace BLAZAM.Services.Audit
+﻿namespace BLAZAM.Services.Audit
 {
-    public class BaseAuditLogger: IDisposable
+    public class BaseAuditLogger : IDisposable
     {
         public SystemAudit System { get; set; }
         public UserAudit User { get; set; }
@@ -18,7 +13,7 @@ namespace BLAZAM.Services.Audit
         public EmailAudit Email { get; set; }
         protected readonly IAppDatabaseFactory _factory;
 
-        public BaseAuditLogger(IAppDatabaseFactory factory, IApplicationUserState userState)
+        public BaseAuditLogger(IAppDatabaseFactory factory, AuditLogActor userState)
         {
             _factory = factory;
             ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
@@ -35,7 +30,7 @@ namespace BLAZAM.Services.Audit
 
         protected static List<Guid> HandledEvents { get; set; } = [];
 
-        public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedArgs args)
+        public void ProcessDirectoryEntryChangedEvent(DirectoryEntryChangedEventArgs args)
         {
             lock (HandledEvents)
             {
@@ -47,7 +42,7 @@ namespace BLAZAM.Services.Audit
 
                 // If an actor is associated with the event, initialize the audit services
                 // that will log the changes.
-                if (args.Actor != null && args.Actor.AuditUsername!=null)
+                if (args.Actor != null)
                 {
                     InitializeAuditServices(args.Actor);
                 }
@@ -63,7 +58,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Creates instances of all audit services for a given actor.
         /// </summary>
-        private void InitializeAuditServices(IApplicationUserState actor)
+        private void InitializeAuditServices(AuditLogActor actor)
         {
             User = new UserAudit(_factory, actor);
             Group = new GroupAudit(_factory, actor);
@@ -77,7 +72,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Routes the directory change event to the appropriate handler based on the object type.
         /// </summary>
-        private void DispatchAuditEvent(DirectoryEntryChangedArgs args)
+        private void DispatchAuditEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.ObjectType)
             {
@@ -105,7 +100,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for user-related directory changes.
         /// </summary>
-        private void ProcessUserChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessUserChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -143,7 +138,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for printer-related directory changes.
         /// </summary>
-        private void ProcessPrinterChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessPrinterChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -178,7 +173,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for computer-related directory changes.
         /// </summary>
-        private void ProcessComputerChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessComputerChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -213,7 +208,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for BitLocker-related directory changes.
         /// </summary>
-        private void ProcessBitLockerChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessBitLockerChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -229,7 +224,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for group-related directory changes.
         /// </summary>
-        private void ProcessGroupChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessGroupChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -262,7 +257,7 @@ namespace BLAZAM.Services.Audit
         /// <summary>
         /// Handles audit logging for Organizational Unit (OU) related directory changes.
         /// </summary>
-        private void ProcessOUChangeEvent(DirectoryEntryChangedArgs args)
+        private void ProcessOUChangeEvent(DirectoryEntryChangedEventArgs args)
         {
             switch (args.EventType)
             {
@@ -284,7 +279,7 @@ namespace BLAZAM.Services.Audit
             }
         }
 
-        protected virtual void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args) => ProcessDirectoryEntryChangedEvent(args);
+        protected virtual void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args) => ProcessDirectoryEntryChangedEvent(args);
 
         public async Task Searched(IDirectoryEntryAdapter searchedEntry)
         {

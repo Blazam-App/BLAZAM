@@ -1,7 +1,5 @@
 ﻿
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
@@ -24,7 +22,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (CanonicalName == null)
                 {
-                    _wmiConnection= new PSConnection(Directory, this);
+                    _wmiConnection = new PSConnection(Directory, this);
                 }
 
                 _wmiConnection ??= new WmiConnection(Directory.Computers.WmiFactory.CreateWmiConnection(CanonicalName), this);
@@ -188,21 +186,25 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
         public IPHostEntry? IPHostEntry { get; set; }
-        public List<IPAddress> IPAddresses { get { 
-                if(IPHostEntry == null)
+        public List<IPAddress> IPAddresses
+        {
+            get
+            {
+                if (IPHostEntry == null)
                 {
                     return [];
                 }
                 List<IPAddress> result = new List<IPAddress>();
                 foreach (IPAddress ip in IPHostEntry.AddressList)
                 {
-                    if(ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                    if (ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
                     {
                         result.Add(ip);
                     }
                 }
                 return result;
-            } }
+            }
+        }
 
         /// <summary>
         /// The online status of this computer right now.
@@ -248,7 +250,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             return await Task.Run(() =>
             {
                 return wmiConnection.Drives;
-            },this._pingCancellationTokenSource.Token);
+            }, this._pingCancellationTokenSource.Token);
         }
         public async Task<List<IRemoteSession>> GetRemoteSessionsAsync()
         {

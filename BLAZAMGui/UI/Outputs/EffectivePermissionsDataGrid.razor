@@ -1,9 +1,9 @@
-﻿
-@inherits AppComponentBase
-
-@if (Target != null && Target.AppliedPermissionMappings.Count > 0)
+﻿@inherits AppComponentBase
+@{
+    var test = 1;
+}
+@if (Target != null)
 {
-
     <MudSimpleTable>
         <tr>
             <th>
@@ -61,13 +61,13 @@
                     </MudText>
 
                 </td>
-              
-                        <td>
+
+                <td>
                     @if (Target is IGroupableDirectoryAdapter groupable)
                     {
                         <MudText Align="Align.Center">
                             <StatusCheck Status="@(groupable.CanAssign)" />
-                    </MudText>
+                        </MudText>
                     }
                     else
                     {
@@ -76,12 +76,12 @@
                         </MudText>
                     }
                 </td>
-                  
-                        <td>
+
+                <td>
                     @if (Target is IAccountDirectoryAdapter account)
                     {
-                            <MudText Align="Align.Center">
-                                <StatusCheck Status="@(account.CanEnable)" />
+                        <MudText Align="Align.Center">
+                            <StatusCheck Status="@(account.CanEnable)" />
                         </MudText>
                     }
                     else
@@ -90,13 +90,13 @@
                             @AppLocalization[Lang.N_A]
                         </MudText>
                     }
-                        </td>
-                        <td>
+                </td>
+                <td>
                     @if (Target is IAccountDirectoryAdapter account1)
                     {
-                            <MudText Align="Align.Center">
-                                <StatusCheck Status="@(account1.CanDisable)" />
-                            </MudText>
+                        <MudText Align="Align.Center">
+                            <StatusCheck Status="@(account1.CanDisable)" />
+                        </MudText>
                     }
                     else
                     {
@@ -104,10 +104,10 @@
                             @AppLocalization[Lang.N_A]
                         </MudText>
                     }
-                        </td>
-                    
-                
-            
+                </td>
+
+
+
                 <td>
 
                     <MudText Align="Align.Center">
@@ -118,7 +118,6 @@
             </tr>
         }
     </MudSimpleTable>
-
 }
 
 @code {

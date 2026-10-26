@@ -1,7 +1,5 @@
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
-using BLAZAM.Services.Events;
-using MudBlazor;
 
 namespace BLAZAM.Gui.UI.Users
 {
@@ -81,7 +79,7 @@ namespace BLAZAM.Gui.UI.Users
 
                     EventType = ApplicationEventType.Search,
                     Entry = Contact,
-                    Actor = CurrentUser.State
+                    Actor = CurrentUser.State.AuditActor
 
                 });
             }
@@ -96,7 +94,6 @@ namespace BLAZAM.Gui.UI.Users
             if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
             {
                 SavingChanges = true;
-                await RefreshEntryComponents();
                 try
                 {
                     if (GroupableEntry == null)
@@ -104,53 +101,13 @@ namespace BLAZAM.Gui.UI.Users
                         SnackBarService.Error("Unable to save changes. No entry loaded.");
                         return;
                     }
-                    var changes = GroupableEntry.Changes.ToList();
-                    var assignTo = GroupableEntry.ToAssignTo.ToList();
-                    var unassignFrom = GroupableEntry.ToUnassignFrom.ToList();
+
                     var jobResults = await GroupableEntry.CommitChangesAsync();
+
                     if (jobResults.Result == JobResult.Passed)
                     {
-
-                        foreach (var assignment in assignTo)
-                        {
-                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Assign,
-                                Entry = assignment.Member,
-                                Target = assignment.Group,
-                                Actor = CurrentUser.State
-
-                            });
-
-
-                        }
-
-                        foreach (var assignment in unassignFrom)
-                        {
-                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Unassign,
-                                Entry = assignment.Member,
-                                Target = assignment.Group,
-                                Actor = CurrentUser.State
-
-                            });
-
-                        }
-                        if (changes.Any(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName)
-                            && User != null)
-                        {
-                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                            {
-                                EventType = ApplicationEventType.Modify,
-                                Entry = User,
-                                Changes = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList(),
-                                Actor = CurrentUser.State
-
-                            });
-                        }
                         EditMode = false;
-                        SnackBarService.Success("The changes made to this user have been saved.");
+                        SnackBarService.Success(AppHelpLocalization[HelpLang.Changes_Have_Been_Saved, AppLocalization[DirectoryEntry.ObjectType.ToString().ToLower()]]);
                     }
                     else
                     {
@@ -163,9 +120,6 @@ namespace BLAZAM.Gui.UI.Users
 
                 }
                 SavingChanges = false;
-
-                await RefreshEntryComponents();
-
             }
 
         }
@@ -186,31 +140,17 @@ namespace BLAZAM.Gui.UI.Users
             if (await MessageService.Confirm("Are you sure you want to delete " + GroupableEntry?.DisplayName + "?", "Delete User"))
             {
                 SavingChanges = true;
-                await StateHasChangedAsync();
-
                 try
                 {
                     GroupableEntry?.Delete();
 
                     SnackBarService.Success(GroupableEntry?.DisplayName + " has been deleted.");
-                    if (User != null)
-                    {
-                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                        {
-                            EventType = ApplicationEventType.Delete,
-                            Entry = User,
-                            Actor = CurrentUser.State
-
-                        });
-                    }
                 }
                 catch (AppException ex)
                 {
                     SnackBarService.Error(ex.Message);
                 }
                 SavingChanges = false;
-
-                await RefreshEntryComponents();
             }
         }
         private bool _disposed = false;

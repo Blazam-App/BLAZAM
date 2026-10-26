@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
-
 namespace BLAZAM.Gui.UI.Shared
 {
     public partial class TimeframeSelector : AppComponentBase

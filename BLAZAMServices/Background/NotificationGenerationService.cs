@@ -1,17 +1,14 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Database;
+﻿using BLAZAM.Common.Data.Database;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using BLAZAM.EmailMessage.Email.Base;
 using BLAZAM.EmailMessage.Email.Messages;
-using BLAZAM.Helpers;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Notifications;
 using BLAZAM.Notifications.Services;
-using BLAZAM.Services.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -36,7 +33,7 @@ namespace BLAZAM.Services.Background
             ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChangedEvent;
 
         }
-        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected virtual void ProcessDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             lock (_notificationLock)
             {
@@ -104,7 +101,7 @@ namespace BLAZAM.Services.Background
                    eventType == ApplicationEventType.Scheduled;
         }
 
-        private void PostNotification(DirectoryEntryChangedArgs args, NotificationType notificationType, bool isSQLite, IDirectoryEntryAdapter? target = null)
+        private void PostNotification(DirectoryEntryChangedEventArgs args, NotificationType notificationType, bool isSQLite, IDirectoryEntryAdapter? target = null)
         {
             if (isSQLite)
             {
@@ -126,7 +123,7 @@ namespace BLAZAM.Services.Background
         /// <param name="actor"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        public async Task PostAsync(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
             await Task.Run(() =>
             {
@@ -142,7 +139,7 @@ namespace BLAZAM.Services.Background
         /// <param name="actor"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        public void Post(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
 
             NotificationMessage notification;
@@ -174,7 +171,7 @@ namespace BLAZAM.Services.Background
         }
         private void ProcessUserNotification(IDirectoryEntryAdapter source,
                                             NotificationType notificationType,
-                                            IApplicationUserState? actor,
+                                            AuditLogActor? actor,
                                             AppUser user,
                                             NotificationMessage notification,
                                             string notificationTitle,
@@ -228,7 +225,7 @@ namespace BLAZAM.Services.Background
                 _ = _emailService.SendMessage(notificationTitle, emailMessage, user.Email);
             }
         }
-        private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor = null, IDirectoryEntryAdapter? target = null)
+        private async Task PostWebHooks(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor = null, IDirectoryEntryAdapter? target = null)
         {
             using var context = Context;
             var webhooks = await context.WebHookSubscriptions.Where(w => w.DeletedAt == null)
@@ -265,7 +262,7 @@ namespace BLAZAM.Services.Background
         /// <param name="notification"></param>
         /// <param name="notificationTitle"></param>
         /// <param name="emailMessage"></param>
-        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, IApplicationUserState? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out EmailNotificationTemplateComponent? emailMessage)
+        public void PackageNotification(IDirectoryEntryAdapter source, NotificationType notificationType, AuditLogActor? actor, IDirectoryEntryAdapter? target, out NotificationMessage notification, out string notificationTitle, out EmailNotificationTemplateComponent? emailMessage)
         {
             notification = new NotificationMessage();
             notificationTitle = _appLocalization[source.ObjectType.ToString()] + " ";
@@ -353,7 +350,7 @@ namespace BLAZAM.Services.Background
                     }
 
                     notificationTitle += _appLocalization[Lang.Locked_Out];
-                    notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime!=null?sourceUser.LockoutTime?.ToLocalTime():DateTime.Now);
+                    notificationBody += _appLocalization["has been locked out at "] + (sourceUser.LockoutTime != null ? sourceUser.LockoutTime?.ToLocalTime() : DateTime.Now);
                     var lockedOutMessage = NotificationType.LockedOut.ToEmailNotification<LockedOutEmailMessage>();
                     lockedOutMessage.EntryName = source.CanonicalName;
                     lockedOutMessage.EntryLink = source.SearchUri;
@@ -370,7 +367,7 @@ namespace BLAZAM.Services.Background
             notification.Title = notificationTitle;
             notification.Message = notificationBody;
             notification.Dismissable = true;
-            notification.CreatorId = actor?.Preferences?.Id;
+            notification.CreatorId = actor?.Id;
             notification.Level = NotificationLevel.Info;
         }
 

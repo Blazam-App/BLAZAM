@@ -35,24 +35,9 @@
         }
         if (SelectedOU is IADOrganizationalUnit ouToMoveTo)
         {
-
-
-          
-
-            var ouMovedFrom = await DirectoryModel.GetParentAsync() as IADOrganizationalUnit;
             DirectoryModel.MoveTo(ouToMoveTo);
 
             SnackBarService.Warning(DirectoryModel.CanonicalName + " has been moved to " + ouToMoveTo.CanonicalName + ", but changes need to be saved.");
-            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                {
-                    EventType = ApplicationEventType.Move,
-                    Entry = DirectoryModel,
-                    Target=ouToMoveTo,
-                    Origin = ouMovedFrom,
-                    Actor = CurrentUser.State
-
-                });
-
              await ModelChanged.InvokeAsync();
             Close();
             return;

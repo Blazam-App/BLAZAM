@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Database.Models.Notifications;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BLAZAM.Database.Models.User
 {

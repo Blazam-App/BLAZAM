@@ -1,5 +1,3 @@
-using BLAZAM.Services.Events;
-
 namespace BLAZAM.Gui.UI
 {
     public partial class ExpiredLogonPasswordModalContent : AppModalContent
@@ -38,14 +36,6 @@ namespace BLAZAM.Gui.UI
 
 
                         SnackBarService.Success("Your password has been updated");
-                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                        {
-                            EventType = ApplicationEventType.PasswordChange,
-                            Entry = User,
-                            Actor = CurrentUser.State
-
-
-                        });
                         await InvokeAsync(() => { Successful = true; });
                         await SuccessfulChanged.InvokeAsync(Successful);
                         await InvokeAsync(Close);

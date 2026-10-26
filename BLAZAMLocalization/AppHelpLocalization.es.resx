@@ -318,4 +318,10 @@ Intente configurar credenciales de actualización personalizadas.</value>
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Su contraseña expirará en {0} días.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Los cambios realizados en este {0} se han guardado.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Esta función todavía está en construcción</value>
+  </data>
 </root>

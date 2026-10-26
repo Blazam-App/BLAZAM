@@ -1,8 +1,4 @@
-﻿using BLAZAM.Services.Events;
-using BLAZAM.Session;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
-using Octokit;
+﻿using BLAZAM.Session;
 
 namespace BLAZAM.Services.Audit
 {
@@ -12,7 +8,7 @@ namespace BLAZAM.Services.Audit
         {
         }
 
-        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedArgs args)
+        protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
             if (args.Actor is SystemUserState || args.Actor is RulesUserState || args.Actor is ActiveDirectoryUserState)
             {

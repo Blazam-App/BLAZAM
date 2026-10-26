@@ -76,7 +76,7 @@ namespace BLAZAM.Update.Services
                         var identity = GetUpdateIdentity();
                         if (identity != null)
                         {
-                            if (identity.ImpersonationUser !=null && !initializedProfiles.Contains(identity.ImpersonationUser.Username))
+                            if (identity.ImpersonationUser != null && !initializedProfiles.Contains(identity.ImpersonationUser.Username))
                             {
                                 identity.EnsureProfileExists();
                                 initializedProfiles.Add(identity.ImpersonationUser.Username);
@@ -156,7 +156,7 @@ namespace BLAZAM.Update.Services
 
             //Get the releases from the repo
             var releases = await client.Repository.Release.GetAll(Publisher_Name, Repository_Name);
-           
+
             //Filter the releases to the selected branch
             var branchReleases = releases
                 .Where(r => r.TagName.Contains(SelectedBranch, StringComparison.OrdinalIgnoreCase));
@@ -171,10 +171,10 @@ namespace BLAZAM.Update.Services
             //Get releases from v1.6 to present
             var net10Releases = releases
                 .Where(r => r.TagName.Contains(ApplicationReleaseBranches.Net10ReleasePrefix, StringComparison.OrdinalIgnoreCase));
-           
+
             //Get the first release,which should be the most recent
             latestBranchRelease = branchReleases.FirstOrDefault();
-           
+
             //Store all other releases for use later
             lock (_updateCheckLock)
             {
@@ -238,7 +238,7 @@ namespace BLAZAM.Update.Services
                 }
             }
         }
-        
+
 
         /// <summary>
         /// Sets the branch based on the value in the database
@@ -401,12 +401,12 @@ namespace BLAZAM.Update.Services
                     return UpdateCredential.Application;
                 }
 
-              
 
 
 
 
-              
+
+
 
                 return UpdateCredential.None;
             }
@@ -488,7 +488,7 @@ namespace BLAZAM.Update.Services
             return false;
         }
 
-        public async Task<bool> Backup(IProgress<FileProgress>? onProgress=null)
+        public async Task<bool> Backup(IProgress<FileProgress>? onProgress = null)
         {
             Loggers.UpdateLogger?.Information("Attempting backup of current version to: {@BackupPath}", BackupDirectory.FullPath);
             try

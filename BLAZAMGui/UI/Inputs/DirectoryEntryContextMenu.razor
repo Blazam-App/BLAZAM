@@ -58,17 +58,8 @@
         {
 
             userToUnlock.LockedOut = false;
-            var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-            {
-                EventType = ApplicationEventType.Modify,
-                Entry = userToUnlock,
-                Changes = changes,
-                Actor = CurrentUser.State
-
-            });
             if (unlockJob.Result == JobResult.Passed)
             {
 
@@ -88,17 +79,8 @@
         {
 
             userToUnlock.Enabled = true;
-            var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-            {
-                EventType = ApplicationEventType.Modify,
-                Entry = userToUnlock,
-                Changes = changes,
-                Actor = CurrentUser.State
-
-            });
             if (unlockJob.Result == JobResult.Passed)
             {
 
@@ -119,18 +101,8 @@
         {
 
             userToUnlock.Enabled = false;
-            var changes = userToUnlock.Changes;
 
             var unlockJob = await userToUnlock.CommitChangesAsync();
-            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-            {
-                EventType = ApplicationEventType.Modify,
-                Entry = userToUnlock,
-                Changes = changes,
-                Actor = CurrentUser.State
-
-            });
-
             if (unlockJob.Result == JobResult.Passed)
             {
 

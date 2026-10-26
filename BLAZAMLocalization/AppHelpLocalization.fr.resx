@@ -318,4 +318,10 @@ Essayez de configurer des informations d'identification de mise à jour personna
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Votre mot de passe expirera dans {0} jours.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Les modifications apportées à ce {0} ont été enregistrées.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Cette fonctionnalité est toujours en cours de développement</value>
+  </data>
 </root>

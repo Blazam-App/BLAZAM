@@ -318,4 +318,10 @@
   <data name="Your_password_expires_in_X_days" xml:space="preserve">
     <value>Термін дії вашого пароля закінчиться через {0} днів.</value>
   </data>
+  <data name="Changes_Have_Been_Saved" xml:space="preserve">
+    <value>Зміни, внесені до цього {0}, збережено.</value>
+  </data>
+  <data name="Construction_Notice" xml:space="preserve">
+    <value>Ця функція все ще в розробці</value>
+  </data>
 </root>

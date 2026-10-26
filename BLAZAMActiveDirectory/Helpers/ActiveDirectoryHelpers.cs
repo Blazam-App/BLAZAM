@@ -1,12 +1,5 @@
-﻿using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.Protocols;
-using System.Text;
-using System.Text.RegularExpressions;
-using BLAZAM.ActiveDirectory;
+﻿using BLAZAM.ActiveDirectory;
 using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
@@ -15,6 +8,7 @@ using BLAZAM.Logger;
 using Microsoft.Extensions.DependencyInjection;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.DirectoryServices.Protocols;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -313,7 +307,7 @@ namespace BLAZAM.Helpers
                 {
                     thisObject = new ADBitLockerRecovery();
                 }
-                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit") 
+                else if (sr.PropertyContains(OBJECT_CLASS, "organizationalUnit")
                     || sr.PropertyContains(OBJECT_CLASS, "builtinDomain")
                     || sr.PropertyContains(OBJECT_CLASS, "container"))
                 {
@@ -605,7 +599,7 @@ namespace BLAZAM.Helpers
         /// <param name="searchResultEntries">The collection of search result entries from System.DirectoryServices.Protocols.</param>
         /// <param name="context">The Active Directory context.</param>
         /// <returns>A list of <see cref="IDirectoryEntryAdapter"/> whose types correspond to the directory object type they encapsulate.</returns>
-        public static List<IDirectoryEntryAdapter> Encapsulate(this System.DirectoryServices.Protocols.SearchResultEntryCollection searchResultEntries, IActiveDirectoryContext context)
+        public static List<IDirectoryEntryAdapter> Encapsulate(this SearchResultEntryCollection searchResultEntries, IActiveDirectoryContext context)
         {
             List<IDirectoryEntryAdapter> objects = new List<IDirectoryEntryAdapter>();
 
@@ -617,14 +611,14 @@ namespace BLAZAM.Helpers
 
             try
             {
-                foreach (System.DirectoryServices.Protocols.SearchResultEntry sre in searchResultEntries)
+                foreach (SearchResultEntry sre in searchResultEntries)
                 {
                     objects.Add(sre.Encapsulate(context));
                 }
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"Error encapsulating SearchResultEntryCollection");
+                Loggers.ActiveDirectoryLogger.Error(ex, "Error encapsulating SearchResultEntryCollection");
                 // Depending on desired behavior, might clear objects or throw
             }
             return objects;

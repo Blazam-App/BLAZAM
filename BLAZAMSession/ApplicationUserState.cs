@@ -1,9 +1,7 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
@@ -28,6 +26,7 @@ namespace BLAZAM.Session
 
 
         public ClaimsPrincipal? Impersonator { get; set; }
+        public string? ImpersonatorUsername { get => Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value; }
 
 
         public List<PermissionDelegate> PermissionDelegates { get; set; } = [];
@@ -53,6 +52,8 @@ namespace BLAZAM.Session
 
 
         public int Id => Preferences != null ? Preferences.Id : 0;
+
+        public Guid SessionId { get; } = Guid.NewGuid();
 
 
         public IApplicationUserSessionCache Cache { get; set; } = new ApplicationUserSessionCache();
@@ -245,12 +246,12 @@ namespace BLAZAM.Session
                         dbUserSettings.AuthenticatorSecret = Preferences.AuthenticatorSecret;
                         dbUserSettings.Email = Preferences.Email;
                         dbUserSettings.Username = Username;
-                        if(Preferences.PasswordResetSettings !=null && Preferences.PasswordResetSettings.Id > 0)
+                        if (Preferences.PasswordResetSettings != null && Preferences.PasswordResetSettings.Id > 0)
                         {
-                            var dbPasswordSettings =dbUserSettings.PasswordResetSettings;
+                            var dbPasswordSettings = dbUserSettings.PasswordResetSettings;
                             if (dbPasswordSettings != null)
                             {
-                                dbPasswordSettings.PIN = Preferences.PasswordResetSettings.PIN; 
+                                dbPasswordSettings.PIN = Preferences.PasswordResetSettings.PIN;
                                 dbPasswordSettings.Question1 = Preferences.PasswordResetSettings.Question1;
                                 dbPasswordSettings.Answer1 = Preferences.PasswordResetSettings.Answer1;
                                 dbPasswordSettings.Question2 = Preferences.PasswordResetSettings.Question2;
@@ -364,7 +365,7 @@ namespace BLAZAM.Session
         {
             get
             {
-                if (User?.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin)==true)
+                if (User?.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == UserRoles.SuperAdmin) == true)
                 {
                     return true;
                 }
@@ -406,7 +407,17 @@ namespace BLAZAM.Session
 
         public string LastUri { get; set; }
 
-
+        public AuditLogActor AuditActor
+        {
+            get => new AuditLogActor
+            {
+                Actor = Username,
+                SessionId = SessionId,
+                Impersonator = Impersonator?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value,
+                IPAddress = IPAddress,
+                Id = Id
+            };
+        }
         public override int GetHashCode()
         {
             return User?.GetHashCode() ?? 0;
@@ -624,7 +635,7 @@ namespace BLAZAM.Session
             return true;
         }
 
-        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy =>  new EffectivePasswordResetPolicy(PermissionDelegates);
+        public EffectivePasswordResetPolicy EffectivePasswordResetPolicy => new EffectivePasswordResetPolicy(PermissionDelegates);
 
         public bool HasPermission(string dnTarget, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>> allowSelector, Func<IEnumerable<PermissionMapping>, IEnumerable<PermissionMapping>>? denySelector, bool nestedSearch)
         {

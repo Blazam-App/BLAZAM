@@ -1,22 +1,14 @@
-﻿using BLAZAM.ActiveDirectory;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.ActiveDirectory.Services;
+﻿using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
-using BLAZAM.Database.Models.Audit;
-using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Rules;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
-using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Data;
 using System.Diagnostics;
 
@@ -42,7 +34,7 @@ namespace BLAZAM.Services.Background
             _audit = new RuleAudit(dbFactory);
             Task.Delay(15000).ContinueWith(async (state) =>
             {
-                using var directory=activeDirectoryContextFactory.CreateActiveDirectoryContext();
+                using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
                 await dbFactory.SeedExcludedGroups(directory);
             });
             _ = new RulesAuditLogger(dbFactory);
@@ -126,7 +118,7 @@ namespace BLAZAM.Services.Background
         /// <summary>
         /// Handles directory entry change events and processes applicable rules.
         /// </summary>
-        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedArgs args)
+        private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
 
             if (sender != null && sender.Equals(this))
@@ -143,7 +135,7 @@ namespace BLAZAM.Services.Background
             }
 
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-            if (await args.Entry.ShouldSkipEntry(dbFactory,directory))
+            if (await args.Entry.ShouldSkipEntry(dbFactory, directory))
             {
                 return;
             }
@@ -234,16 +226,11 @@ namespace BLAZAM.Services.Background
             List<IDirectoryEntryAdapter> filteredEntries;
             IApplicationUserState rulesUserState = new RulesUserState(dbFactory);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
-            filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory,directory);
+            filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
             // Execute actions for each matched entry
             foreach (var entry in filteredEntries)
             {
-                if (await entry.ShouldSkipEntry(dbFactory, directory))
-                {
-                    _audit.RuleMatchSkipped(rule, entry);
-                    continue;
-                }
                 Job entryJob = new Job($"Execute on {entry.CanonicalName}");
                 JobStep execApplicableEntriesStep = new($"Execute", (step) =>
                 {
@@ -265,7 +252,7 @@ namespace BLAZAM.Services.Background
         }
 
 
-      
+
 
         /// <summary>
         /// Processes a single directory entry for a given rule, executing all actions if filters pass.
@@ -277,14 +264,14 @@ namespace BLAZAM.Services.Background
         private bool ProcessMatchedEntry(AutomationRule ruleForEvent, IDirectoryEntryAdapter entry, IJob? ruleJob = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            Task.Delay(50).Wait();
+            //Task.Delay(50).Wait();
 
             Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
             ruleForEvent.ExecutionId = Guid.NewGuid();
 
             _audit.RuleExecutionStarted(ruleForEvent);
 
-            Task.Delay(50).Wait();
+            //Task.Delay(50).Wait();
 
             if (OrFiltersPass(ruleForEvent, entry))
             {
@@ -297,7 +284,7 @@ namespace BLAZAM.Services.Background
                     var contextRule = context.AutomationRules.First(r => r.Id.Equals(ruleForEvent.Id));
                     contextRule.LastExcecuted = DateTime.UtcNow;
                     context.SaveChanges();
-                    Task.Delay(50).Wait();
+                    //Task.Delay(50).Wait();
 
                 }
                 catch (Exception ex)
@@ -313,7 +300,7 @@ namespace BLAZAM.Services.Background
                         ExecuteAction(ruleForEvent, action, entry, ruleJob);
                         _audit.RuleActionExecuted(ruleForEvent, entry, action.ToJson());
 
-                        Task.Delay(250).Wait();
+                        //Task.Delay(250).Wait();
 
                     }
                     catch (Exception ex)
@@ -327,13 +314,13 @@ namespace BLAZAM.Services.Background
                 if (ruleForEvent.StopOnThisRule)
                 {
                     Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
-
+                    entry.Dispose();
                     return false;
                 }
             }
             Loggers.RulesLogger.Information("Processing for rule {@Rule} on {@Entry} has finished {@ElapsedTime}", ruleForEvent.Name, entry.DN, sw.Elapsed);
             _audit.RuleExecutionFinished(ruleForEvent, sw.Elapsed);
-
+            entry.Dispose();
             return true;
         }
 
@@ -572,7 +559,7 @@ namespace BLAZAM.Services.Background
 
                 ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
                 {
-                    Actor = new RulesUserState(dbFactory, rule.Name),
+                    Actor = new RulesUserState(dbFactory, rule.Name).AuditActor,
                     Changes = changes,
                     Entry = entry,
                     Target = target,

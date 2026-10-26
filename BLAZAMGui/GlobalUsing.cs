@@ -1,14 +1,15 @@
 ﻿global using BLAZAM.ActiveDirectory.Adapters;
+global using BLAZAM.ActiveDirectory.Events;
 global using BLAZAM.ActiveDirectory.Interfaces;
 global using BLAZAM.ActiveDirectory.Searchers;
 global using BLAZAM.Common.Data;
-global using BLAZAM.Common.Data.Services;
 global using BLAZAM.Common.Exceptions;
 global using BLAZAM.Database.Interfaces;
 global using BLAZAM.Database.Models;
 global using BLAZAM.Database.Models.Notifications;
 global using BLAZAM.Database.Models.Templates;
 global using BLAZAM.Database.Models.User;
+global using BLAZAM.Global.Enums;
 global using BLAZAM.Global.Events;
 global using BLAZAM.Global.Exceptions;
 global using BLAZAM.Helpers;

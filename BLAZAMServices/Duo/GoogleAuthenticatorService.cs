@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using Google.Authenticator;
+﻿using Google.Authenticator;
 
 namespace BLAZAM.Services.Duo
 {

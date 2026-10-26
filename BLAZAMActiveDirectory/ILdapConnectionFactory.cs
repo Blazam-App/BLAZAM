@@ -4,7 +4,7 @@ using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory
 {
-    public interface ILdapConnectionFactory:IDisposable
+    public interface ILdapConnectionFactory : IDisposable
     {
         int Count { get; }
         AppEvent? OnCountChanged { get; set; }

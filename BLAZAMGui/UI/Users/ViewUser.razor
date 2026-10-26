@@ -20,18 +20,18 @@
                 <SetSubHeader @ref="SubHeader">
 
                     <DirectoryEntryViewHeader EditMode="@EditMode"
-                                              DirectoryEntry="@GroupableEntry"
-                                              OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
-                                              OnDelete="@DeleteUser"
-                                              OnDisable="@(async()=>{Account.Enabled=false; await RefreshEntryComponents();})"
-                                              OnEnable="@(async()=>{Account.Enabled=true; await RefreshEntryComponents();})"
-                                              OnMove="@(()=>{MoveToModal?.ShowAsync();})"
-                                              OnRename="@(()=>{RenameModal?.ShowAsync();})"
-                                              OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
-                                              OnToggleEditMode="ToggleEditMode"
-                                              OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
-                                              OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
-                                              OnUnlock="@Unlock" />
+                    DirectoryEntry="@GroupableEntry"
+                    OnAssignTo="@(()=>{AssignToModal?.ShowAsync();})"
+                    OnDelete="@DeleteUser"
+                    OnDisable="@(async()=>{Account.Enabled=false; await RefreshEntryComponents();})"
+                    OnEnable="@(async()=>{Account.Enabled=true; await RefreshEntryComponents();})"
+                    OnMove="@(()=>{MoveToModal?.ShowAsync();})"
+                    OnRename="@(()=>{RenameModal?.ShowAsync();})"
+                    OnResetPassword="@(()=>{ChangePasswordModal?.ShowAsync();})"
+                    OnToggleEditMode="ToggleEditMode"
+                    OnShowHistory="@(()=>{ChangeHistoryModal?.ShowAsync();})"
+                    OnShowPermissions="@(()=>{EffectivePermissionsModal?.ShowAsync();})"
+                    OnUnlock="@Unlock" />
 
                     <LoadingData Loading=SavingChanges />
 
@@ -42,7 +42,7 @@
             <CascadingValue Value="GroupableEntry">
                 <CascadingValue Value="DirectoryEntry">
 
-                   
+
                     <AppModal Color="Color.Dark" Title=@AppLocalization[Lang.Assign_To] @ref=@AssignToModal>
                         <AssignToModalContent ModelChanged=@RefreshEntryComponents DirectoryModel="Contact" />
                     </AppModal>
@@ -69,7 +69,7 @@
                     <MudGrid>
                         <MudItem xs="12" md="3">
                             <DetailsSection AssignToClicked=@(()=>{AssignToModal?.ShowAsync();})/>
-                           
+
                         </MudItem>
                         <MudItem xs=12 md="9">
                             <MudStack>
@@ -103,7 +103,7 @@
                                 @if (CanReadField(field))
                                 {
                                     <CustomDirectoryField 
-                                        Disabled=@(!EditMode || !CanEditField(field)) 
+                                    Disabled=@(!EditMode || !CanEditField(field)) 
                                     Entry="GroupableEntry" 
                                     Field="@field" />
 
@@ -127,9 +127,6 @@
     }
     <LoadingData Loading=SavingChanges />
 
-
-}else{
-    var lost = "lost";
 }
 
 

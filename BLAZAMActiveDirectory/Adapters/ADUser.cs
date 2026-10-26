@@ -1,6 +1,4 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
@@ -41,13 +39,13 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
         }
 
-       
+
 
         [Required]
         public override string? DisplayName { get => base.DisplayName; set => base.DisplayName = value; }
 
 
-        public List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job=null) => this.DomainControllerEventLogs?.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow, job) ?? [];
+        public List<FailedADLogonEvent> GetFailedLogonEvents(IJob? job = null) => this.DomainControllerEventLogs?.GetFailedLogonEvents(this, DateTime.UtcNow - TimeSpan.FromDays(5), DateTime.UtcNow, job) ?? [];
 
         public string? HomeDirectory
         {

@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using BLAZAM.Session.Interfaces;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace BLAZAM.Middleware
 {
@@ -47,7 +47,7 @@ namespace BLAZAM.Middleware
                     // Note: ICurrentUserStateService is scoped per circuit, 
                     // so we can't inject it in the constructor
                     // You'll need to handle this differently - see below
-                    
+
                     if (httpContext.Connection?.RemoteIpAddress != null)
                     {
                         state.IPAddress = httpContext.Connection.RemoteIpAddress.ToString();

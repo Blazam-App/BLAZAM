@@ -73,7 +73,7 @@ namespace BLAZAM.Gui.Helper
         public static void ShowJobDetailsDialog(this AppDialogService MessageService, IJob job, string title)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-           _ = MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), title);
+            _ = MessageService.ShowMessage<JobResultDialog>(job.ToDialogParameters(), title);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
     }

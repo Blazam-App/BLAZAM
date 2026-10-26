@@ -1,6 +1,4 @@
-﻿using BLAZAM.Global.Enums;
-
-namespace BLAZAM.Services.Background
+﻿namespace BLAZAM.Services.Background
 {
 
 

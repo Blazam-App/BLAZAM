@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using SixLabors.ImageSharp.ColorProfiles;
 
 namespace BLAZAM.Common.Data
 {
@@ -23,7 +22,7 @@ namespace BLAZAM.Common.Data
         {
             return CheckForAspCoreHosting("10");
         }
-        private static bool CheckForAspCore(string version="8")
+        private static bool CheckForAspCore(string version = "8")
         {
             try
             {
@@ -44,7 +43,7 @@ namespace BLAZAM.Common.Data
                     return false;
                 }
 
-                return dirs.Any(dir => dir.Contains(version+"."));
+                return dirs.Any(dir => dir.Contains(version + "."));
             }
             catch (Exception ex)
             {
@@ -78,7 +77,7 @@ namespace BLAZAM.Common.Data
 
         private static bool CheckForAspCoreHosting(string version = "8")
         {
-            RegistryKey? key=null;
+            RegistryKey? key = null;
             try
             {
                 key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Updates\\.NET\\");
@@ -89,7 +88,7 @@ namespace BLAZAM.Common.Data
                     {
                         foreach (var possibleKey in possibleAspKeys)
                         {
-                            if (possibleKey.Contains("Microsoft .NET "+version) && possibleKey.Contains("Hosting"))
+                            if (possibleKey.Contains("Microsoft .NET " + version) && possibleKey.Contains("Hosting"))
                             {
                                 return true;
                             }
