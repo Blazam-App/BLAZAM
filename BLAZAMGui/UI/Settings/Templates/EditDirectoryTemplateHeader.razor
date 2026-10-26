@@ -141,12 +141,17 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (Templates?.Any() != true)
-        {
+        _ = Task.Run(async () =>
+            {
+                LoadingData = true;
+                if (Templates?.Any() != true)
+                {
 
-            await Task.Delay(1000);
-            createFirstTemplateTooltipVisible = true;
-        }
+                    await Task.Delay(1000);
+                    createFirstTemplateTooltipVisible = true;
+                }
+                LoadingData = false;
+            });
     }
 
     protected async Task DuplicateTemplate(DirectoryTemplate template)
@@ -207,7 +212,7 @@
             await Task.Delay(1200);
             await FetchTemplates();
 
-            Nav.NavigateTo(Nav.Uri,true);
+            Nav.NavigateTo(Nav.Uri, true);
         }
 
      
