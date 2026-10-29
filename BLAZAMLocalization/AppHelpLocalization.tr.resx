@@ -241,7 +241,7 @@
     <value>{0} için istek</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>{0}'a istek</value>
+    <value>{0} için istek</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Bu kural, bir {0} her {1} olduğunda tetiklenecek.</value>
@@ -262,7 +262,7 @@
     <value>Kaydedilmemiş değişiklikleriniz var.</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Yayın dalı önerilen daldır. Nightly seçmek yalnızca test kurulumları için önerilir. Dev yalnızca geliştiriciler içindir.</value>
+    <value>NET10 dalı önerilen daldır. Nightly'yi seçmek, veritabanını geri döndürme gereksinimi riskinin nispeten düşük olmasıyla birlikte bir sonraki sürümdeki önizleme özelliklerini sunar. Dev yalnızca geliştiriciler içindir.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} güncellendi</value>

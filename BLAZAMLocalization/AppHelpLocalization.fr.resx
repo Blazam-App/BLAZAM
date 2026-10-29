@@ -241,7 +241,7 @@
     <value>Demande à {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Demande à {0}</value>
+    <value>Demande pour {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Cette règle sera déclenchée chaque fois qu'un {0} est {1}</value>
@@ -262,7 +262,7 @@
     <value>Vous avez des modifications non enregistrées</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>La branche NET10 est la branche recommandée. Choisir Nightly n'est recommandé que pour les installations de test. Dev est réservé aux développeurs.</value>
+    <value>La branche NET10 est la branche recommandée. Choisir Nightly fournira des fonctionnalités en aperçu de la prochaine version avec un risque relativement faible de devoir revenir en arrière sur la base de données. Dev est uniquement destiné aux développeurs.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} a été mis à jour</value>

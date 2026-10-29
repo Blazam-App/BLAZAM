@@ -238,10 +238,10 @@
     <value>管理者がこのワークステーションの名前を変更しました。{0}秒後に再起動します。</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>{0}にリクエスト</value>
+    <value>{0} へのリクエスト</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>{0}にリクエスト</value>
+    <value>{0} のリクエスト</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>このルールは、{0}が{1}になるたびに起動されます</value>
@@ -262,7 +262,7 @@
     <value>保存されていない変更があります</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>NET10ブランチが推奨ブランチです。Nightlyを選択することはテストインストールにのみ推奨されます。Devは開発者専用です。</value>
+    <value>NET10 ブランチが推奨ブランチです。Nightly を選択すると、データベースの巻き戻しが必要になるリスクを比較的低く抑えつつ、次のリリースのプレビュー機能を利用できます。Dev は開発者専用です。</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0}は更新されました</value>

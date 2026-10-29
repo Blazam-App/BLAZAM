@@ -238,10 +238,10 @@
     <value>Een beheerder heeft dit werkstation hernoemd. Het wordt over {0} seconden opnieuw opgestart.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Verzoek voor {0}</value>
+    <value>Verzoek aan {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Verzoek aan {0}</value>
+    <value>Aanvraag voor {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Deze regel wordt elke keer geactiveerd als een {0} {1} is.</value>
@@ -262,7 +262,7 @@
     <value>U heeft niet-opgeslagen wijzigingen.</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>De releasetak is de aanbevolen tak. Het kiezen van Nightly wordt alleen aanbevolen voor testinstallaties. Dev is alleen voor ontwikkelaars.</value>
+    <value>De NET10-tak is de aanbevolen tak. Als je Nightly kiest, krijg je previewfuncties van de volgende release met een relatief laag risico dat een database-revert nodig is. Dev is alleen voor ontwikkelaars.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} is bijgewerkt</value>

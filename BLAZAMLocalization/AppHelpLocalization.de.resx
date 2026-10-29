@@ -238,10 +238,10 @@
     <value>Ein Administrator hat diese Workstation umbenannt. Sie wird in {0} Sekunden neu gestartet.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Anfrage: {0}</value>
+    <value>Anfrage an {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Anfrage: {0}</value>
+    <value>Anfrage für {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Diese Regel wird jedes Mal ausgelöst, wenn bei einem Objekt vom Typ „{0}“ das Ereignis „{1}“ eintritt.</value>
@@ -262,7 +262,7 @@
     <value>Sie haben ungespeicherte Änderungen</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>NET10 ist der empfohlene Branch. Nightly sollte nur für Testinstallationen verwendet werden. Dev ist ausschließlich für Entwickler vorgesehen.</value>
+    <value>Der NET10-Branch ist der empfohlene Branch. Die Auswahl von Nightly bietet Vorschaufunktionen der nächsten Version bei einem relativ geringen Risiko, dass ein Datenbank-Revert erforderlich wird. Dev ist nur für Entwickler.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} wurde aktualisiert</value>
