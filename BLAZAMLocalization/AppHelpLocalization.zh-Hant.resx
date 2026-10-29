@@ -238,10 +238,10 @@
     <value>管理員已重新命名此工作站。它將在 {0} 秒後重新啟動。</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>請求 {0}</value>
+    <value>向 {0} 請求</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>請求 {0}</value>
+    <value>對 {0} 的請求</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>每當 {0} 為 {1} 時，此規則就會觸發</value>
@@ -262,7 +262,7 @@
     <value>您有尚未儲存的變更</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>發行分支是建議的分支。僅建議測試安裝選擇 Nightly。Dev 僅供開發人員使用。</value>
+    <value>NET10 分支是建議的分支。選擇 Nightly 將提供下一個版本的預覽功能，且需要還原資料庫的風險相對較低。Dev 僅供開發人員使用。</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新 {0}</value>

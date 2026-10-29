@@ -238,10 +238,10 @@
     <value>Administrator zmienił nazwę tej stacji roboczej. Uruchomi się ponownie za {0} sekund.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Żądanie do {0}</value>
+    <value>Prośba do {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Żądanie do {0}</value>
+    <value>Prośba o {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Ta reguła zostanie uruchomiona za każdym razem, gdy {0} to {1}</value>
@@ -262,7 +262,7 @@
     <value>Masz niezapisane zmiany</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Gałąź wydania jest zalecaną gałęzią. Wybór Nightly jest zalecany tylko w przypadku instalacji testowych. Dev jest przeznaczony tylko dla deweloperów.</value>
+    <value>Gałąź NET10 jest zalecaną gałęzią. Wybranie Nightly zapewni funkcje podglądowe z następnego wydania przy stosunkowo niskim ryzyku konieczności przywrócenia bazy danych. Dev jest tylko dla deweloperów.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>Zaktualizowano {0}</value>

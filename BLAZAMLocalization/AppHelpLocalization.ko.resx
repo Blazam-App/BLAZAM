@@ -238,10 +238,10 @@
     <value>관리자가 이 워크스테이션의 이름을 변경했습니다. {0}초 후에 재부팅됩니다.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>{0}에 요청</value>
+    <value>{0}에게 요청</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>{0}에 요청</value>
+    <value>{0}에 대한 요청</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>이 규칙은 {0}이(가) {1}일 때마다 실행됩니다.</value>
@@ -262,7 +262,7 @@
     <value>저장되지 않은 변경 사항이 있습니다</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>릴리스 브랜치가 권장 브랜치입니다. Nightly 선택은 테스트 설치에만 권장됩니다. Dev는 개발자 전용입니다.</value>
+    <value>NET10 분기가 권장 분기입니다. Nightly를 선택하면 데이터베이스를 되돌려야 할 위험이 비교적 낮은 상태에서 다음 릴리스의 미리보기 기능을 사용할 수 있습니다. Dev는 개발자 전용입니다.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0}이(가) 업데이트되었습니다.</value>

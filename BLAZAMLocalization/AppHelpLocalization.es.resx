@@ -238,10 +238,10 @@
     <value>Un administrador ha cambiado el nombre de esta estación de trabajo. Se reiniciará en {0} segundos.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Solicitar a {0}</value>
+    <value>Solicitud a {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Solicitar a {0}</value>
+    <value>Solicitud de {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Esta regla se activará cada vez que un {0} sea {1}</value>
@@ -262,7 +262,7 @@
     <value>Tiene cambios no guardados</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>La rama NET10 es la rama recomendada. Elegir Nightly solo se recomienda para instalaciones de prueba. Dev es solo para desarrolladores.</value>
+    <value>La rama NET10 es la rama recomendada. Elegir Nightly proporcionará funciones de vista previa de la próxima versión con un riesgo relativamente bajo de tener que revertir la base de datos. Dev es solo para desarrolladores.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} ha sido actualizado</value>
