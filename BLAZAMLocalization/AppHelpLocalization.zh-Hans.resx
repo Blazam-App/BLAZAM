@@ -238,10 +238,10 @@
     <value>管理员已重命名此工作站。它将在 {0} 秒后重新启动。</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>请求 {0}</value>
+    <value>向{0}请求</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>请求 {0}</value>
+    <value>针对 {0} 的请求</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>每当 {0} 为 {1} 时，此规则就会触发</value>
@@ -262,7 +262,7 @@
     <value>您有未保存的更改</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>NET10分支是推荐的分支。选择Nightly仅建议用于测试安装。Dev仅供开发人员使用。</value>
+    <value>NET10 branch 是推荐分支。选择 Nightly 将提供下一版本的预览功能，且需要回滚数据库的风险相对较低。Dev 仅供开发者使用。</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新 {0}</value>

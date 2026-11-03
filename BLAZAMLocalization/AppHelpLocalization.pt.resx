@@ -241,7 +241,7 @@
     <value>Solicitação para {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Solicitação a {0}</value>
+    <value>Solicitação de {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Esta regra será disparada toda vez que um {0} for {1}</value>
@@ -262,7 +262,7 @@
     <value>Você tem alterações não salvas</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>O ramo NET10 é o ramo recomendado. Escolher Nightly é recomendado apenas para instalações de teste. Dev é apenas para desenvolvedores.</value>
+    <value>A ramificação NET10 é a ramificação recomendada. Ao escolher Nightly, terá funcionalidades de pré-visualização da próxima versão, com um risco relativamente baixo de ser necessária uma reversão da base de dados. Dev é apenas para programadores.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} foi atualizado</value>

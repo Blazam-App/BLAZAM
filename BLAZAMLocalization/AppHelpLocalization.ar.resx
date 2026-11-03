@@ -241,7 +241,7 @@
     <value>طلب إلى {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>طلب إلى {0}</value>
+    <value>طلب لـ {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>سيتم تفعيل هذه القاعدة في كل مرة يكون فيها {0} هو {1}</value>
@@ -262,7 +262,7 @@
     <value>لديك تغييرات غير محفوظة</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>فرع الإصدار هو الفرع الموصى به. يوصى باختيار (Nightly) فقط للتثبيتات التجريبية. وفرع (Dev) مخصص للمطورين فقط.</value>
+    <value>فرع NET10 هو الفرع الموصى به. سيؤدي اختيار Nightly إلى توفير ميزات معاينة من الإصدار التالي مع خطر منخفض نسبيًا للحاجة إلى استرجاع قاعدة البيانات إلى إصدار سابق. Dev مخصص للمطورين فقط.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>تم تحديث {0}</value>

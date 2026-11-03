@@ -238,10 +238,10 @@
     <value>एक व्यवस्थापक ने इस कार्य केंद्र का नाम बदल दिया है। यह {0} सेकंड में रीबूट होगा।</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>{0} से अनुरोध करें</value>
+    <value>{0} को अनुरोध</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>{0} से अनुरोध करें</value>
+    <value>{0} के लिए अनुरोध</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>यह नियम हर बार तब फायर होगा जब कोई {0} {1} होगा</value>
@@ -262,7 +262,7 @@
     <value>आपके पास बिना सहेजे गए परिवर्तन हैं</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>रिलीज़ शाखा अनुशंसित शाखा है। नाइटली चुनना केवल परीक्षण प्रतिष्ठानों के लिए अनुशंसित है। देव केवल डेवलपर्स के लिए है।</value>
+    <value>NET10 शाखा अनुशंसित शाखा है। Nightly चुनने पर अगली रिलीज़ की पूर्वावलोकन सुविधाएँ मिलेंगी, और डेटाबेस को वापस लौटाने की आवश्यकता का जोखिम तुलनात्मक रूप से कम रहेगा। Dev केवल डेवलपर्स के लिए है।</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} अपडेट किया गया है</value>

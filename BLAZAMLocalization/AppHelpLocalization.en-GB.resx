@@ -239,10 +239,10 @@ efforts on what our users think matters most.</value>
     <value>An administrator has renamed this workstation. It will reboot in {0} seconds.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Request for {0}</value>
+    <value>Request to {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Request to {0}</value>
+    <value>Request for {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>This rule will be fired each time a {0} is {1}</value>
@@ -263,7 +263,7 @@ efforts on what our users think matters most.</value>
     <value>You have unsaved changes</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>The NET10 branch is the recommended branch. Choosing Nightly is only recommended for test installations. Dev is only for developers.</value>
+    <value>The NET10 branch is the recommended branch. Choosing Nightly will provide preview features from the next release with the relatively low risk of needing a database revert. Dev is only for developers.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} has been updated</value>

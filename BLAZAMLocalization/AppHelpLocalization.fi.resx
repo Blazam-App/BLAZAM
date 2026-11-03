@@ -238,10 +238,10 @@
     <value>Järjestelmänvalvoja on nimennyt tämän työaseman uudelleen. Se käynnistyy uudelleen {0} sekunnin kuluttua.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Pyyntö kohteelle {0}</value>
+    <value>Pyyntö kohteeseen {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Pyyntö {0}:lle</value>
+    <value>Pyyntö kohteelle {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Tämä sääntö käynnistyy joka kerta kun {0} on {1}.</value>
@@ -262,7 +262,7 @@
     <value>Sinulla on tallentamattomia muutoksia.</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Julkaisuhaara on suositeltu haara. Nightly-haaran valitsemista suositellaan vain testiasennuksille. Dev on vain kehittäjille.</value>
+    <value>NET10-haara on suositeltu haara. Valitsemalla Nightlyn saat seuraavan julkaisun esikatseluominaisuudet suhteellisen pienellä riskillä, että tietokanta on palautettava. Dev on tarkoitettu vain kehittäjille.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} on päivitetty</value>

@@ -530,7 +530,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request to {0}.
+        ///   Looks up a localized string similar to Request for {0}.
         /// </summary>
         public static string Request_For {
             get {
@@ -539,7 +539,7 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request for {0}.
+        ///   Looks up a localized string similar to Request to {0}.
         /// </summary>
         public static string Request_To {
             get {

@@ -238,10 +238,10 @@
     <value>Un administrator a redenumit această stație de lucru. Va reporni în {0} secunde.</value>
   </data>
   <data name="Request_To" xml:space="preserve">
-    <value>Solicitare pentru {0}</value>
+    <value>Solicitare către {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Solicitare la {0}</value>
+    <value>Cerere pentru {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Această regulă va fi declanșată de fiecare dată când un {0} este {1}</value>
@@ -262,7 +262,7 @@
     <value>Aveți modificări nesalvate</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Ramura de lansare este ramura recomandată. Alegerea Nightly este recomandată doar pentru instalările de test. Dev este doar pentru dezvoltatori.</value>
+    <value>Ramura NET10 este ramura recomandată. Alegerea Nightly va oferi funcționalități de previzualizare din următoarea versiune, cu un risc relativ scăzut de a necesita o revenire a bazei de date. Dev este doar pentru dezvoltatori.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} a fost actualizat</value>

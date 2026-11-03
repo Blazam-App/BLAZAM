@@ -241,7 +241,7 @@
     <value>Запрос к {0}</value>
   </data>
   <data name="Request_For" xml:space="preserve">
-    <value>Запрос к {0}</value>
+    <value>Запрос для {0}</value>
   </data>
   <data name="Rule_No_Filter_Warning" xml:space="preserve">
     <value>Это правило будет срабатывать каждый раз, когда {0} является {1}</value>
@@ -262,7 +262,7 @@
     <value>У вас есть несохранённые изменения</value>
   </data>
   <data name="Upate_Branch_Definition" xml:space="preserve">
-    <value>Рекомендуемой веткой является ветка релиза. Выбор Nightly рекомендуется только для тестовых установок. Dev предназначен только для разработчиков.</value>
+    <value>Ветка NET10 является рекомендуемой. Выбор Nightly предоставит предварительные функции следующего выпуска при относительно низком риске необходимости отката базы данных. Dev — только для разработчиков.</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>{0} обновлен</value>
