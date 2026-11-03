@@ -7,7 +7,7 @@ namespace BLAZAM.Services.Audit
         public RulesAuditLogger(IAppDatabaseFactory factory) : base(factory, null)
         {
 
-            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.EventHandler += TriggerDirectoryEntryChangedEvent;
 
         }
 

@@ -23,7 +23,7 @@ namespace BLAZAM.ActiveDirectory
 
         public LdapConnectionFactory()
         {
-            ApplicationEvents.LoggedOnUserCountChanged.Delegate += LoggedOnUserCountChanged;
+            ApplicationEvents.LoggedOnUserCountChanged.EventHandler += LoggedOnUserCountChanged;
         }
         private void LoggedOnUserCountChanged(object? sender, int count)
         {
@@ -491,7 +491,7 @@ namespace BLAZAM.ActiveDirectory
             if (!disposedValue)
             {
                 ClearPool();
-                ApplicationEvents.LoggedOnUserCountChanged.Delegate -= LoggedOnUserCountChanged;
+                ApplicationEvents.LoggedOnUserCountChanged.EventHandler -= LoggedOnUserCountChanged;
 
                 disposedValue = true;
             }

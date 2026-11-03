@@ -46,9 +46,9 @@
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler += RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler += Renamed;
                 if (Context != null)
                 {
                     CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf => cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
@@ -64,9 +64,9 @@
             base.Dispose();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate -= RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler -= RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate -= Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler -= Renamed;
 
             }
         }

@@ -96,7 +96,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Group.OnChangesDiscarded.Delegate += RefreshData;
+        Group.OnChangesDiscarded.EventHandler += RefreshData;
         RefreshData();
 
     }
@@ -131,7 +131,7 @@ else
     }
     public override void Dispose()
     {
-        Group.OnChangesDiscarded.Delegate -= RefreshData;
+        Group.OnChangesDiscarded.EventHandler -= RefreshData;
         base.Dispose();
     }
 }

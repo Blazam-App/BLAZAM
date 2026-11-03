@@ -245,12 +245,12 @@
     {
         await base.OnInitializedAsync();
         ReloadRule();
-        ReloadEvent.Delegate += TriggerReloadRule;
+        ReloadEvent.EventHandler += TriggerReloadRule;
     }
     public override void Dispose()
     {
         base.Dispose();
-        ReloadEvent.Delegate -= TriggerReloadRule;
+        ReloadEvent.EventHandler -= TriggerReloadRule;
 
     }
 

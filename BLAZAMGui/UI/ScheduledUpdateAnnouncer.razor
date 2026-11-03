@@ -1,9 +1,9 @@
 @inherits AppComponentBase
 
-@if (SchedueledUpdateTime != null && SchedueledUpdateTime != DateTime.MinValue)
+@if (AutoUpdateService.ScheduledUpdateTime != DateTime.MinValue)
 {
 
-    var timeLeft = (SchedueledUpdateTime - DateTime.Now).Value;
+    var timeLeft = (AutoUpdateService.ScheduledUpdateTime - DateTime.Now);
     @if (timeLeft.TotalMinutes <= 60)
     {
 
@@ -17,12 +17,21 @@
 
 
 @code {
-    DateTime? SchedueledUpdateTime { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        SchedueledUpdateTime = AutoUpdateService.ScheduledUpdateTime;
-        AutoUpdateService.OnAutoUpdateQueued += ((time) => { SchedueledUpdateTime = time; });
+        ApplicationEvents.OnAutoUpdateQueued.EventHandler += UpdateQueued;
         await StateHasChangedAsync();
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        ApplicationEvents.OnAutoUpdateQueued.EventHandler -= UpdateQueued;
+
+    }
+    private void UpdateQueued(object? sender, EventArgs e)
+    {
+        _ = StateHasChangedAsync();
     }
 }

@@ -48,7 +48,7 @@ namespace BLAZAM.Services.Background
         {
             if (!_initialized)
             {
-                ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+                ActiveDirectoryEvents.DirectoryEntryEvent.EventHandler += ProcessDirectoryEntryChanged;
 
                 _initialized = true;
 
@@ -391,7 +391,7 @@ namespace BLAZAM.Services.Background
                         eventType = ApplicationEventType.All;
                         return;
                     }
-                    ;
+                    
                     groupableEntry.AssignTo(group);
                 }
             }
@@ -418,7 +418,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteDisableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteDisableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -432,7 +432,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteEnableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteEnableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -446,7 +446,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteUnlockAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteUnlockAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -460,7 +460,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteLockoutAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteLockoutAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.LockedOut;
             if (entry is IAccountDirectoryAdapter account)
@@ -497,7 +497,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteModifyFieldAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteModifyFieldAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (action.FieldValues.Count > 0)
@@ -694,7 +694,7 @@ namespace BLAZAM.Services.Background
                 case ActiveDirectoryFieldOperator.Boolean:
                     if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
                     {
-                        return boolValue == true;
+                        return boolValue;
                     }
                     break;
             }
