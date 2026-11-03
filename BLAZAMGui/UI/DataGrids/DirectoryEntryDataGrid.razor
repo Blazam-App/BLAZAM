@@ -24,9 +24,11 @@
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Name]>
             <CellTemplate>
-                <MudText Typo="Typo.caption">
-                    @context.Item.CanonicalName
-                </MudText>
+                <DirectoryEntryTooltipPopover Entry="context.Item">
+                    <MudText Typo="Typo.caption">
+                        @context.Item.CanonicalName
+                    </MudText>
+                </DirectoryEntryTooltipPopover>
             </CellTemplate>
         </TemplateColumn>
         <TemplateColumn Title=@AppLocalization[Lang.Changed]>
