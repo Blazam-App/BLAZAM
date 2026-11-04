@@ -51,6 +51,17 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.server.js"></script>
+
+    <script src="~/js/blazam.js" asp-append-version="true"></script>
+    <script src="~/js/pwa.js" asp-append-version="true"></script>
+    <script src="~/js/cookies.js" asp-append-version="true"></script>
+    <script src="~/lib/svg-gauge/dist/gauge.min.js" asp-append-version="true"></script>
+
+
+
+    <script src="_content/MudBlazor/MudBlazor.min.js" asp-append-version="true"></script>
+    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js" asp-append-version="true"></script>
+
     @if (DatabaseCache.ApplicationSettings?.SendDeveloperAnalytics == true || !ApplicationInfo.InstallationCompleted)
     {
         if (!ApplicationInfo.InDemoMode && !ApplicationInfo.InDebugMode && !Debugger.IsAttached)
@@ -58,11 +69,18 @@
             <!-- BLAZAM Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=G-415DR9ZVBH"></script>
             <script>
+                const sanitized = window.sanitizeBlazamUrl(window.location.href);
                 window.dataLayer = window.dataLayer || [];
                 function gtag() { dataLayer.push(arguments); }
                 gtag('js', new Date());
 
-                gtag('config', 'G-415DR9ZVBH');
+                gtag('config', 'G-415DR9ZVBH',{
+                    page_path: sanitized.page_path,
+                    page_location: sanitized.page_location,
+                    page_title: 'Blazam', // Keeps dynamic user/OU titles out of GA4
+                    page_referrer: "",
+                    send_page_view: false
+                });
                 gtag('set', 'user_properties', {
                     app_version: '@ApplicationInfo.runningVersion'
                 });
@@ -73,50 +91,22 @@
             <!-- BLAZAM Dev Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5LPG97RQR"></script>
             <script>
+                    const sanitized = window.sanitizeBlazamUrl(window.location.href);
 
-            function sanitizeBlazamUrl(rawUrl) {
-              try {
-                // Fall back to a dummy base if a relative path was passed
-                const url = new URL(rawUrl, 'https://app.local');
-                let path = url.pathname;
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
 
-                // 1. Sanitize Search queries (/search/Marketing -> /search/:query)
-                path = path.replace(/^\/search\/[^\/]+/i, '/search/:query');
-
-                // 2. Sanitize View endpoints (/view/CN%3D... -> /view/:object)
-                path = path.replace(/^\/view\/[^\/]+/i, '/view/:object');
-
-                // 3. Fallback catch-all for any unhandled encoded or plain AD Distinguished Names
-                // Matches patterns like CN=..., OU=..., DC=..., or URL-encoded equivalents
-                path = path.replace(/(?:CN|OU|DC)(?:%3D|=)[^\/&?]+/gi, ':dn');
-
-                return {
-                  page_path: path,
-                  page_location: 'https://app.local' + path
-                };
-              } catch {
-                return {
-                  page_path: '/unknown',
-                  page_location: 'https://app.local/unknown'
-                };
-              }
-            }
-            const sanitized = sanitizeBlazamUrl(window.location.href);
-
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('js', new Date());
-
-            gtag('config', 'G-P5LPG97RQR',{
-                page_path: sanitized.page_path,
-                page_location: sanitized.page_location,
-                page_title: 'Blazam', // Keeps dynamic user/OU titles out of GA4
-                page_referrer: "",
-                send_page_view: false
-            });
-            gtag('set', 'user_properties', {
-                app_version: '@ApplicationInfo.runningVersion'
-            });
+                gtag('config', 'G-P5LPG97RQR',{
+                    page_path: sanitized.page_path,
+                    page_location: sanitized.page_location,
+                    page_title: 'Blazam', // Keeps dynamic user/OU titles out of GA4
+                    page_referrer: "",
+                    send_page_view: false
+                });
+                gtag('set', 'user_properties', {
+                    app_version: '@ApplicationInfo.runningVersion'
+                });
             </script>
         }
     }
@@ -136,16 +126,6 @@
             });
         </script>
     }
-
-    <script src="~/js/blazam.js" asp-append-version="true"></script>
-    <script src="~/js/pwa.js" asp-append-version="true"></script>
-    <script src="~/js/cookies.js" asp-append-version="true"></script>
-    <script src="~/lib/svg-gauge/dist/gauge.min.js" asp-append-version="true"></script>
-
-
-
-    <script src="_content/MudBlazor/MudBlazor.min.js" asp-append-version="true"></script>
-    <script src="_content/MudBlazor.Markdown/MudBlazor.Markdown.min.js" asp-append-version="true"></script>
   
     <script src="~/js/reconnect.js" asp-append-version="true"></script>
     <script>

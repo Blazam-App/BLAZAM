@@ -1,16 +1,23 @@
 ﻿
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.JSInterop;
 
 namespace BLAZAM.Common.Services
 {
-    public class AppNavManager
+    public class AppNavManager : IDisposable
     {
         private readonly NavigationManager _navigationManager;
+        private readonly IJSRuntime? _jsRuntime;
 
-        public AppNavManager(NavigationManager nav)
+        public AppNavManager(NavigationManager nav, IJSRuntime? jsRuntime = null)
         {
             _navigationManager = nav;
+            _jsRuntime = jsRuntime;
+            if (_navigationManager != null)
+            {
+                _navigationManager.LocationChanged += SendLocationChangedAnalytics;
+            }
         }
 
         public string Uri => _navigationManager.Uri;
@@ -44,5 +51,28 @@ namespace BLAZAM.Common.Services
         {
             _navigationManager.NavigateTo(uri, options);
         }
+
+
+        private async void SendLocationChangedAnalytics(object? sender, LocationChangedEventArgs e)
+        {
+            if (_jsRuntime == null)
+            {
+                Loggers.SystemLogger.Warning("_jsRuntime wsa null when attempting to send location changed analytics");
+            }
+            else
+            {
+
+                await _jsRuntime.InvokeVoidAsync("trackBlazamPageView", e.Location);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_navigationManager != null)
+            {
+                _navigationManager.LocationChanged -= SendLocationChangedAnalytics;
+            }
+        }
+
     }
 }
