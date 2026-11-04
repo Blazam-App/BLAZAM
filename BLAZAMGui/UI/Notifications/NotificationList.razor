@@ -66,9 +66,9 @@
         await base.OnInitializedAsync();
         await RetrieveMessages();
 
-        UserState.OnSettingsChanged.Delegate += RetrieveMessagesAsync;
-        NotificationPublisher.OnNotificationPublished.Delegate +=  RetrieveMessagesAsync;
-        NotificationPublisher.OnNotificationDeleted.Delegate += RetrieveMessagesAsync;
+        UserState.OnSettingsChanged.EventHandler += RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationPublished.EventHandler +=  RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationDeleted.EventHandler += RetrieveMessagesAsync;
 
     }
     public override void Dispose()
@@ -76,11 +76,11 @@
         base.Dispose();
         if (UserState != null)
         {
-            UserState.OnSettingsChanged.Delegate -= RetrieveMessagesAsync;
+            UserState.OnSettingsChanged.EventHandler -= RetrieveMessagesAsync;
 
         }
-        NotificationPublisher.OnNotificationPublished.Delegate -= RetrieveMessagesAsync;
-        NotificationPublisher.OnNotificationDeleted.Delegate -= RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationPublished.EventHandler -= RetrieveMessagesAsync;
+        NotificationPublisher.OnNotificationDeleted.EventHandler -= RetrieveMessagesAsync;
     }
     private void RetrieveMessagesAsync(object state, object args) => _ = RetrieveMessages();
     private async Task RetrieveMessages()

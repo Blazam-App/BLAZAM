@@ -33,13 +33,13 @@
         await StateHasChangedAsync();
         if (UserState != null)
         {
-            UserState.OnSettingsChanged.Delegate += LoadNotificaions; 
+            UserState.OnSettingsChanged.EventHandler += LoadNotificaions; 
             Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         }
-        NotificationPublisher.OnNotificationPublished.Delegate += NotificationPublished;
+        NotificationPublisher.OnNotificationPublished.EventHandler += NotificationPublished;
 
-        NotificationPublisher.OnNotificationDeleted.Delegate += LoadNotificaions;
+        NotificationPublisher.OnNotificationDeleted.EventHandler += LoadNotificaions;
 
         await StateHasChangedAsync();
     }
@@ -50,11 +50,11 @@
         Notifications = [];
         if (UserState != null)
         {
-            UserState.OnSettingsChanged.Delegate -= LoadNotificaions;
+            UserState.OnSettingsChanged.EventHandler -= LoadNotificaions;
         }
-        NotificationPublisher.OnNotificationPublished.Delegate -= NotificationPublished;
+        NotificationPublisher.OnNotificationPublished.EventHandler -= NotificationPublished;
 
-        NotificationPublisher.OnNotificationDeleted.Delegate -= LoadNotificaions;
+        NotificationPublisher.OnNotificationDeleted.EventHandler -= LoadNotificaions;
     }
     private void LoadNotificaions(object? state, object? args)
     {

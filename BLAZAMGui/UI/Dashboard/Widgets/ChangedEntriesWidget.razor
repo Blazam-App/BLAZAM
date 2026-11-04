@@ -34,9 +34,11 @@
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Name]>
                 <CellTemplate>
-                    <DirectoryEntryLink Typo="Typo.caption"
-                    Entry="@context.Item"
-                    OnChanged="RefreshDataAsync" />
+                    <DirectoryEntryTooltipPopover Entry="context.Item">
+                        <MudText Typo="Typo.caption">
+                            @context.Item.CanonicalName
+                        </MudText>
+                    </DirectoryEntryTooltipPopover>
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Title=@AppLocalization[Lang.Changed]>

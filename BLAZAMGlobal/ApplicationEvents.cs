@@ -15,5 +15,8 @@ namespace BLAZAM.Global
         /// </summary>
         public static AppEvent PermissionsChanged { get; set; } = new();
 
+
+        public static AppEvent OnAutoUpdateQueued { get; set; } = new();
+
     }
 }

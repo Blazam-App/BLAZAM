@@ -11,7 +11,7 @@
             object capturedSender = new object(); // Placeholder, will be null
             EventArgs? capturedArgs = null;
 
-            appEvent.Delegate += (sender, args) =>
+            appEvent.EventHandler += (sender, args) =>
             {
                 delegateCalled = true;
                 capturedSender = sender;
@@ -58,7 +58,7 @@
             object capturedSender = null;
             TestEventArgs capturedArgs = null;
 
-            appEvent.Delegate += (sender, args) =>
+            appEvent.EventHandler += (sender, args) =>
             {
                 delegateCalled = true;
                 capturedSender = sender;
@@ -85,7 +85,7 @@
             object capturedSender = new object(); // Placeholder, will be null
             TestEventArgs capturedArgs = null;
 
-            appEvent.Delegate += (sender, args) =>
+            appEvent.EventHandler += (sender, args) =>
             {
                 delegateCalled = true;
                 capturedSender = sender;
@@ -108,7 +108,7 @@
             // Arrange
             var appEvent = new AppEvent<TestEventArgs>
             {
-                Delegate = null // Ensure delegate is null
+                EventHandler = null // Ensure delegate is null
             };
             object sender = new object();
             var args = new TestEventArgs { Message = "Test" };
@@ -126,7 +126,7 @@
             // Arrange
             var appEvent = new AppEvent<TestEventArgs>
             {
-                Delegate = null // Ensure delegate is null
+                EventHandler = null // Ensure delegate is null
             };
             var args = new TestEventArgs { Message = "Test" };
 
@@ -147,19 +147,19 @@
             EventHandler<string> handler2 = (s, a) => callCount++;
 
             // Act & Assert for subscription
-            appEvent.Delegate += handler1;
-            appEvent.Delegate += handler2;
+            appEvent.EventHandler += handler1;
+            appEvent.EventHandler += handler2;
             appEvent.Invoke("test1");
             Assert.Equal(2, callCount); // Both handlers should be called
 
             // Act & Assert for unsubscription
             callCount = 0; // Reset counter
-            appEvent.Delegate -= handler1;
+            appEvent.EventHandler -= handler1;
             appEvent.Invoke("test2");
             Assert.Equal(1, callCount); // Only handler2 should be called
 
             callCount = 0; // Reset counter
-            appEvent.Delegate -= handler2;
+            appEvent.EventHandler -= handler2;
             appEvent.Invoke("test3");
             Assert.Equal(0, callCount); // No handlers should be called
         }
