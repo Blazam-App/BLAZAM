@@ -5,7 +5,7 @@ namespace BLAZAM.Session
 {
     public class RulesUserState : ApplicationUserState
     {
-        public RulesUserState(IAppDatabaseFactory factory, string? ruleName = null) : base(factory)
+        public RulesUserState(IAppDatabaseFactory factory, string ruleName) : base(factory)
         {
             var username = AppLocalization.Rule.ToString() + " [" + ruleName + "]";
             var identity = new ClaimsIdentity();
