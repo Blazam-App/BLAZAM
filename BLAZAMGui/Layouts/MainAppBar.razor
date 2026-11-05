@@ -10,11 +10,13 @@
     <MudBreakpointProvider>
         @if (mainLayout != null)
         {
-            <MudHidden Breakpoint="@(mainLayout.BrowseExpanded?Breakpoint.None:Breakpoint.XlAndUp)">
-                <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                               Color="Color.Inherit"
-                               Edge="Edge.Start"
-                               OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
+            <MudHidden Breakpoint="@(mainLayout.BrowseExpanded ? Breakpoint.None : Breakpoint.XlAndUp)">
+                <MudSwipeArea OnSwipeEnd="OnSwipeMenuBurger">
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                                   Color="Color.Inherit"
+                                   Edge="Edge.Start"
+                                   OnClick="@((e) => {mainLayout.DrawerOpen = !mainLayout.DrawerOpen; })" />
+                </MudSwipeArea>
             </MudHidden>
         }
         <MudHidden Breakpoint="Breakpoint.Xs">
@@ -67,5 +69,13 @@
     [CascadingParameter]
     public MainLayout? mainLayout { get; set; }
 
-
+    
+    private void OnSwipeMenuBurger(SwipeEventArgs swipeEventArgs)
+    {
+        if (swipeEventArgs.SwipeDirection == SwipeDirection.LeftToRight)
+        {
+            mainLayout.DrawerOpen = true;
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
 }
