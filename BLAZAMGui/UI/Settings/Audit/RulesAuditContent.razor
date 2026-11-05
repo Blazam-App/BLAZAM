@@ -77,7 +77,7 @@
     protected override async Task FetchData()
     {
         if (StartDate == null || EndDate == null) return;
-        _auditEntries = await Context.AutomationRuleAuditLog.Include(e => e.AutomationRule).Where(e => e.Timestamp >= StartDate.Value.ToUniversalTime() && e.Timestamp < EndDate.Value.AddDays(1).ToUniversalTime()).OrderByDescending(e => e.Timestamp).ToListAsync();
+        _auditEntries = await Context.AutomationRuleAuditLog.Include(e => e.AutomationRule).Where(e => e.Timestamp >= StartDate.Value.ToUniversalTime() && e.Timestamp < EndDate.Value.ToUniversalTime().AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 }

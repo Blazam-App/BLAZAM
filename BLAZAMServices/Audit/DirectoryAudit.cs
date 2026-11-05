@@ -63,7 +63,7 @@ namespace BLAZAM.Services.Audit
                     IpAddress = UserState?.IPAddress,
                 };
                 table.Add(auditEntry);
-                await context.SaveChangesAsync();
+               var result = await context.SaveChangesAsync();
                 return true;
 
             }

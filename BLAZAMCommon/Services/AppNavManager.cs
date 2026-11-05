@@ -61,8 +61,14 @@ namespace BLAZAM.Common.Services
             }
             else
             {
-
-                await _jsRuntime.InvokeVoidAsync("trackBlazamPageView", e.Location);
+                try
+                {
+                    await _jsRuntime.InvokeVoidAsync("trackBlazamPageView", e.Location);
+                }
+                catch (Exception ex)
+                {
+                    Loggers.SystemLogger.Warning(ex, "Unable to send page-view analytics for navigation.");
+                }
             }
         }
 
