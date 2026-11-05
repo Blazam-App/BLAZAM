@@ -68,7 +68,7 @@
     public bool IsLoadingData { get => LoadingData; set => LoadingData = value; }
 
     [Parameter]
-    public bool ShowPagination { get; set; }
+    public bool ShowPagination { get; set; } = true;
 
     [Parameter]
     public EventCallback<int> ItemsPerPageChanged { get; set; }
