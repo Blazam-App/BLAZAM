@@ -87,7 +87,7 @@
     protected override async Task FetchData()
     {
         if (StartDate == null || EndDate == null) return;
-        auditEntries = await Context.EmailAuditLog.Where(e => e.LastAttemptTimestamp >= StartDate && e.LastAttemptTimestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
+        auditEntries = await Context.EmailAuditLog.Where(e => e.LastAttemptTimestamp >= StartDate.Value.ToUniversalTime() && e.LastAttemptTimestamp < EndDate.Value.ToUniversalTime().AddDays(1)).OrderByDescending(e => e.LastAttemptTimestamp).ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 }
