@@ -120,7 +120,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
-
+            
             if (sender != null && sender.Equals(this))
             {
                 return;
@@ -157,6 +157,7 @@ namespace BLAZAM.Services.Background
             };
             foreach (var ruleForEvent in applicableRules)
             {
+                _audit.RuleExecutionStarted(ruleForEvent);
                 var ruleExecutionStep = new JobStep(ruleForEvent.Name, (step) =>
                 {
                     ProcessMatchedEntry(ruleForEvent, args.Entry);
@@ -224,7 +225,7 @@ namespace BLAZAM.Services.Background
                 ThreadPriority = ThreadPriority.Lowest
             };
             List<IDirectoryEntryAdapter> filteredEntries;
-            IApplicationUserState rulesUserState = new RulesUserState(dbFactory);
+            IApplicationUserState rulesUserState = new RulesUserState(dbFactory,rule.Name);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
             filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
@@ -268,8 +269,6 @@ namespace BLAZAM.Services.Background
 
             Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
             ruleForEvent.ExecutionId = Guid.NewGuid();
-
-            _audit.RuleExecutionStarted(ruleForEvent);
 
             //Task.Delay(50).Wait();
 
@@ -554,19 +553,7 @@ namespace BLAZAM.Services.Background
 
             var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
-            if (result.FailedSteps.Count == 0)
-            {
-
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
-                {
-                    Actor = new RulesUserState(dbFactory, rule.Name).AuditActor,
-                    Changes = changes,
-                    Entry = entry,
-                    Target = target,
-                    Origin = origin,
-                    EventType = eventType
-                });
-            }
+           
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using BLAZAM.Session;
+﻿using BLAZAM.Services.Background;
+using BLAZAM.Session;
 
 namespace BLAZAM.Services.Audit
 {
@@ -10,7 +11,7 @@ namespace BLAZAM.Services.Audit
 
         protected override void TriggerDirectoryEntryChangedEvent(object? sender, DirectoryEntryChangedEventArgs args)
         {
-            if (args.Actor is SystemUserState || args.Actor is RulesUserState || args.Actor is ActiveDirectoryUserState)
+            if (args.Actor.Id == 0)
             {
                 base.TriggerDirectoryEntryChangedEvent(sender, args);
             }
