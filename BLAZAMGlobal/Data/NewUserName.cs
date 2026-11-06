@@ -4,15 +4,30 @@ namespace BLAZAM.Global.Data
 {
     public class NewUserName
     {
-        public string GivenName { get; set; } = "";
+        private string _givenName = "";
+        public string GivenName
+        {
+            get => _givenName.Trim();
+            set => _givenName = value;
+        }
 
-        public string? MiddleName { get; set; } = "";
+        private string? _middleName = "";
+        public string? MiddleName
+        {
+            get => _middleName?.Trim();
+            set => _middleName = value;
+        }
 
-        public string? Surname { get; set; } = "";
+        private string? _surname = "";
+        public string? Surname
+        {
+            get => _surname?.Trim();
+            set => _surname = value;
+        }
 
         public bool IsValid(string field)
         {
-            if (GivenName.AppTrim().IsNullOrEmpty() || Surname.AppTrim().IsNullOrEmpty())
+            if (GivenName.IsNullOrEmpty() || Surname.IsNullOrEmpty())
             {
                 return false;
             }

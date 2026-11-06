@@ -1,7 +1,8 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
+﻿using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
+using BLAZAM.Global.Data;
+using BLAZAM.Global.Enums;
 using BLAZAM.Global.Events;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -16,10 +17,10 @@ namespace BLAZAM.Tests.Mocks
         // interacts with IApplicationUserState in ways that need to be controlled during tests.
         // For the current MFARequest class, it's primarily just being stored.
 
-        public int Id => throw new NotImplementedException();
+        public int Id => 5;
 
 
-        public string AuditUsername => throw new NotImplementedException();
+        public string AuditUsername => "test";
 
         public string? Username { get; set; } = "test";
 
@@ -72,8 +73,14 @@ namespace BLAZAM.Tests.Mocks
         public bool ShowPluginPlaceholders { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnSettingsChanged { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public AppEvent OnReadNewsSaved { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        private string? _browser="Google Chrome";
-        public string? Browser { get => _browser; set => _browser=value; }
+        private string? _browser = "Google Chrome";
+        public string? Browser { get => _browser; set => _browser = value; }
+
+        public string? ImpersonatorUsername => throw new NotImplementedException();
+
+        public AuditLogActor AuditActor => throw new NotImplementedException();
+
+        public Guid SessionId => throw new NotImplementedException();
 
         public bool CanSearchDisabled(ActiveDirectoryObjectType objectType)
         {
@@ -129,6 +136,7 @@ namespace BLAZAM.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
     }
 
 }

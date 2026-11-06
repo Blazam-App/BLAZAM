@@ -60,7 +60,7 @@ namespace BLAZAM.Database.Models.User
 
         public bool Dismissable { get; set; } = true;
 
-        
+
         /// <summary>
         /// The custom field id being referenced
         /// </summary>

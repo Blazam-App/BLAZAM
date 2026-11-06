@@ -20,7 +20,7 @@ namespace BLAZAM.Gui.UI
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            Modal.YesEnabled = (() => {return IsValid; });
+            Modal.YesEnabled = (() => { return IsValid; });
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

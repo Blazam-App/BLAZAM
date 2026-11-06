@@ -1,15 +1,4 @@
-﻿using BLAZAM.Gui;
-using BLAZAM.Gui.UI;
-using BLAZAM.Localization;
-using BLAZAM.Notifications.Services;
-using Bunit;
-using Bunit.Rendering;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
-using Moq;
-using MudBlazor;
-using Xunit;
+﻿using Bunit;
 
 public class Tests : BunitContext
 {

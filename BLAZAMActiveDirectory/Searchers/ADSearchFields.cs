@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Helpers;
+﻿using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {

@@ -16,13 +16,16 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             set => CurrentUser.State.Cache.Set(this.GetType(), value);
         }
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-            LoadingData = true;
+            _ = Task.Run(() =>
+            {
+                LoadingData = true;
 
-            NewContacts = (await Directory.Contacts.FindNewContactsAsync((int)_timeFrame!.Value.TotalDays, false)).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
+                NewContacts = Directory.Contacts.FindNewContacts((int)_timeFrame!.Value.TotalDays, false).Where(u => u.CanRead).OrderByDescending(u => u.Created).ToList();
 
-            LoadingData = false;
+                LoadingData = false;
+            });
 
         }
         private void GoTo(DataGridRowClickEventArgs<IADContact> args)

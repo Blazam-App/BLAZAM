@@ -603,7 +603,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-            
+
             Assert.Equal(maxDimension, image.Height);
             Assert.InRange(image.Width, 12, 13); // Original aspect ratio 0.5. New width should be 25 * 0.5 = 12.5
         }
@@ -618,7 +618,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-           
+
             Assert.Equal(maxDimension, image.Width);
             Assert.InRange(image.Height, 12, 13); // Original aspect ratio 2.0. New height should be 25 / 2.0 = 12.5
         }
@@ -633,7 +633,7 @@ namespace BLAZAMCommon.Tests.Helpers
             Assert.NotEmpty(resizedImageBytes);
 
             using var image = Image.Load(resizedImageBytes);
-           
+
             Assert.Equal(maxDimension, image.Width);
             Assert.Equal(maxDimension, image.Height);
         }
@@ -1143,7 +1143,7 @@ namespace BLAZAMCommon.Tests.Helpers
             // Assert
             memoryStream.Position = 0;
             Assert.Throws<InvalidDataException>(() => { _ = new ZipArchive(memoryStream, ZipArchiveMode.Read); });
-         
+
         }
 
         [Fact]

@@ -1,5 +1,4 @@
 ﻿using BLAZAM.Common.Data.Services;
-using BLAZAM.Global.Enums;
 using BLAZAM.Logger;
 using Microsoft.Extensions.Configuration;
 

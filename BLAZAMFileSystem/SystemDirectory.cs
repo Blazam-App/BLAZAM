@@ -239,7 +239,7 @@ namespace BLAZAM.FileSystem
                 files = files.Where(f => !f.Contains(parentDirectory.FullPath));
 
             var filesList = files.ToList();
-            
+
             // 1. Calculate the total size of all files going to be copied
             long totalSize = 0;
             foreach (var f in filesList)

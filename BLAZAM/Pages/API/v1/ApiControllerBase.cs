@@ -1,5 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Services.Audit;
+﻿using BLAZAM.Services.Audit;
 
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,7 +43,7 @@ namespace BLAZAM.Pages.API.v1
         /// <summary>
         /// The current API user state
         /// </summary>
-        protected IApplicationUserState? CurrentUserState { get; }
+        protected IApplicationUserState? CurrentUser { get; }
 
         private readonly JsonSerializerOptions _jsonOptions;
 
@@ -74,9 +73,9 @@ namespace BLAZAM.Pages.API.v1
 
             AuditLogger = audit;
             UserStateService = applicationUserStateService;
-            CurrentUserState = UserStateService.CurrentUserState;
+            CurrentUser = UserStateService.CurrentUserState;
 
-            Directory = adFactory.CreateActiveDirectoryContext(CurrentUserState.ToActiveDirectoryUserState());
+            Directory = adFactory.CreateActiveDirectoryContext(CurrentUser.ToActiveDirectoryUserState());
             DbFactory = appDatabaseFactory;
 
 

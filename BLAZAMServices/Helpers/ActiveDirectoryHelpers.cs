@@ -10,6 +10,7 @@ namespace BLAZAM.Helpers
             return new ActiveDirectoryUserState()
             {
                 Username = userState.AuditUsername,
+                AuditActor = userState.AuditActor,
                 PermissionMappings = userState.PermissionMappings,
                 IsSuperAdmin = userState.IsSuperAdmin
 

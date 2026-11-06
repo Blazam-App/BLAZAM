@@ -1,39 +1,44 @@
 ﻿@inherits TimeFrameWidget
 @attribute [Authorize]
-<MudTimeFramePicker TimeFrame=@_timeFrame 
-    TimeFrameChanged=SetTimeFrame 
+@if (CurrentUserDashboardWidgets.EditMode)
+{
+    <MudTimeFramePicker TimeFrame=@_timeFrame
+    TimeFrameChanged=SetTimeFrame
     Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
-    Class="mx-3"/>
-<MudDataGrid T="IDirectoryEntryAdapter"
-             Items="DeletedEntries"
-             RowClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
-             RowClass="cursor-pointer"
-             Dense=true
-             Filterable=true
-             RowsPerPage="@ItemsPerPage"
-             RowsPerPageChanged="@SetRowsPerPage"
-             FilterMode="DataGridFilterMode.Simple"
-             Loading=@LoadingData
-             Square=true
-             ColumnResizeMode="ResizeMode.Column"
-             Virtualize=true
-             Class="py-0"
-             SortMode="SortMode.Single">
-    <Columns>
-        <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
-            <CellTemplate>
-                <DirectoryEntryTypeIcon Size="Size.Small" Entry="context.Item" />
+    Class="mx-3" />
+}
+@if (DeletedEntries.Count > 0)
+{
+    <MudDataGrid T="IDirectoryEntryAdapter"
+                 Items="DeletedEntries"
+                 RowClick="@(()=>{Nav.NavigateTo("/recyclebin");})"
+                 RowClass="cursor-pointer"
+                 Dense=true
+                 Filterable=true
+                 RowsPerPage="@ItemsPerPage"
+                 RowsPerPageChanged="@SetRowsPerPage"
+                 FilterMode="DataGridFilterMode.Simple"
+                 Loading=@LoadingData
+                 Square=true
+                 ColumnResizeMode="ResizeMode.Column"
+                 Virtualize=true
+                 Class="py-0"
+                 SortMode="SortMode.Single">
+        <Columns>
+            <TemplateColumn Style="width:100px;" Title=@AppLocalization[Lang.Type]>
+                <CellTemplate>
+                    <DirectoryEntryTypeIcon Size="Size.Small" Entry="context.Item" />
 
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Name]>
-            <CellTemplate>
-                <MudText Typo="Typo.caption">@context.Item?.CanonicalName</MudText>
                 </CellTemplate>
             </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Deleted]>
-            <CellTemplate>
-                <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
+            <TemplateColumn Title=@AppLocalization[Lang.Name]>
+                <CellTemplate>
+                    <MudText Typo="Typo.caption">@context.Item?.CanonicalName</MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title=@AppLocalization[Lang.Deleted]>
+                <CellTemplate>
+                    <DateWithTimeTooltip DateTime="@context.Item?.LastChanged" />
 
                 </CellTemplate>
             </TemplateColumn>
@@ -42,9 +47,12 @@
         <PagerContent>
             <MudDataGridPager PageSizeOptions=[5,10,25,50,100] T="IDirectoryEntryAdapter" />
         </PagerContent>
-        <NoRecordsContent>
-            <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
-        </NoRecordsContent>
     </MudDataGrid>
-
+}
+else
+{
+    <MudContainer>
+        <MudText Align="Align.Center" Class="mb-4">@AppLocalization[Lang.No_matching_results]</MudText>
+    </MudContainer>
+}
 

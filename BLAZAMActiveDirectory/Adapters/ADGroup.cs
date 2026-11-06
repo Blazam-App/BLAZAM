@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.ActiveDirectory.Searchers;
 using BLAZAM.Database.Models;
 using BLAZAM.Jobs;
 using System.Text.Json.Serialization;
@@ -169,6 +167,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
 
 
+
+
+
+
+
+
+
+
         public override IJob CommitChanges(IJob? commitJob = null)
         {
             if (MembersToAdd.Count > 0)
@@ -178,6 +184,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         PostCommitSteps.Add(new JobStep($"Add {g.Member} to {g.Group}", (JobStep? step) =>
                         {
                             g.Group.Invoke("Add", new object[] { g.Member.DN });
+                            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                            {
+                                EventType = ApplicationEventType.Assign,
+                                Entry = g.Member,
+                                Target = g.Group,
+                                Actor = CurrentUser.AuditActor
+
+                            });
                             return true;
                         }));
 
@@ -187,14 +201,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             if (MembersToRemove.Count > 0)
             {
-                    MembersToRemove.ForEach(g =>
+                MembersToRemove.ForEach(g =>
+                {
+                    PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
                     {
-                        PostCommitSteps.Add(new JobStep($"Remove {g.Member}. from {g.Group}", (JobStep? step) =>
+                        g.Group.Invoke("Remove", new object[] { g.Member.DN });
+                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
                         {
-                            g.Group.Invoke("Remove", new object[] { g.Member.DN });
-                            return true;
-                        }));
-                    });
+                            EventType = ApplicationEventType.Unassign,
+                            Entry = g.Member,
+                            Target = g.Group,
+                            Actor = CurrentUser.AuditActor
+
+                        });
+                        return true;
+                    }));
+                });
                 _members = null;
                 MembersToRemove.Clear();
             }
@@ -321,8 +343,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     }
 
                 });
-             
-                Parallel.ForEach(MembersToAdd, m => {
+
+                Parallel.ForEach(MembersToAdd, m =>
+                {
                     lock (_effectiveMembersLock)
                     {
                         if (!effectiveMembers.Contains(m.Member))
@@ -331,7 +354,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         }
                     }
                 });
-             
+
                 return effectiveMembers;
             }
         }

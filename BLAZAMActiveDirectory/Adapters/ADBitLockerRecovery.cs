@@ -1,8 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
-
-namespace BLAZAM.ActiveDirectory.Adapters
+﻿namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class ADBitLockerRecovery : DirectoryEntryAdapter, IADBitLockerRecovery
     {

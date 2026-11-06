@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Data;
-using BLAZAM.Database.Models.Notifications;
+﻿using BLAZAM.Database.Models.Notifications;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Database.Models.User;
 using Microsoft.AspNetCore.Authentication;
@@ -142,6 +141,9 @@ namespace BLAZAM.Session.Interfaces
         bool ShowPluginPlaceholders { get; set; }
         AppEvent? OnReadNewsSaved { get; set; }
         string? Browser { get; set; }
+        string? ImpersonatorUsername { get; }
+        AuditLogActor AuditActor { get; }
+        Guid SessionId { get; }
 
         /// <summary>
         /// Checks if the user can search for disabled objects of a specific type based on their permissions.

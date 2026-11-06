@@ -50,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Events\" />
     <Folder Include="Session\" />
   </ItemGroup>
 

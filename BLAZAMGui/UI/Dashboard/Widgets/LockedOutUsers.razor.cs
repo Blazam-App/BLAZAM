@@ -22,11 +22,14 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
 
         }
 
-        protected override async Task RefreshDataAsync()
+        protected override void RefreshDataAsync()
         {
-            LoadingData = true;
-            LockedUsers = (await Directory.Users.FindLockedOutUsersAsync()).OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
-            LoadingData = false;
+            _ = Task.Run(() =>
+            {
+                LoadingData = true;
+                LockedUsers = Directory.Users.FindLockedOutUsers().OrderByDescending(u => u.LockoutTime).Where(u => u.CanRead).ToList();
+                LoadingData = false;
+            });
         }
 
         private void GoTo(DataGridRowClickEventArgs<IADUser> args)

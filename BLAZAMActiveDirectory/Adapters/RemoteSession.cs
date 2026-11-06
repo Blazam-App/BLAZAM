@@ -1,13 +1,5 @@
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Logger;
 using Cassia;
-using Serilog;
-using System.ComponentModel;
-using System.Net;
-using System.Security.Principal;
-using BLAZAM.ActiveDirectory.Interfaces;
-using Cassia;
-using Serilog;
 using System.ComponentModel;
 using System.Net;
 using System.Security.Principal;
@@ -252,7 +244,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             }
             catch (Exception ex)
             {
-                Loggers.ActiveDirectoryLogger.Error(ex,"An error occurred while refreshing a computer session state.");
+                Loggers.ActiveDirectoryLogger.Error(ex, "An error occurred while refreshing a computer session state.");
                 this.Dispose();
             }
         }

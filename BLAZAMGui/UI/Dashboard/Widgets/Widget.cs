@@ -16,7 +16,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         [Parameter]
         public int ItemsPerPage { get; set; } = 5;
         [Parameter]
-        public string? JsonSettings { get; set; }   
+        public string? JsonSettings { get; set; }
         [CascadingParameter]
         public CurrentUserDashboardWidgets CurrentUserDashboardWidgets { get; set; }
 
@@ -30,11 +30,8 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             {
                 CurrentUserDashboardWidgets.OnRefreshWidget += RefreshWidget;
             }
-            _ = Task.Run(() =>
-            {
-                _ = RefreshDataAsync();
+            RefreshDataAsync();
 
-            });
         }
 
         public override void Dispose()
@@ -50,12 +47,12 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
         {
             if (widget.WidgetType.Equals(WidgetType))
             {
-                _ = RefreshDataAsync();
+                RefreshDataAsync();
 
             }
         }
 
-        protected abstract Task RefreshDataAsync();
+        protected abstract void RefreshDataAsync();
 
         protected virtual void RowClicked(DataGridRowClickEventArgs<IDirectoryEntryAdapter> args)
         {
@@ -78,7 +75,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error attempting to set a widgets rows per page preference.");
+                Loggers.SystemLogger.Error(ex, "Error attempting to set a widgets rows per page preference.");
             }
         }
 
@@ -91,7 +88,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error(ex,"Error attempting to set a widgets rows per page preference.");
+                Loggers.SystemLogger.Error(ex, "Error attempting to set a widgets rows per page preference.");
             }
         }
 

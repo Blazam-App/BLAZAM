@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-
-namespace BLAZAM.ActiveDirectory.Adapters
+﻿namespace BLAZAM.ActiveDirectory.Adapters
 {
     public class GroupMembership
     {

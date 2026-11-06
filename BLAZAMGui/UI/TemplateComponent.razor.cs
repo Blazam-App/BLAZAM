@@ -1,7 +1,6 @@
 ﻿
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Gui.UI.Settings;
-using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI
@@ -56,7 +55,7 @@ namespace BLAZAM.Gui.UI
         {
             get
             {
-                var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x=>x).ToList();
+                var cats = TemplatesUserCanUse.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x => x).ToList();
                 return cats;
             }
         }
@@ -126,30 +125,31 @@ namespace BLAZAM.Gui.UI
         }
 
 
-        protected async Task FetchTemplates(bool selected=false)
+        protected async Task FetchTemplates(bool selected = false)
         {
             try
             {
-                if (!selected) { 
-                var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
-                if (temp != null)
+                if (!selected)
                 {
-                    for (int x = 0; x < temp.Count; x++)
+                    var temp = await Context.DirectoryTemplates.OrderBy(c => c.Category).OrderBy(c => c.Name).ToListAsync();
+                    if (temp != null)
                     {
-                        temp[x] = await LoadTemplateWithParents(temp[x].Id);
+                        for (int x = 0; x < temp.Count; x++)
+                        {
+                            temp[x] = await LoadTemplateWithParents(temp[x].Id);
+                        }
+                        Templates = temp;
                     }
-                    Templates = temp;
-                }
 
-                var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x=>x).ToListAsync();
-                if (cats != null)
-                {
-                    TemplateCategories = cats;
-                    TemplateCategories = TemplateCategories.Prepend("All");
-                    SelectedCategory = TemplateCategories.FirstOrDefault();
+                    var cats = await Context.DirectoryTemplates.Select(c => c.Category).Where(c => c != "" && c != null).Distinct().OrderBy(x => x).ToListAsync();
+                    if (cats != null)
+                    {
+                        TemplateCategories = cats;
+                        TemplateCategories = TemplateCategories.Prepend("All");
+                        SelectedCategory = TemplateCategories.FirstOrDefault();
+                    }
                 }
-            }
-                if (TemplateIdParameter!=null && TemplateIdParameter != 0)
+                if (TemplateIdParameter != null && TemplateIdParameter != 0)
                 {
                     SelectedTemplate = await LoadTemplateWithParents(TemplateIdParameter);
                 }
@@ -169,13 +169,13 @@ namespace BLAZAM.Gui.UI
             {
                 return null;
             }
-            var template = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t=>t.Id.Equals(templateId));
+            var template = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(templateId));
             if (template?.ParentTemplate != null)
             {
                 var parentTemplate = await Context.DirectoryTemplates.Include(t => t.ParentTemplate).FirstOrDefaultAsync(t => t.Id.Equals(template.ParentTemplate.Id));
-                if (parentTemplate != null&& parentTemplate.ParentTemplate!=null)
+                if (parentTemplate != null && parentTemplate.ParentTemplate != null)
                 {
-                   parentTemplate.ParentTemplate = await LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
+                    parentTemplate.ParentTemplate = await LoadTemplateWithParents(parentTemplate.ParentTemplate.Id);
                 }
                 template.ParentTemplate = parentTemplate;
             }

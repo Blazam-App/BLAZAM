@@ -1,9 +1,3 @@
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
-using BLAZAM.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using MudBlazor;
 
@@ -243,7 +237,7 @@ namespace BLAZAM.Gui.UI.Inputs
             {
                 ObjectTypeFilter = SearchObjectType,
                 GeneralSearchTerm = searchText,
-                ExactMatch = searchText.Length<MinCharacters,
+                ExactMatch = searchText.Length < MinCharacters,
                 MaxResults = MaxResults,
                 EnabledOnly = !SearchDisabled
             };

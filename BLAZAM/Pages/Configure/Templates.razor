@@ -8,8 +8,8 @@
 
 <SetSubHeader @ref=Header>
 
-    <EditDirectoryTemplateHeader OnTemplateChanged="TemplateChanged" TemplateSelected="SelectedTemplate"/>
-  
+    <EditDirectoryTemplateHeader OnTemplateChanged="TemplateChanged" TemplateSelected="SelectedTemplate" />
+
 </SetSubHeader>
 
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Templates] <AppDocumentationButton Page="/admin/templates" /></MudText>
@@ -20,10 +20,11 @@
         <MudExpansionPanel Text="@AppLocalization[Lang.Inheritance_Tree]" Expanded=true>
             <TemplateInheritanceTreeView RootTemplate="TemplateTreeItemData"
                                          SelectedTemplate="SelectedTemplate"
-                                         OnTemplateSelected="@((template)=>{
-SelectedTemplate=template; 
-Nav.NavigateTo("/templates/"+template.Id);
-})" />
+                                         OnTemplateSelected="@((template) =>
+                                             {
+                                                 SelectedTemplate = template;
+                                                 Nav.NavigateTo("/templates/" + template.Id);
+                                             })" />
         </MudExpansionPanel>
     </MudCard>
 }
@@ -43,15 +44,14 @@ Nav.NavigateTo("/templates/"+template.Id);
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await RefreshComponents();
-
-
-        if (Templates?.Any() == true)
-        {
-            TemplateTreeItemData = CreateTemplateTreeItemData();
-        }
-        await RefreshComponents();
-        await StateHasChangedAsync();
+        _ = Task.Run(async() =>
+            {
+                if (Templates?.Any() == true)
+                {
+                    TemplateTreeItemData = CreateTemplateTreeItemData();
+                }
+                await RefreshComponents();
+            });        
     }
 
 
@@ -90,5 +90,5 @@ Nav.NavigateTo("/templates/"+template.Id);
         }
         return setToFill;
     }
-  
+
 }

@@ -1,4 +1,3 @@
-using BLAZAM.Helpers;
 using System.Runtime.InteropServices;
 
 namespace BLAZAM.Common.Data
@@ -26,9 +25,9 @@ namespace BLAZAM.Common.Data
             ref STARTUPINFO lpStartupInfo,
             out PROCESS_INFORMATION lpProcessInformation);
 
-       
- 
-    
+
+
+
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern bool CloseHandle(IntPtr handle);

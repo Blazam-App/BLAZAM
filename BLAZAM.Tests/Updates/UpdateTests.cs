@@ -57,7 +57,7 @@ namespace BLAZAM.Tests.Updates
             Assert.Empty(latest.UpdateStagingDirectory.Files);
         }
 
-      
+
 
         [Fact]
         public void UpdateService_UpdateCredential_ReturnsEnum()

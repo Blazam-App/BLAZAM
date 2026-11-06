@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Database.Services;
-using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
+using BLAZAM.Global;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
 using BLAZAM.Logger;
@@ -15,7 +14,7 @@ namespace BLAZAM.Services.Background
     public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
-        public AppDelegate<DateTime?> OnAutoUpdateQueued { get; set; }
+        
         public AppDelegate OnAutoUpdateStarted { get; set; }
         public AppDelegate OnAutoUpdateFailed { get; set; }
 
@@ -255,7 +254,15 @@ namespace BLAZAM.Services.Background
             autoUpdateApplyTimer?.Dispose();
             autoUpdateApplyTimer = null;
         }
-
+        /// <summary>
+        /// Schedules installation of the specified application update at the next occurrence of the provided local time
+        /// of day.
+        /// </summary>
+        /// <remarks>If the specified time for the current day has already passed, scheduling is deferred
+        /// to the same time on the next day. If the same update is already scheduled, no new schedule is
+        /// created.</remarks>
+        /// <param name="updateTimeOfDay">Time of day, in local time, when the update should be applied.</param>
+        /// <param name="updateToInstall">Application update to queue for installation.</param>
         public void ScheduleUpdate(TimeSpan updateTimeOfDay, ApplicationUpdate updateToInstall)
         {
             try
@@ -292,7 +299,7 @@ namespace BLAZAM.Services.Background
                             if (justScheduled)
                             {
                                 Loggers.UpdateLogger.Debug("Update just scheduled");
-                                OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
+                                ApplicationEvents.OnAutoUpdateQueued?.Invoke(ScheduledUpdateTime);
 
                             }
 

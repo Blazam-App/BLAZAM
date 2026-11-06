@@ -1,11 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Database.Models.Rules;
+﻿using BLAZAM.Database.Models.Rules;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
-using MudBlazor.Charts;
-using System.Web;
 
 namespace BLAZAM.Services
 {
@@ -108,7 +104,7 @@ namespace BLAZAM.Services
             }
 
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /search/{FinalSearchTerm}", SearchTerm);
-            _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm??String.Empty));
+            _nav.NavigateTo("/search/" + Uri.EscapeDataString(SearchTerm ?? String.Empty));
 
 
 
@@ -123,13 +119,13 @@ namespace BLAZAM.Services
         /// <param name="filters">A list of automation rules or filters to apply to the search. If null, the existing filters are retained.</param>
         public void AdvancedSearch(List<AutomationRuleOrFilter> filters)
         {
-            Loggers.SystemLogger.Debug("Advanced search: {@Filters}",filters);
+            Loggers.SystemLogger.Debug("Advanced search: {@Filters}", filters);
             {
                 Filters = filters;
             }
             //The following is a fake navigation to trick the navigation manager into allowing go back a page
             Loggers.SystemLogger.Debug("SearchService.Search: Navigating to /advsearch");
-            _nav.NavigateTo("/advsearch/"+Guid.NewGuid());
+            _nav.NavigateTo("/advsearch/" + Guid.NewGuid());
 
 
 

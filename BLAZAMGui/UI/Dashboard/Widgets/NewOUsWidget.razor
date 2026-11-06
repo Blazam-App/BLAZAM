@@ -1,12 +1,21 @@
 ﻿@inherits TimeFrameWidget
 @attribute [Authorize]
+@if(CurrentUserDashboardWidgets.EditMode){
+
 <MudTimeFramePicker TimeFrame=@_timeFrame
                     TimeFrameChanged=SetTimeFrame
                     Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
                     Class="mx-3" />
+}
+@if(NewOUs.Count>0){
 <NewEntriesWidgetDataGrid Items="@NewOUs"
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
                           RowClick=@GoTo
                           T="IADOrganizationalUnit"
                           Loading=LoadingData />
+}
+else
+{
+    <MudText Align="Align.Center" Class="mb-4">@AppLocalization[Lang.No_matching_results]</MudText>
+}

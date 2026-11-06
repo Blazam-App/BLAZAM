@@ -32,12 +32,12 @@
     private void SendEvent(ApplicationEventType eventType)
     {
 
-        var ev = new DirectoryEntryChangedArgs()
-            {
-                Actor = CurrentUser.State,
-                Entry = DirectoryEntry,
-                EventType = eventType
-            };
+        var ev = new DirectoryEntryChangedEventArgs()
+        {
+            Actor = CurrentUser.State.AuditActor,
+            Entry = DirectoryEntry,
+            EventType = eventType
+        };
         switch (eventType)
         {
             case ApplicationEventType.Search:
@@ -51,7 +51,7 @@
             case ApplicationEventType.Delete:
                 break;
             case ApplicationEventType.LockedOut:
-                ev.Actor = new BLAZAM.Session.ActiveDirectoryUserState(DbFactory);
+                ev.Actor = new BLAZAM.Session.ActiveDirectoryUserState(DbFactory).AuditActor;
                 break;
             case ApplicationEventType.Assign:
             case ApplicationEventType.Unassign:

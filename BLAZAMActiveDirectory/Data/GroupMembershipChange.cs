@@ -1,6 +1,4 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-
-namespace BLAZAM.ActiveDirectory.Data
+﻿namespace BLAZAM.ActiveDirectory.Data
 {
     public enum GroupMembershipAction { Assign, Unassign }
     /// <summary>

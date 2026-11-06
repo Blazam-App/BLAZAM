@@ -16,15 +16,15 @@ namespace BLAZAM.Common.Data
         /// Gets or sets the unique identifier for this login request.
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
-        
+
         private SecureString? password;
-        
+
         /// <summary>
         /// The username provided during the app login attempt
         /// </summary>
         [Required]
         public string? Username { get; set; }
-        
+
         /// <summary>
         /// The password provided during the app login attempt
         /// </summary>
@@ -33,12 +33,12 @@ namespace BLAZAM.Common.Data
         /// </remarks>
         [Required]
         public string? Password { get => password == null ? null : password.ToPlainText(); set => password = value?.ToSecureString(); }
-        
+
         /// <summary>
         /// Gets the secure representation of the password.
         /// </summary>
         public SecureString? SecurePassword => password;
-        
+
         /// <summary>
         /// The relative url to return to after login success
         /// </summary>
@@ -73,7 +73,7 @@ namespace BLAZAM.Common.Data
         /// Returns true if the login attempt is an impersonation request, hence no password is actually checked
         /// </summary>
         public bool Impersonation { get; set; } = false;
-        
+
         /// <summary>
         /// To prevent a security hole, the impersonator identity is passed as a check to ensure this is not a XSS attack or a user without the appropriate privileges.
         /// </summary>
@@ -88,7 +88,7 @@ namespace BLAZAM.Common.Data
         /// Gets or sets the multi-factor authentication token.
         /// </summary>
         public string? MFAToken { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the redirect URL for multi-factor authentication.
         /// </summary>
@@ -111,7 +111,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as requiring Duo multi-factor authentication.
         /// </summary>
@@ -126,7 +126,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as requiring Google Authenticator registration.
         /// </summary>
@@ -139,7 +139,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as requiring Google Authenticator verification.
         /// </summary>
@@ -164,7 +164,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as failed due to missing data.
         /// </summary>
@@ -175,7 +175,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as failed due to missing username.
         /// </summary>
@@ -186,7 +186,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Marks the login request as failed due to missing password.
         /// </summary>
@@ -210,7 +210,7 @@ namespace BLAZAM.Common.Data
 
             return this;
         }
-        
+
         /// <summary>
         /// Gets or sets the authentication state resulting from this login request.
         /// </summary>

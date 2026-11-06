@@ -1,6 +1,4 @@
-﻿using Microsoft.Identity.Client;
-
-namespace BLAZAM.Database.Models.Permissions
+﻿namespace BLAZAM.Database.Models.Permissions
 {
     public class GlobalPermissionRequestField : ActiveDirectoryFieldDbSet
     {

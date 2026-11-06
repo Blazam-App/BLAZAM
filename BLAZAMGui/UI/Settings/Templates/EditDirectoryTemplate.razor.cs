@@ -11,6 +11,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private AppModal? _categoryModal;
         private List<DirectoryTemplate> _dropdownTemplates = [];
         private DirectoryTemplate _template;
+        private DirectoryTemplate _originalTemplate;
         private DirectoryTemplate _workingTemplate = new();
 
         private DirectoryTemplate _usernameFromTemplate;
@@ -67,7 +68,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
         }
 
-       
+
 
 
         protected bool fieldDrawerOpen;
@@ -94,6 +95,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             }
 
             _template = DirectoryTemplate;
+            _originalTemplate = (DirectoryTemplate)_template.Clone(await DbFactory.CreateDbContextAsync());
             await LoadData();
         }
 
@@ -133,50 +135,52 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 
         protected async Task LoadData()
         {
-            if (Context != null)
-            {
-                if (DirectoryTemplate.Id > 0)
+            _ = Task.Run(async () =>
                 {
-                    _workingTemplate = await Context.DirectoryTemplates.LoadTemplateWithParents(DirectoryTemplate?.Id);
-                }
-                else
-                {
-                    _workingTemplate = DirectoryTemplate;
-                }
+                    if (Context != null)
+                    {
+                        if (DirectoryTemplate.Id > 0)
+                        {
+                            _workingTemplate = await Context.DirectoryTemplates.LoadTemplateWithParents(DirectoryTemplate?.Id);
+                        }
+                        else
+                        {
+                            _workingTemplate = DirectoryTemplate;
+                        }
 
-                SelectedOU = await Directory.OUs.FindOuByDNAsync(_workingTemplate.EffectiveParentOU);
+                        SelectedOU = await Directory.OUs.FindOuByDNAsync(_workingTemplate.EffectiveParentOU);
 
-                _usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
-                _displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
-                _passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
-                _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
-                _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
-                _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail); 
+                        _usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
+                        _displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
+                        _passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
+                        _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
+                        _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
+                        _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail);
 
-                fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
-                fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
-                
-                using (var dropdownContext = await DbFactory.CreateDbContextAsync())
-                {
-                    _dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
-                }
+                        fields = await Context.ActiveDirectoryFields.Cast<IActiveDirectoryField>().ToListAsync();
+                        fields.AddRange(await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).Cast<IActiveDirectoryField>().ToListAsync());
 
-                await LoadCategories();
+                        using (var dropdownContext = await DbFactory.CreateDbContextAsync())
+                        {
+                            _dropdownTemplates = await dropdownContext.DirectoryTemplates.Where(t => !t.Equals(_workingTemplate) && t.DeletedAt == null).ToListAsync();
+                        }
+
+                        await LoadCategories();
 
 
-                if (_workingTemplate != null && Context != null && !Context.EntityIsTracked(_workingTemplate))
-                {
-                    await LoadParentOU();
-                }
-                
-                RefreshGroups();
-                await StateHasChangedAsync();
-                if (Form != null)
-                {
-                    await Form.ValidateAsync();
-                }
-            }
+                        if (_workingTemplate != null && Context != null && !Context.EntityIsTracked(_workingTemplate))
+                        {
+                            await LoadParentOU();
+                        }
 
+                        RefreshGroups();
+                        await StateHasChangedAsync();
+                        if (Form != null)
+                        {
+                            await Form.ValidateAsync();
+                        }
+                    }
+                });
         }
         /// <summary>
         ///

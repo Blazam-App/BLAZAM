@@ -1,8 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-
-namespace BLAZAM.Services.Events
+﻿namespace BLAZAM.ActiveDirectory.Events
 {
-    public class DirectoryEntryChangedArgs : BaseEventArgs
+    public class DirectoryEntryChangedEventArgs : BaseAuditEventArgs
     {
         public IDirectoryEntryAdapter Entry { get; set; }
 

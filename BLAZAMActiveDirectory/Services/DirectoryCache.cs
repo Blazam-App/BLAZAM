@@ -1,10 +1,5 @@
 ﻿using BLAZAM.Logger;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.ActiveDirectory.Services
 {
@@ -24,7 +19,7 @@ namespace BLAZAM.ActiveDirectory.Services
                 _purgerTimer = new Timer(PurgeExpiredEntries, null, TimeSpan.FromMinutes(CacheExpirationMinutes), TimeSpan.FromMinutes(DirectoryCache.CacheExpirationMinutes));
             }
             DirectoryEntries.TryGetValue(dn, out var entry);
-            if (entry!=null)
+            if (entry != null)
             {
                 if (DateTime.Now > entry.ExpiresAt)
                 {

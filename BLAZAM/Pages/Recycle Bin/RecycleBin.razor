@@ -109,7 +109,7 @@
                     return false;
 
                 });
-                batchRestore.Steps.Add(restoreEntryStep);
+                batchRestore.AddStep(restoreEntryStep);
             }
             await batchRestore.ShowJobDetailsDialogAsync(MessageService);
             await batchRestore.RunAsync();

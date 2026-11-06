@@ -1,6 +1,6 @@
-﻿using System.DirectoryServices.Protocols;
-using BLAZAM.Common.Data;
+﻿using BLAZAM.Common.Data;
 using BLAZAM.Logger;
+using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Data
 {

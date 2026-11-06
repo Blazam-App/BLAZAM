@@ -61,7 +61,7 @@ else
         await base.OnParametersSetAsync();
         if (Group != null)
         {
-            Task.Run(async() =>
+            _ = Task.Run(async() =>
             {
                 LoadingData = true;
                 Members = await Group.GetNestedMembersAsync();

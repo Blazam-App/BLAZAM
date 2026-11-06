@@ -1,9 +1,4 @@
 ﻿using BLAZAM.Global.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLAZAM.Global
 {
@@ -19,6 +14,9 @@ namespace BLAZAM.Global
         /// Called when permission are changed by an admin
         /// </summary>
         public static AppEvent PermissionsChanged { get; set; } = new();
+
+
+        public static AppEvent OnAutoUpdateQueued { get; set; } = new();
 
     }
 }

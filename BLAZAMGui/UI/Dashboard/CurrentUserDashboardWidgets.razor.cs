@@ -22,26 +22,21 @@ namespace BLAZAM.Gui.UI.Dashboard
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await StateHasChangedAsync();
-            if (WidgetService == null)
+            _ = Task.Run(() =>
             {
-                Loggers.SystemLogger.Error(new AppException("WidgetService is not injected properly."), "Widget service not available");
-            }
-            else
-            {
-                allWidgets = [.. WidgetService.Available()];
-            }
-            await StateHasChangedAsync();
-
-        }
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-            if (firstRender)
-            {
+                LoadingData = true;
+                if (WidgetService == null)
+                {
+                    Loggers.SystemLogger.Error(new AppException("WidgetService is not injected properly."), "Widget service not available");
+                }
+                else
+                {
+                    allWidgets = [.. WidgetService.Available()];
+                }
                 _initialized = true;
-                StateHasChanged();
-            }
+
+                LoadingData = false;
+            });
         }
         private bool ItemSelector(UserDashboardWidget item, string dropzone)
         {

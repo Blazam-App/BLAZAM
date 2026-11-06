@@ -1,8 +1,5 @@
 using BLAZAM.Gui.Helper;
 using BLAZAM.Jobs;
-using BLAZAM.Services.Events;
-using MudBlazor;
-using System.Runtime.CompilerServices;
 
 namespace BLAZAM.Gui.UI.Computers
 {
@@ -25,7 +22,7 @@ namespace BLAZAM.Gui.UI.Computers
                 {
                     EventType = ApplicationEventType.Search,
                     Entry = Computer,
-                    Actor = CurrentUser.State
+                    Actor = CurrentUser.State.AuditActor
 
                 });
             }
@@ -69,7 +66,7 @@ namespace BLAZAM.Gui.UI.Computers
                     {
                         EventType = ApplicationEventType.Delete,
                         Entry = Computer,
-                        Actor = CurrentUser.State
+                        Actor = CurrentUser.State.AuditActor
 
                     });
 
@@ -85,40 +82,19 @@ namespace BLAZAM.Gui.UI.Computers
         }
         private async Task SaveChanges()
         {
-            if (Computer == null || !await MessageService.Confirm("Are you sure you want to save the changes?"))
+            if (Computer == null || !await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
             {
                 return;
             }
-
             SavingChanges = true;
-            await RefreshEntryComponents();
-
             try
             {
-                var changes = Computer.Changes.ToList();
-                var assignTo = Computer.ToAssignTo.ToList();
-                var unassignFrom = Computer.ToUnassignFrom.ToList();
                 var jobResults = await Computer.CommitChangesAsync();
 
                 if (jobResults.Result == JobResult.Passed)
                 {
-                    NotifyAssignments(assignTo, ApplicationEventType.Assign);
-                    NotifyAssignments(unassignFrom, ApplicationEventType.Unassign);
-
-                    var nonMemberOfChanges = changes.Where(c => c.Field != ActiveDirectoryFields.MemberOf.FieldName).ToList();
-                    if (nonMemberOfChanges.Any())
-                    {
-                        ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                        {
-                            EventType = ApplicationEventType.Modify,
-                            Entry = Computer,
-                            Changes = nonMemberOfChanges,
-                            Actor = CurrentUser.State
-                        });
-                    }
-
                     EditMode = false;
-                    SnackBarService.Success("The changes made to this computer have been saved.");
+                    SnackBarService.Success(AppHelpLocalization[HelpLang.Changes_Have_Been_Saved, AppLocalization[DirectoryEntry.ObjectType.ToString().ToLower()]]);
                     await RefreshEntryComponents();
                 }
                 else
@@ -133,21 +109,6 @@ namespace BLAZAM.Gui.UI.Computers
             finally
             {
                 SavingChanges = false;
-                await RefreshEntryComponents();
-            }
-        }
-
-        private void NotifyAssignments(List<GroupMembership> assignments, ApplicationEventType eventType)
-        {
-            foreach (var assignment in assignments)
-            {
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                {
-                    EventType = eventType,
-                    Entry = assignment.Member,
-                    Target = assignment.Group,
-                    Actor = CurrentUser.State
-                });
             }
         }
 

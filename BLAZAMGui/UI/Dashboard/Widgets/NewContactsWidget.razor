@@ -1,9 +1,13 @@
 ﻿@inherits TimeFrameWidget
 @attribute [Authorize]
-<MudTimeFramePicker TimeFrame=@_timeFrame
-                    TimeFrameChanged=SetTimeFrame
-                    Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
-                    Class="mx-3" />
+@if (CurrentUserDashboardWidgets.EditMode)
+{
+    <MudTimeFramePicker TimeFrame=@_timeFrame
+                        TimeFrameChanged=SetTimeFrame
+                        Disabled="@(!CurrentUserDashboardWidgets.EditMode)"
+                        Class="mx-3" />
+}
+@if(NewContacts.Count>0){
 <NewEntriesWidgetDataGrid Items="@NewContacts"
                           RowsPerPage="@ItemsPerPage"
                           RowsPerPageChanged="@SetRowsPerPage"
@@ -11,4 +15,8 @@
                           T="IADContact"
                           OnChanged="RefreshDataAsync"
                           Loading=LoadingData />
-
+}
+else
+{
+    <MudText Align="Align.Center" Class="mb-4">@AppLocalization[Lang.No_matching_results]</MudText>
+}

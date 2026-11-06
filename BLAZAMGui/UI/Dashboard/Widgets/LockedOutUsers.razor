@@ -1,47 +1,49 @@
 ﻿@inherits Widget
 @attribute [Authorize]
+@if (LockedUsers.Count > 0)
+{
+    <MudDataGrid T="IADUser"
+    Items="@LockedUsers.Where(u=>u.LockedOut)"
+    Dense=true
+    Filterable=true
+    RowsPerPage="@ItemsPerPage"
+    RowsPerPageChanged="@SetRowsPerPage"
+    FilterMode="DataGridFilterMode.Simple"
+    Loading=@LoadingData
+    Square=true
+    ColumnResizeMode="ResizeMode.Column"
+    Virtualize
+    RowClass="cursor-pointer"
+    RowClick=@GoTo
+    RowContextMenuClick="@RowContextMenuClicked"
+    Class="py-0"
+    SortMode="SortMode.Single">
+        <Columns>
+            <TemplateColumn Title=@AppLocalization[Lang.Name]>
+                <CellTemplate>
+                    <DirectoryEntryLink Typo="Typo.caption"
+                    Entry="@context.Item"
+                    OnChanged="RefreshDataAsync" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>
+                <CellTemplate>
+                    @if (context.Item?.LockoutTime != null)
+                    {
+                        <DateWithTimeTooltip DateTime="@context.Item.LockoutTime.Value" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
 
-<MudDataGrid T="IADUser"
-             Items="@LockedUsers.Where(u=>u.LockedOut)"
-             Dense=true
-             Filterable=true
-             RowsPerPage="@ItemsPerPage"
-             RowsPerPageChanged="@SetRowsPerPage"
-             FilterMode="DataGridFilterMode.Simple"
-             Loading=@LoadingData
-             Square=true
-             ColumnResizeMode="ResizeMode.Column"
-             Virtualize
-             RowClass="cursor-pointer"
-             RowClick=@GoTo
-             RowContextMenuClick="@RowContextMenuClicked"
-             Class="py-0"
-             SortMode="SortMode.Single">
-    <Columns>
-        <TemplateColumn Title=@AppLocalization[Lang.Name]>
-            <CellTemplate>
-                <DirectoryEntryLink Typo="Typo.caption"
-                                    Entry="@context.Item"
-                                    OnChanged="RefreshDataAsync" />
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title=@AppLocalization[Lang.Locked_Out]>
-            <CellTemplate>
-                @if (context.Item?.LockoutTime != null)
-                {
-                    <DateWithTimeTooltip DateTime="@context.Item.LockoutTime.Value" />
-                }
-            </CellTemplate>
-        </TemplateColumn>
-
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IADUser" />
-    </PagerContent>
-    <NoRecordsContent>
-        <MudText>@AppLocalization[Lang.No_user_are_locked_out]</MudText>
-    </NoRecordsContent>
-</MudDataGrid>
-<DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
-
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager PageSizeOptions=@([5, 10, 25, 50, 100]) T="IADUser" />
+        </PagerContent>
+    </MudDataGrid>
+    <DirectoryEntryContextMenu @ref="_contextMenu" OnChanged="@(() => { InvokeStateHasChanged(); })" />
+}
+else
+{
+    <MudText Align="Align.Center" Class="mb-4">@AppLocalization[Lang.No_user_are_locked_out]</MudText>
+}
 

@@ -1,17 +1,15 @@
 
-using System.DirectoryServices;
-using System.DirectoryServices.Protocols;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
+using System.DirectoryServices;
+using System.DirectoryServices.Protocols;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
@@ -396,7 +394,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
             {
                 Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect");
             }
-            catch(CriticalActiveDirectoryException ex)
+            catch (CriticalActiveDirectoryException ex)
             {
                 Loggers.ActiveDirectoryLogger.Information(ex, "Directory Entry failed to connect with a critical active directory exception");
             }

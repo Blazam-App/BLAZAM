@@ -1,7 +1,4 @@
-﻿
-
-using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Database.Models;
+﻿using BLAZAM.Database.Models;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {

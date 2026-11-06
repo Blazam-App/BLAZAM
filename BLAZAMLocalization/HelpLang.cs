@@ -44,6 +44,7 @@
         public static readonly string GA4_Instructions = "GA4_Instructions";
         public static readonly string No_More_Widgets = "No_More_Widgets";
         public static readonly string Confirm_Save_Changes = "Confirm_Save_Changes";
+        public static readonly string Changes_Have_Been_Saved = "Changes_Have_Been_Saved";
         public static readonly string Confirm_OU_Creation = "Confirm_OU_Creation";
         public static readonly string Invalid_Token_Entered = "Invalid_Token_Entered";
         public static readonly string Lacks_Group_Member_Remove_Permission = "Lacks_Group_Member_Remove_Permission";
@@ -52,6 +53,7 @@
         public static readonly string Rearrange_Dashboard_Help = "Rearrange_Dashboard_Help";
         public static readonly string News_Provider_Description = "News_Provider_Description";
         public static readonly string No_News = "No_News";
+        public static readonly string Construction_Notice = "Construction_Notice";
         public static readonly string Invalid_Cert_Type = "Invalid_Cert_Type";
         public static readonly string Access_Level_Definition = "Access_Level_Definition";
         public static readonly string Super_User_Definition = "Super_User_Definition";

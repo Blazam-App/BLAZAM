@@ -1,7 +1,4 @@
-﻿
-using BLAZAM.ActiveDirectory.Interfaces;
-
-namespace BLAZAM.ActiveDirectory.Exceptions
+﻿namespace BLAZAM.ActiveDirectory.Exceptions
 {
     public class CriticalActiveDirectoryException : AppException
     {

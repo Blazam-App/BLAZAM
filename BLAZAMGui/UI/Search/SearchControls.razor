@@ -112,7 +112,7 @@
         {
             Nav.NavigateTo(entry.SearchUri);
         }
-        else
+        else if (!SearchService.SearchTerm.IsNullOrEmpty())
         {
             SearchService.Search(SearchService.SearchTerm);
         }

@@ -97,7 +97,7 @@
         _userState = CurrentUser.State;
         _eprp = new EffectivePasswordResetPolicy(_userState.PermissionDelegates);
         if (_userState != null)
-            _userState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
+            _userState.OnSettingsChanged.EventHandler += InvokeStateHasChanged;
         await StateHasChangedAsync();
     }
 
@@ -106,6 +106,6 @@
         base.Dispose();
         
         if (_userState != null)
-            _userState.OnSettingsChanged.Delegate -= InvokeStateHasChanged;
+            _userState.OnSettingsChanged.EventHandler -= InvokeStateHasChanged;
     }
 }

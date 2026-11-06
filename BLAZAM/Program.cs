@@ -1,9 +1,5 @@
 // Import necessary namespaces for various functionalities like data handling,
 // database operations, server configuration, logging, security, etc.
-using System.Diagnostics; // For checking if debugger is attached
-using System.Net; // For IP address handling
-using System.Security.Cryptography.X509Certificates; // For SSL certificate handling
-using BLAZAM.ActiveDirectory;
 using BLAZAM.Common.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Middleware;

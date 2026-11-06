@@ -9,7 +9,7 @@
         [CascadingParameter]
         public DirectoryTemplate? Template { get; set; }
         [Parameter]
-        public bool Disabled{ get; set; }
+        public bool Disabled { get; set; }
         protected string SectionMudStackClasses => "flex-wrap gap-1";
 
         public IAccountDirectoryAdapter Account
@@ -68,7 +68,7 @@
         }
         protected bool DisableField(IActiveDirectoryField field)
         {
-            if(Disabled)
+            if (Disabled)
             {
                 return true;
             }

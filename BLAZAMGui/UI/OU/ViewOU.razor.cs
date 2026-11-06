@@ -1,4 +1,3 @@
-using BLAZAM.Services.Events;
 using MudBlazor;
 
 namespace BLAZAM.Gui.UI.OU
@@ -15,7 +14,7 @@ namespace BLAZAM.Gui.UI.OU
             {
                 EventType = ApplicationEventType.Search,
                 Entry = OU,
-                Actor = CurrentUser.State
+                Actor = CurrentUser.State.AuditActor
 
             });
             if (OU != null)
@@ -41,15 +40,6 @@ namespace BLAZAM.Gui.UI.OU
             var changes = OU.Changes;
             await OU.CommitChangesAsync();
             EditMode = false;
-            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-            {
-                EventType = ApplicationEventType.Modify,
-                Entry = OU,
-                Changes = changes,
-                Actor = CurrentUser.State
-
-
-            });
 
             SnackBarService.Success(AppLocalization["The changes made to this ou have been saved."]);
 
@@ -80,7 +70,6 @@ namespace BLAZAM.Gui.UI.OU
             }
 
             SavingChanges = true;
-            await StateHasChangedAsync();
             try
             {
                 var ouName = OU.CanonicalName;
@@ -89,16 +78,6 @@ namespace BLAZAM.Gui.UI.OU
                 {
                     SnackBarService.Success(AppHelpLocalization[HelpLang.Deleted, ouName]);
                 }
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
-                {
-                    EventType = ApplicationEventType.Delete,
-                    Entry = OU,
-                    Actor = CurrentUser.State
-
-                });
-
-
-
             }
             catch (AppException ex)
             {
@@ -106,9 +85,6 @@ namespace BLAZAM.Gui.UI.OU
             }
 
             SavingChanges = false;
-
-            await RefreshEntryComponents();
-
         }
     }
 }

@@ -1,11 +1,7 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.ActiveDirectory.Services;
+﻿using BLAZAM.ActiveDirectory.Services;
 using BLAZAM.Database.Models;
-using BLAZAM.Global.Interfaces;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Localization;
-using BLAZAM.Services.Events;
 using BLAZAM.Session;
 using Microsoft.Extensions.Localization;
 
@@ -78,7 +74,7 @@ namespace BLAZAM.Services.Background
                         {
                             EventType = ApplicationEventType.LockedOut,
                             Entry = user,
-                            Actor = new ActiveDirectoryUserState(dbFactory)
+                            Actor = new ActiveDirectoryUserState(dbFactory).AuditActor
                         });
 
                         if (OperatingSystem.IsWindows())

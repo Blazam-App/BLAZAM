@@ -1,9 +1,6 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Common.Data.Services;
-using BLAZAM.Database.Context;
+﻿using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.User;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Background;
@@ -16,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 

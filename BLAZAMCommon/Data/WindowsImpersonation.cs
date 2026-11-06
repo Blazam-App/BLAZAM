@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using Microsoft.Win32.SafeHandles;
+﻿using Microsoft.Win32.SafeHandles;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -57,7 +56,7 @@ namespace BLAZAM.Common.Data
             }
 
         }
-       
+
         private const int LOGON32_LOGON_INTERACTIVE = 2;
         private const int LOGON32_LOGON_NETWORK = 3;
         private const int LOGON32_LOGON_BATCH = 4;
@@ -215,7 +214,7 @@ namespace BLAZAM.Common.Data
             }
             return result;
         }
-      
+
 
     }
 }

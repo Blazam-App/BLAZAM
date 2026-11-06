@@ -43,4 +43,21 @@
 
 
     AppModal? aboutModal;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ApplicationEvents.OnAutoUpdateQueued.EventHandler += UpdateQueued;
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        ApplicationEvents.OnAutoUpdateQueued.EventHandler -= UpdateQueued;
+
+    }
+    private void UpdateQueued(object? sender, EventArgs e)
+    {
+        _ = StateHasChangedAsync();
+    }
 }

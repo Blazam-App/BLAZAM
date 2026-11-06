@@ -146,7 +146,7 @@ namespace BLAZAM.Notifications.Services
             return sentNotifications;
         }
 
-     
+
 
         /// <summary>Deletes a specific notification message. </summary> 
         /// <param name="notificationMessage">The notification message to delete. Must not be null.</param> 
@@ -159,7 +159,7 @@ namespace BLAZAM.Notifications.Services
                 Loggers.SystemLogger.Warning("NotificationPublisher.DeleteNotification: 'notification' is null. Cannot delete notification.");
                 return await Task.FromResult(false); // Corrected to await Task.FromResult
             }
-           
+
             try
             {
                 using var context = await _databaseFactory.CreateDbContextAsync();

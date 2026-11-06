@@ -5,7 +5,7 @@
         /// <summary>
         /// Listen to this for triggers of this event
         /// </summary>
-        public event EventHandler Delegate;
+        public event EventHandler EventHandler;
 
 
         /// <summary>
@@ -13,9 +13,9 @@
         /// </summary>
         public void Invoke(object? sender = null)
         {
-            if (Delegate != null)
+            if (EventHandler != null)
             {
-                Delegate.Invoke(sender, EventArgs.Empty);
+                EventHandler.Invoke(sender, EventArgs.Empty);
             }
 
         }
@@ -25,14 +25,14 @@
         /// <summary>
         /// Listen to this for triggers of this event
         /// </summary>
-        public EventHandler<T> Delegate { get; set; }
+        public EventHandler<T> EventHandler { get; set; }
 
         /// <summary>
         /// Trigger this event
         /// </summary>
         public void Invoke(object sender, T args)
         {
-            Delegate?.Invoke(sender, args);
+            EventHandler?.Invoke(sender, args);
 
         }
         /// <summary>
@@ -40,7 +40,7 @@
         /// </summary>
         public void Invoke(T args)
         {
-            Delegate?.Invoke(null, args);
+            EventHandler?.Invoke(null, args);
 
         }
     }

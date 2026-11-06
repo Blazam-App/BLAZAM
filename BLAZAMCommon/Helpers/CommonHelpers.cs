@@ -5,8 +5,6 @@ using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.Text;
 
 namespace BLAZAM.Helpers
@@ -16,7 +14,7 @@ namespace BLAZAM.Helpers
     /// </summary>
     public static class CommonHelpers
     {
-  
+
 
         /// <summary>
         /// Formats a list of audit changes into a string, extracting values using a selector.
@@ -377,7 +375,7 @@ namespace BLAZAM.Helpers
             }
         }
 
-      
+
 
         /// <summary>
         /// Converts a .NET DateTime? to an ADSI LargeInteger compatible long value (FILETIME UTC).
@@ -421,10 +419,10 @@ namespace BLAZAM.Helpers
 
             if (value is DateTime dtValue)
             {
-                if(dtValue==DateTime.Parse("1/1/1601 12:00:00AM", CultureInfo.InvariantCulture))
+                if (dtValue == DateTime.Parse("1/1/1601 12:00:00AM", CultureInfo.InvariantCulture))
                 {
                     return null;
-                }   
+                }
                 return dtValue;
             }
 

@@ -1,15 +1,7 @@
 // Import necessary namespaces for various functionalities
-using BLAZAM.ActiveDirectory.Adapters;
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.ActiveDirectory.Searchers;
-using BLAZAM.Common.Data;
-using BLAZAM.Gui.Layouts;
-using BLAZAM.Gui.UI;
-using BLAZAM.Gui.UI.Outputs;
 using BLAZAM.Services;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Web;
 
 namespace BLAZAM.Pages
 {
@@ -22,6 +14,6 @@ namespace BLAZAM.Pages
     /// URI, handling cascading parameters, and managing search results.</remarks>
     public partial class Search : SearchPageBase
     {
-      
+
     }
 }

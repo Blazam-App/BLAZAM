@@ -29,16 +29,29 @@
         Update();
 
     }
-    async Task Update()
+    private CancellationTokenSource _cts = new();
+    private void Update()
     {
-        LoadingData = true;
-        if (Context != null)
+        _cts.Cancel();
+        _cts?.Dispose();
+        _cts = new();
+        _ = Task.Run(async () =>
         {
-            var selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
+            LoadingData = true;
+            if (Context != null)
+            {
+                var selfAccessLevel = await Context.AccessLevels.FirstOrDefaultAsync(x => x.Name == AccessLevel.SelfAccessLevelName);
 
-            CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Name != AccessLevel.SelfAccessLevelName).ToListAsync();
-        }
+                CurrentAccessLevels = await Context.AccessLevels.Where(al => al.DeletedAt == null && al.Name != AccessLevel.SelfAccessLevelName).ToListAsync();
+            }
 
-        LoadingData = false;
+            LoadingData = false;
+        },_cts.Token);
+
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _cts?.Dispose();
     }
 }

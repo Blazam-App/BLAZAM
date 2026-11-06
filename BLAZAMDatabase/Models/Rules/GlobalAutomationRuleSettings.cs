@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.Design.Serialization;
 
 namespace BLAZAM.Database.Models.Rules
 {

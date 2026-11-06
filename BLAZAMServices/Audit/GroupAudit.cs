@@ -1,11 +1,8 @@
-﻿using BLAZAM.ActiveDirectory.Interfaces;
-using BLAZAM.Helpers;
-using BLAZAM.Session.Interfaces;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BLAZAM.Services.Audit
 {
-    public class GroupAudit(IAppDatabaseFactory factory, IApplicationUserState? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
+    public class GroupAudit(IAppDatabaseFactory factory, AuditLogActor? userState = null, IJSRuntime? jSRuntime = null) : DirectoryAudit(factory, userState, jSRuntime)
     {
         public override async Task<bool> Deleted(IDirectoryEntryAdapter deletedEntry)
         {

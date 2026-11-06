@@ -1,13 +1,9 @@
 // Import necessary namespaces for various functionalities
-using BLAZAM.ActiveDirectory.Interfaces;
 using BLAZAM.Common.Data;
-using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Global.Enums;
 using BLAZAM.Gui.UI;
 using BLAZAM.Gui.UI.Modals;
 using BLAZAM.Gui.UI.Settings;
-using BLAZAM.Localization;
 using BLAZAM.Services.Audit;
 using BLAZAM.Services.Duo;
 using BLAZAM.Session.Interfaces;
@@ -243,7 +239,7 @@ namespace BLAZAM.Pages
                     return;
                 }
                 SetResetAttempts(_resetAttempts.Where(x => x.AttemptTime > DateTime.UtcNow.AddMinutes(-5)).ToList());
-                
+
                 _resetAttempts.Add(new ResetAttempt
                 {
                     Username = LoginRequest.Username,

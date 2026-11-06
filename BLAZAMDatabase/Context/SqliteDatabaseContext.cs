@@ -21,8 +21,32 @@ namespace BLAZAM.Database.Context
         public SqliteDatabaseContext(DbContextOptions options) : base(options)
         {
         }
+        private static readonly object _saveChangesLock = new object();
+        public override int SaveChanges()
+        {
+            try
+            {
+                lock(_saveChangesLock)
+                {
+                    return base.SaveChanges();
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                //if (ex.InnerException?.HResult == -2147467259)
+                //{
+                //    Task.Delay(500, CancellationToken.None).Wait();
+                //    return RetrySaveChanges();
+                //}
+                return -1;
 
-
+            }
+            catch (Exception ex)
+            {
+                LastSaveError = ex.InnerException ?? ex;
+                return -1;
+            }
+        }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -46,6 +70,30 @@ namespace BLAZAM.Database.Context
                 return -1;
             }
         }
+
+        private int RetrySaveChanges(int retries = 0)
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (retries < 10 && ex.InnerException?.HResult == -2147467259)
+                {
+                    Task.Delay(100, CancellationToken.None).Wait();
+                    return RetrySaveChanges(retries + 1);
+                }
+                return -1;
+
+            }
+            catch (Exception ex)
+            {
+                LastSaveError = ex.InnerException ?? ex;
+                return -1;
+            }
+        }
+
         private async Task<int> RetrySaveChangesAsync(CancellationToken cancellationToken = default, int retries = 0)
         {
             try

@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using BLAZAM.Session;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

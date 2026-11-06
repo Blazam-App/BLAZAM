@@ -46,12 +46,12 @@
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler += RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler += Renamed;
                 if (Context != null)
                 {
-                    CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf=>cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
+                    CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf => cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
                 }
             }
 
@@ -64,9 +64,9 @@
             base.Dispose();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate -= RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler -= RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate -= Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler -= Renamed;
 
             }
         }
@@ -77,10 +77,19 @@
         {
             EditMode = !EditMode;
         }
-
+        private bool _savingChanges;
         protected bool SavingChanges
         {
-            get; set;
+            get => _savingChanges;
+            set
+            {
+                if (_savingChanges == value)
+                {
+                    return;
+                }
+                _savingChanges = value;
+                _ = RefreshEntryComponents();
+            }
         }
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted

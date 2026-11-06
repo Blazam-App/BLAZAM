@@ -1,4 +1,3 @@
-using BLAZAM.Global.Data;
 using BLAZAM.Global.Events;
 using System.Diagnostics;
 
@@ -13,18 +12,18 @@ namespace BLAZAM.Common.Data
         /// <summary>
         /// Event raised when the LDAP connection count changes.
         /// </summary>
-        public static AppEvent<int> OnLdapCountChanged { get; }  = new ();
-        
+        public static AppEvent<int> OnLdapCountChanged { get; } = new();
+
         /// <summary>
         /// The current application process instance used for performance monitoring.
         /// </summary>
         public static Process Process { get; set; }
-        
+
         /// <summary>
         /// Gets the current count of active Active Directory contexts.
         /// </summary>
         public static int ADContextCount { get; private set; }
-        
+
         /// <summary>
         /// Increments the Active Directory context counter.
         /// </summary>
@@ -32,7 +31,7 @@ namespace BLAZAM.Common.Data
         {
             ADContextCount++;
         }
-        
+
         /// <summary>
         /// Decrements the Active Directory context counter.
         /// Ensures the count never goes below zero.
@@ -44,17 +43,17 @@ namespace BLAZAM.Common.Data
                 ADContextCount--;
             }
         }
-        
+
         /// <summary>
         /// Gets the current count of active LDAP connections.
         /// </summary>
         public static int LdapConnectionCount => LdapConnections.Count;
-        
+
         /// <summary>
         /// Internal collection tracking active LDAP connection GUIDs.
         /// </summary>
-        private static readonly List<Guid> LdapConnections = new ();
-        
+        private static readonly List<Guid> LdapConnections = new();
+
         /// <summary>
         /// Removes an LDAP connection from tracking by its unique identifier.
         /// </summary>
@@ -65,7 +64,7 @@ namespace BLAZAM.Common.Data
 
             OnLdapCountChanged.Invoke(LdapConnections.Count);
         }
-        
+
         /// <summary>
         /// Adds a new LDAP connection to tracking with its unique identifier.
         /// </summary>
@@ -80,7 +79,7 @@ namespace BLAZAM.Common.Data
         /// Gets the current count of active database contexts.
         /// </summary>
         public static int DBContextCount { get; private set; }
-        
+
         /// <summary>
         /// Increments the database context counter.
         /// </summary>
@@ -88,7 +87,7 @@ namespace BLAZAM.Common.Data
         {
             DBContextCount++;
         }
-        
+
         /// <summary>
         /// Decrements the database context counter.
         /// Ensures the count never goes below zero.
@@ -100,22 +99,22 @@ namespace BLAZAM.Common.Data
                 DBContextCount--;
             }
         }
-        
+
         /// <summary>
         /// Rolling average of memory usage in bytes over the last 5 samples.
         /// </summary>
         public static RollingAverage MemoryUsage { get; private set; } = new(5);
-        
+
         /// <summary>
         /// Rolling average of CPU usage percentage over the last 5 samples.
         /// </summary>
         public static RollingAverage CPUUsage { get; private set; } = new(5);
-        
+
         /// <summary>
         /// Timer responsible for periodic resource usage polling.
         /// </summary>
         private static Timer? _resourceUsageTimer;
-        
+
         /// <summary>
         /// Starts periodic polling of resource usage metrics (CPU and memory).
         /// Polls every 2 seconds if not already running.
@@ -128,7 +127,7 @@ namespace BLAZAM.Common.Data
                 _resourceUsageTimer = new Timer((state) => { PollData(); }, null, 0, 2000);
             }
         }
-        
+
         /// <summary>
         /// Stops the resource usage polling timer and releases its resources.
         /// </summary>
@@ -140,7 +139,7 @@ namespace BLAZAM.Common.Data
                 _resourceUsageTimer = null;
             }
         }
-        
+
         /// <summary>
         /// Collects current resource usage data and updates rolling averages.
         /// Called periodically by the resource usage timer.
@@ -151,17 +150,17 @@ namespace BLAZAM.Common.Data
             {
                 // Refresh process data to get current values
                 Process.Refresh();
-                
+
                 // Track memory usage (working set in bytes)
                 MemoryUsage.AddValue(Process.WorkingSet64);
-                
+
                 // Calculate CPU usage as percentage
                 var processTimeDelta = Process.TotalProcessorTime - lastProcessTime;
                 lastProcessTime = Process.TotalProcessorTime;
-                
+
                 var pollingDelta = DateTime.Now - lastPollTime;
                 var cpuValue = (processTimeDelta / pollingDelta) * 100;
-                
+
                 // Only add valid CPU values (0-100%)
                 if (cpuValue <= 100)
                 {
@@ -174,12 +173,12 @@ namespace BLAZAM.Common.Data
                 Loggers.SystemLogger.Error(ex, "Error creating performance counters");
             }
         }
-        
+
         /// <summary>
         /// The total processor time from the last polling cycle, used to calculate CPU delta.
         /// </summary>
         private static TimeSpan lastProcessTime = TimeSpan.Zero;
-        
+
         /// <summary>
         /// The timestamp of the last polling cycle, used to calculate time delta.
         /// </summary>

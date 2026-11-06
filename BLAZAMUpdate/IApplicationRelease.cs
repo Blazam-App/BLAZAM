@@ -1,6 +1,4 @@
-﻿using Octokit;
-
-namespace BLAZAM.Update
+﻿namespace BLAZAM.Update
 {
     public interface IApplicationRelease
     {

@@ -41,10 +41,6 @@
                     </AppModal>
 
 
-
-
-
-
                     <ViewSection Title=@AppLocalization[Lang.Info]>
                         <MudStack Row=true Class="@_fieldMudStackClasses">
                             <DynamicMudInput T=string
@@ -136,7 +132,7 @@
             {
                 EventType = ApplicationEventType.Search,
                 Entry = Printer,
-                Actor = CurrentUser.State
+            Actor = CurrentUser.State.AuditActor
 
             });
 
@@ -151,6 +147,8 @@
     {
         if (await MessageService.Confirm("Are you sure you want to delete " + Printer?.CanonicalName + "?", "Delete Printer"))
         {
+            SavingChanges = true;
+
             try
             {
                 Printer?.Delete();
@@ -163,18 +161,28 @@
             {
                 SnackBarService.Error(ex.Message);
             }
-            await RefreshEntryComponents();
+            SavingChanges = false;
+
         }
     }
     async Task SaveChanges()
     {
         if (Printer == null) return;
-        if (await MessageService.Confirm("Are you sure you want to save the changes?", "Save Changes"))
+        if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Confirm_Save_Changes]))
         {
-            await Printer.CommitChangesAsync();
-            EditMode = false;
-            SnackBarService.Success("The changes made to this printer have been saved.");
-            await RefreshEntryComponents();
+            SavingChanges = true;
+            var jobResults = await Printer.CommitChangesAsync();
+
+            if (jobResults.Result == JobResult.Passed)
+            {
+                EditMode = false;
+                SnackBarService.Success(AppHelpLocalization[HelpLang.Changes_Have_Been_Saved, AppLocalization[DirectoryEntry.ObjectType.ToString().ToLower()]]);
+            }
+            else
+            {
+                await jobResults.ShowJobDetailsDialogAsync(MessageService);
+            }
+            SavingChanges = false;
 
         }
     }

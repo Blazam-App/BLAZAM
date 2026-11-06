@@ -1,5 +1,4 @@
-﻿
-@inherits AppComponentBase
+﻿@inherits AppComponentBase
 
 <MudText Typo="Typo.h4">@AppLocalization[Lang.Permission_Mappings] <AppDocumentationButton Page="/admin/permissions" /></MudText>
 <MudCard Elevation="2">
@@ -8,11 +7,11 @@
 
     <MudGrid>
         <MudItem xs="12" sm="3" md="4">
-            <ADAutoComplete Label="@AppLocalization[Lang.Search]" @bind-SelectedResult="SelectedNode"/>
-            <ADTreeView @ref=@OUTree 
-            StartRootExpanded=false
+            <ADAutoComplete Label="@AppLocalization[Lang.Search]" @bind-SelectedResult="SelectedNode" />
+            <ADTreeView @ref=@OUTree
+                        StartRootExpanded=false
                         EndText="@(x=>x.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).Count()>0?x.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).Count().ToString():"")"
-            @bind-SelectedEntry="SelectedNode">
+                        @bind-SelectedEntry="SelectedNode">
 
             </ADTreeView>
         </MudItem>
@@ -41,22 +40,25 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _ = Task.Run(() =>
+            {
+                LoadingData = true;
+                ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
+                TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
+                _ = TopLevel.SubOUs;
+                ApplicationBaseOUs.Add(TopLevel);
 
-        ADOrganizationalUnit TopLevel = new ADOrganizationalUnit();
-        TopLevel.Parse(directory: Directory, directoryEntry: Directory.GetDirectoryEntry());
-        _ = TopLevel.SubOUs;
-        ApplicationBaseOUs.Add(TopLevel);
+                ExpandedNodes.Add(TopLevel);
+                selectedNode = TopLevel;
+                LoadingData = false;
 
-        ExpandedNodes.Add(TopLevel);
-        selectedNode = TopLevel;
-
-        LoadingData = false;
-
+            });
     }
 
     async Task MappingsChanged()
     {
-        if(OUTree !=null){
+        if (OUTree != null)
+        {
             await OUTree.StateHasChangedAsync();
             await StateHasChangedAsync();
         }

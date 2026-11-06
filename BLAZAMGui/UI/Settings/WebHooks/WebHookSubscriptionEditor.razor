@@ -107,13 +107,13 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
     AppModal? webhookModal;
     [Parameter]
     public AppUser User { get; set; }
-    Analytics Analytics;
+    Analytics _analytics;
     private List<WebHookSubscription> _subscriptions = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Analytics = new Analytics(DbFactory, JS);
+        _analytics = new Analytics(DbFactory, JS);
         _ = GetSubscriptions();
     }
     private async Task AddSubscription(WebHookSubscription _newSubscription)
@@ -123,7 +123,7 @@ Title="@AppLocalization["Add new Webhook Subscription"]">
             Context.WebHookSubscriptions.Add(_newSubscription);
             await Context.SaveChangesAsync();
 
-            await Analytics.WebhookCreated(_newSubscription.URL); // Or _newSubscription.Id.ToString() if preferred
+            await _analytics.WebhookCreated(_newSubscription.URL); // Or _newSubscription.Id.ToString() if preferred
 
             await GetSubscriptions();
         }

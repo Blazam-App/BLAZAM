@@ -1,16 +1,15 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.Protocols;
-using System.Security;
-using BLAZAM.ActiveDirectory.Data;
-using BLAZAM.ActiveDirectory.Interfaces;
+﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
 using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
+using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.Protocols;
+using System.Security;
 
 namespace BLAZAM.ActiveDirectory.Adapters
 {
@@ -144,16 +143,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-
-                try
-                {
-                    return (UAC & ADS_UF_ACCOUNTDISABLE) == ADS_UF_ACCOUNTDISABLE;
-                }
-                catch
-                {
-                    // handle NullReferenceException
-                }
-                return true;
+                return (UAC & ADS_UF_ACCOUNTDISABLE) == ADS_UF_ACCOUNTDISABLE;
             }
             set
             {
@@ -173,16 +163,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-
-                try
-                {
-                    return (UAC & ADS_UF_DONT_EXPIRE_PASSWD) == ADS_UF_DONT_EXPIRE_PASSWD;
-                }
-                catch
-                {
-                    //Ignore error
-                }
-                return true;
+                return (UAC & ADS_UF_DONT_EXPIRE_PASSWD) == ADS_UF_DONT_EXPIRE_PASSWD;
             }
             set
             {
@@ -358,8 +339,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public DateTime? PasswordLastSet
         {
-            get=>GetDateTimeAttribute(pwdLastSet);
-            
+            get => GetDateTimeAttribute(pwdLastSet);
+
             set
             {
                 if (value == null)
@@ -401,11 +382,17 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 if (TryInvokeSetPassword(password))
                 {
-                    if(requireChange)
+                    if (requireChange)
                     {
                         RequirePasswordChange = true;
-                        return CommitChanges().Result==JobResult.Passed;
+                        return CommitChanges().Result == JobResult.Passed;
                     }
+                    ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+                    {
+                        EventType = ApplicationEventType.PasswordChange,
+                        Entry = this,
+                        Actor = CurrentUser.AuditActor
+                    });
                     return true;
                 }
 
@@ -489,6 +476,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                 up.Save();
             }
+            ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
+            {
+                EventType = ApplicationEventType.PasswordChange,
+                Entry = this,
+                Actor = CurrentUser.AuditActor
+            });
             return true;
         }
         public void StageEnable()

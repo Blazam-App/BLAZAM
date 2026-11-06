@@ -140,8 +140,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        ApplicationNewsService.OnNewItemsAvailable.Delegate += RefreshItems;
-        CurrentUser.State.OnReadNewsSaved.Delegate += RefreshItems;
+        ApplicationNewsService.OnNewItemsAvailable.EventHandler += RefreshItems;
+        CurrentUser.State.OnReadNewsSaved.EventHandler += RefreshItems;
         RefreshItems();
 
 
@@ -150,11 +150,11 @@ else
     {
         base.Dispose();
         if(ApplicationNewsService.OnNewItemsAvailable != null){
-            ApplicationNewsService.OnNewItemsAvailable.Delegate -= RefreshItems;
+            ApplicationNewsService.OnNewItemsAvailable.EventHandler -= RefreshItems;
         }
         if (CurrentUser.State.OnReadNewsSaved != null)
         {
-            CurrentUser.State.OnReadNewsSaved.Delegate -= RefreshItems;
+            CurrentUser.State.OnReadNewsSaved.EventHandler -= RefreshItems;
         }
     }
 
