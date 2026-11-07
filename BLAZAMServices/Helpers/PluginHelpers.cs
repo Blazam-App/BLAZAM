@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Reflection;
 
-namespace BLAZAM.Services
+namespace BLAZAM.Helpers
 {
     internal static class PluginHelpers
 
