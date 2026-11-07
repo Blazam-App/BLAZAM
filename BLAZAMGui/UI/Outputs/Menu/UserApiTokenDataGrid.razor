@@ -62,7 +62,7 @@
         };
         Context.ApiTokens.Add(newToken);
         await Context.SaveChangesAsync();
-        Analytics.ApiTokenCreated();
+        await Analytics.ApiTokenCreated();
         await AuditLogger.System.APITokenCreated(CurrentUser.Username);
         if (_apiTokenDataGrid != null)
         {
