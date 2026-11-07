@@ -1,4 +1,4 @@
-namespace BLAZAM.Gui.UI.Settings.Audit
+namespace BLAZAM.Gui.UI.Audit
 {
     public abstract class AuditContentBase<T> : DatabaseComponentBase
     {
