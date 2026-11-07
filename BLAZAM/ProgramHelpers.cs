@@ -650,6 +650,9 @@ namespace BLAZAM
         private static void PreloadServices(WebApplication application)
         {
             Loggers.SystemLogger.Information("Preloading/Starting singleton services...");
+
+
+
             try
             {
                 if (ApplicationInfo.installationCompleted)
@@ -740,6 +743,28 @@ namespace BLAZAM
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading NotificationGenerationService.");
+            }
+        }
+
+        private static void PreloadApiTokenSalt(WebApplication application)
+        {
+            try
+            {
+                Loggers.SystemLogger.Debug("Preloading API Token Salt...");
+                var factory = application.Services.GetRequiredService<IAppDatabaseFactory>();
+                using var context = factory.CreateDbContext();
+                var authSettings = context.AuthenticationSettings.FirstOrDefault();
+                if(authSettings.ApiTokenSalt == null)
+                {
+                    authSettings.ApiTokenSalt = Encryption.GenerateSalt();
+                    context.SaveChanges();
+                }
+                Encryption.Instance.GenerateApiKeyFromSeedString(authSettings.ApiTokenSalt);
+                Loggers.SystemLogger.Debug("API Token Salt preloaded.");
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error preloading API Token Key.");
             }
         }
 

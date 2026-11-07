@@ -30,7 +30,7 @@ namespace BLAZAM.Services
         /// <summary>
         /// Generates a new JWT for the current user, typically for API access. The token is configured with claims based on the user's identity and has a defined lifetime.
         /// </summary>
-        /// <param name="lifetime">The timespan for which the token will be valid. Defaults to 365 days if null.</param>
+        /// <param name="lifetime">The timespan for which the token will be valid. Defaults to 30 days if null.</param>
         /// <returns>A string representation of the generated JWT.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the current user state or user identity is unavailable.</exception>
         public string GenerateJwtToken(TimeSpan? lifetime = null)
@@ -40,7 +40,7 @@ namespace BLAZAM.Services
                 Loggers.SystemLogger.Error("JwtTokenService.GenerateJwtToken: _currentUserStateService.State is null. Cannot generate token.");
                 throw new InvalidOperationException("_currentUserStateService.State is null. Cannot generate token.");
             }
-            var currentUser = _currentUserStateService.State; // Assign to local var after null check
+            var currentUser = _currentUserStateService.State;
 
             if (currentUser.User == null)
             {
@@ -48,7 +48,7 @@ namespace BLAZAM.Services
                 throw new InvalidOperationException("currentUser.User is null. Cannot generate token.");
             }
 
-            if (lifetime == null) { lifetime = TimeSpan.FromDays(365); }
+            if (lifetime == null) { lifetime = TimeSpan.FromDays(30); }
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var claims = new Dictionary<string, object>
@@ -58,10 +58,11 @@ namespace BLAZAM.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = currentUser.User.Claims.FirstOrDefault()?.Subject, // Already handles null Claims or empty Claims list
+                Subject = currentUser.User.Claims.FirstOrDefault()?.Subject,
                 Claims = claims,
+                Audience = ApplicationInfo.installationId.ToString(),
                 IssuedAt = DateTime.UtcNow,
-                Issuer = DatabaseCache.ApplicationSettings.AppName, // Assumes AppSettings and AppName are available
+                Issuer = DatabaseCache.ApplicationSettings?.AppName, // Assumes AppSettings and AppName are available
                 Expires = (DateTime.UtcNow + lifetime.Value),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encryption.Instance.APITokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -86,8 +87,10 @@ namespace BLAZAM.Services
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encryption.Instance.APITokenKey),
-                    ValidateIssuer = false, // Typically, you might want to validate the issuer
-                    ValidateAudience = false, // Typically, you might want to validate the audience
+                    ValidateIssuer = true,
+                    ValidIssuer = DatabaseCache.ApplicationSettings?.AppName,
+                    ValidateAudience = true,
+                    ValidAudience = ApplicationInfo.installationId.ToString(),  
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
@@ -96,7 +99,7 @@ namespace BLAZAM.Services
             }
             catch (Exception ex)
             {
-                Loggers.SystemLogger.Error("Error validating token: {ErrorMessage} Token: {TokenString}", ex.Message, token); // Added token to log
+                Loggers.SystemLogger.Error("Error validating token: {ErrorMessage} Token: {TokenString}", ex.Message, token);
                 return null;
             }
         }

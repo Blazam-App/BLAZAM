@@ -12,18 +12,13 @@ namespace BLAZAM.Services
         private Encryption Encryption { get; set; }
 
         /// <summary>
-        /// Gets the API token encryption key.
-        /// </summary>
-        public byte[] Key => Encryption.APITokenKey;
-
-        /// <summary>
         /// Gets the connection state of the service, indicating if the encryption key is loaded.
         /// </summary>
         public ServiceConnectionState Status
         {
             get
             {
-                return Encryption.APITokenKey != null ? ServiceConnectionState.Up : ServiceConnectionState.Down;
+                return Encryption.Instance != null ? ServiceConnectionState.Up : ServiceConnectionState.Down;
             }
         }
 

@@ -53,5 +53,11 @@ namespace BLAZAM.Database.Models
                     DuoApiHost != null;
             }
         }
+        /// <summary>
+        /// Salt used when generating or validating API tokens.
+        /// </summary>
+        /// <remarks>Use a cryptographically strong, unique value and treat it as sensitive
+        /// data.</remarks>
+        public byte[] ApiTokenSalt { get; set; }
     }
 }
