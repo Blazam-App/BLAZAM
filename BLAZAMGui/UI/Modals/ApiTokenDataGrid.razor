@@ -1,14 +1,14 @@
 @inherits DatabaseComponentBase
 @{
-       DateTime _renderTime = DateTime.Now;
+    DateTime _renderTime = DateTime.Now;
 }
-<MudDataGrid Items="@_tokens"
+<MudDataGrid Items="@Tokens"
              Loading=LoadingData
              Class="mb-5">
     <Columns>
         <TemplateColumn Class="" Title="@AppLocalization[Lang.Enabled]">
             <CellTemplate>
-                <StatusCheck Status="@(IsValid(context.Item,_renderTime))" /> 
+                <StatusCheck Status="@(IsValid(context.Item, _renderTime))" />
             </CellTemplate>
         </TemplateColumn>
         @if (ShowUser)
@@ -40,7 +40,7 @@
                                      Icon="@Icons.Material.Filled.Error" />
                         </AppTooltip>
                     }
-          
+
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -99,7 +99,8 @@
     [Parameter]
     public bool ShowUser { get; set; }
 
-    List<ApiToken> _tokens = new();
+    [Parameter]
+    public List<ApiToken> Tokens { get; set; } = new();
 
     [Parameter]
     public bool ShowAllTokens { get; set; }
@@ -117,32 +118,16 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Task.Run(() =>
-{
-    _ = GetTokensAsync();
-});
-    }
-
-    public async Task GetTokensAsync()
-    {
-        LoadingData = true;
-        if (ShowAllTokens)
-        {
-            if (ShowDeleted)
-                _tokens = await Context.ApiTokens.Include(t => t.User).ToListAsync();
-            else
-                _tokens = await Context.ApiTokens.Where(t => t.DeletedAt == null).Include(t => t.User).ToListAsync();
-        }
-        else
-        {
-            _tokens = await Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id && t.DeletedAt == null).Include(t => t.User).ToListAsync();
-        }
-
         LoadingData = false;
-
     }
+
+   
     private bool IsValid(ApiToken token, DateTime renderTime)
     {
-        return !(token.ExpiresAt.ToLocalTime() < renderTime || token.CreatedAt.ToLocalTime() > renderTime || token.IsRevoked);
+        return !(token.ExpiresAt.ToLocalTime() < renderTime
+        || token.CreatedAt.ToLocalTime() > renderTime
+        || token.IsRevoked
+        || JwtTokenService.DecodeJwtToken(token.Token.Decrypt()) == null
+        );
     }
 }

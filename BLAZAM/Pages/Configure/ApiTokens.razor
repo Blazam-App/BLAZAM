@@ -24,15 +24,17 @@
         </MudAlert>
     </MudLink>
     <ApiTokenDataGrid @ref=_apiTokenDataGrid
-        ShowUser="true"
-        ShowDeleted="ShowDeleted"
+        Tokens="_tokens"
+                      ShowUser="true"
+                      ShowDeleted="ShowDeleted"
                       ShowAllTokens="true"
-                      OnTokenDeleted="@(async (token) => { await Delete(token); })"/>
+                      OnTokenDeleted="@(async (token) => { await Delete(token); })" />
     <MudButton Color="Color.Primary" OnClick="@(Save)">@AppLocalization[Lang.Save]</MudButton>
 </AuthorizeView>
 
 
 @code {
+    List<ApiToken> _tokens = new();
 
     ApiTokenDataGrid? _apiTokenDataGrid;
 
@@ -44,10 +46,20 @@
         {
             if (_showDeleted == value) return;
             _showDeleted = value;
-            _=_apiTokenDataGrid?.GetTokensAsync();
         }
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _ = Task.Run(()=>
+        {
+            _ = GetTokensAsync();     
+        }); 
+
+        LoadingData = false;
+    }
 
     public async Task Save()
     {
@@ -66,10 +78,23 @@
             await Context.SaveChangesAsync();
             if (_apiTokenDataGrid != null)
             {
-                await _apiTokenDataGrid.GetTokensAsync();
+                await GetTokensAsync();
             }
         }
 
+
+    }
+
+    public async Task GetTokensAsync()
+    {
+        LoadingData = true;
+        if (ShowDeleted)
+            _tokens = await Context.ApiTokens.Include(t => t.User).ToListAsync();
+        else
+            _tokens = await Context.ApiTokens.Where(t => t.DeletedAt == null).Include(t => t.User).ToListAsync();
+
+
+        LoadingData = false;
 
     }
 }

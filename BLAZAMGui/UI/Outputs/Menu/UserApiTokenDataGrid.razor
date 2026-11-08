@@ -1,5 +1,5 @@
 @inherits DatabaseComponentBase
-<ApiTokenDataGrid @ref=_apiTokenDataGrid OnTokenDeleted="@(async (token) => { await Delete(token); })" />
+<ApiTokenDataGrid @ref=_apiTokenDataGrid Tokens=_tokens OnTokenDeleted="@(async (token) => { await Delete(token); })" />
 
 
 <SettingsField Label="@AppLocalization[Lang.Create_new_token]">
@@ -28,7 +28,7 @@
                OnClick="@GenerateToken">
         @AppLocalization[Lang.Generate_New_API_Token]
     </MudButton>
-    <LoadingData Loading=LoadingData/>
+    <LoadingData Loading=LoadingData />
 </SettingsField>
 @code {
     List<ApiToken> _tokens = new();
@@ -38,9 +38,21 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _=Task.Run(() =>
+        {
+            _ = GetTokensAsync();
+        });
         LoadingData = false;
     }
+    public async Task GetTokensAsync()
+    {
+        LoadingData = true;
 
+        _tokens = await Context.ApiTokens.Where(t => t.UserId == CurrentUser.State.Id && t.DeletedAt == null).Include(t => t.User).ToListAsync();
+
+        LoadingData = false;
+
+    }
     private async Task GenerateToken()
     {
         LoadingData = true;
@@ -66,7 +78,7 @@
         await AuditLogger.System.APITokenCreated(CurrentUser.Username);
         if (_apiTokenDataGrid != null)
         {
-            await _apiTokenDataGrid.GetTokensAsync();
+            await GetTokensAsync();
         }
         LoadingData = false;
     }
@@ -86,7 +98,7 @@
             Analytics.ApiTokenRevoked();
             if (_apiTokenDataGrid != null)
             {
-                await _apiTokenDataGrid.GetTokensAsync();
+                await GetTokensAsync();
             }
 
         }
