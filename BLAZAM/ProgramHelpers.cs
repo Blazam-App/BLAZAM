@@ -659,6 +659,8 @@ namespace BLAZAM
                 {
                     Loggers.SystemLogger.Information("Installation complete. Starting background services...");
                     StartBackgroundServices(application);
+                    Loggers.SystemLogger.Information("Ensuring API token salt is preloaded...");
+                    PreloadApiTokenSalt(application);
                     Loggers.SystemLogger.Information("Finished starting background services.");
                 }
                 else

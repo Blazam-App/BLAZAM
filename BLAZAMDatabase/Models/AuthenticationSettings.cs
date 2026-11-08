@@ -58,6 +58,6 @@ namespace BLAZAM.Database.Models
         /// </summary>
         /// <remarks>Use a cryptographically strong, unique value and treat it as sensitive
         /// data.</remarks>
-        public byte[] ApiTokenSalt { get; set; }
+        public byte[]? ApiTokenSalt { get; set; } = null;
     }
 }
