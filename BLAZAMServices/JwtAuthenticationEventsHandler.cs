@@ -50,7 +50,7 @@ namespace BLAZAM.Services
 
             using var dbContext = await _dbFactory.CreateDbContextAsync();
             var tokenStrSecure = context.SecurityToken.UnsafeToString().ToSecureString();
-            var tokenHash = tokenStrSecure.ToPlainText().GetAppHashCode(); // Ensure tokenHash is captured
+            var tokenHash = tokenStrSecure.FromSecureString().GetAppHashCode(); // Ensure tokenHash is captured
 
             var matchingToken = dbContext.ApiTokens.FirstOrDefault(t => t.TokenHash.Equals(tokenHash));
 

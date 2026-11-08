@@ -11,7 +11,7 @@ namespace BLAZAMCommon.Tests
         {
             var test = "test";
             var encoded = test.ToSecureString();
-            var decoded = encoded.ToPlainText();
+            var decoded = encoded.FromSecureString();
             bool result = decoded.Equals(test);
 
             Assert.True(result, "Decrypted secure string should match plain text that was encrypted");

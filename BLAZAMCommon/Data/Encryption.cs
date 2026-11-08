@@ -132,7 +132,7 @@ namespace BLAZAM.Common.Data
             {
                 if (_cipherCache.ContainsKey(cipherText))
                 {
-                    var decryptedCache = JsonConvert.DeserializeObject<T>(_cipherCache[cipherText].ToPlainText());
+                    var decryptedCache = JsonConvert.DeserializeObject<T>(_cipherCache[cipherText].FromSecureString());
                     return decryptedCache;
                 }
             }

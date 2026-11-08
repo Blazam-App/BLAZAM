@@ -79,7 +79,7 @@ namespace BLAZAMCommon.Tests.Data
             {
                 Assert.NotNull(securePassword); // SecureString should not be null
                 // This relies on the BLAZAM.Helpers.ToPlainText extension method working correctly
-                Assert.Equal(testPassword, securePassword.ToPlainText());
+                Assert.Equal(testPassword, securePassword.FromSecureString());
             }
         }
 
@@ -96,7 +96,7 @@ namespace BLAZAMCommon.Tests.Data
             // Assert
             Assert.NotNull(loginRequest.SecurePassword);
             // This relies on the BLAZAM.Helpers.ToPlainText extension method working correctly
-            Assert.Equal(testPassword, loginRequest.SecurePassword.ToPlainText());
+            Assert.Equal(testPassword, loginRequest.SecurePassword.FromSecureString());
         }
 
         [Fact]

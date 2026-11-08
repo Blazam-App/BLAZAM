@@ -47,7 +47,7 @@
 
 <MudTextField Label="@AppLocalization[Lang.Password]"
               Class="password-font"
-              Value="@User?.NewPassword.ToPlainText()"
+              Value="@User?.NewPassword.FromSecureString()"
               Disabled=true />
 
 <CascadingValue Value="GroupableEntry">
