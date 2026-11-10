@@ -309,7 +309,7 @@
                                             <CellTemplate Context="cellContext">
                                                 <MudTextField T=string Value=cellContext.Item.Value
                                                               ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
-
+                                                              <MudAutocomplete SearchFunc="SearchValueLists"/>
                                             </CellTemplate>
                                         </TemplateColumn>
                                         <TemplateColumn Title=@AppLocalization[Lang.Editable]>

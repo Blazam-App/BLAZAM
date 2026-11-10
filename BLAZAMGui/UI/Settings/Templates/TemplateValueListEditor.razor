@@ -1,0 +1,16 @@
+﻿<MudList T="string">
+    @foreach(var value in DirectoryTemplateFieldValueList.Items)
+    {
+        <MudListItem T="string">
+            <MudText Typo="Typo.body1">@value.Value</MudText>
+        </MudListItem>
+    }
+</MudList>
+
+@code {
+    /// <summary>
+    /// The list of values for the template field.
+    /// </summary>
+    [Parameter]
+    public DirectoryTemplateFieldValueList DirectoryTemplateFieldValueList { get; set; } = new DirectoryTemplateFieldValueList();
+}

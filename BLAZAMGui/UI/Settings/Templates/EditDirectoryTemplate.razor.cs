@@ -85,6 +85,18 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             get;
             set;
         }
+        private async Task<IEnumerable<string>>? SearchValueLists(string? value,CancellationToken cancellationToken=default)
+        {
+            if (Context == null)
+            {
+                return [];
+            }
+            var fieldValues = await Context.DirectoryTemplateFieldValueLists
+                .Where(fvl => fvl.Name.Contains(value))
+                .Select(fvl => fvl.Name)
+                .ToListAsync();
+            return fieldValues;
+        }
 
         protected override async Task OnParametersSetAsync()
         {
