@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Migrations.Sql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.22")
+                .HasAnnotation("ProductVersion", "9.0.22")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -942,6 +942,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("AdminPassword")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ApiTokenSalt")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("DuoApiHost")
                         .HasColumnType("nvarchar(max)");
@@ -2133,6 +2136,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ValueListId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomFieldId");
@@ -2141,7 +2147,48 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasIndex("FieldId");
 
+                    b.HasIndex("ValueListId");
+
                     b.ToTable("DirectoryTemplateFieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectoryTemplateFieldValueList");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueListItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("DirectoryTemplateFieldValueListId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectoryTemplateFieldValueListId");
+
+                    b.ToTable("DirectoryTemplateFieldValueListItem");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
@@ -2219,6 +2266,9 @@ namespace BLAZAM.Common.Migrations.Sql
                         .HasColumnType("bit");
 
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreferredLanguage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ProfilePicture")
@@ -2809,9 +2859,22 @@ namespace BLAZAM.Common.Migrations.Sql
                         .WithMany()
                         .HasForeignKey("FieldId");
 
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", "ValueList")
+                        .WithMany()
+                        .HasForeignKey("ValueListId");
+
                     b.Navigation("CustomField");
 
                     b.Navigation("Field");
+
+                    b.Navigation("ValueList");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueListItem", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", null)
+                        .WithMany("Items")
+                        .HasForeignKey("DirectoryTemplateFieldValueListId");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
@@ -3003,6 +3066,11 @@ namespace BLAZAM.Common.Migrations.Sql
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.Navigation("FieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
