@@ -756,7 +756,12 @@ namespace BLAZAM
                 var factory = application.Services.GetRequiredService<IAppDatabaseFactory>();
                 using var context = factory.CreateDbContext();
                 var authSettings = context.AuthenticationSettings.FirstOrDefault();
-                if(authSettings.ApiTokenSalt == null)
+                if(authSettings == null)
+                {
+                    Loggers.SystemLogger.Warning("AuthenticationSettings record not found in database. Cannot preload API Token Salt.");
+                    return;
+                }
+                if (authSettings.ApiTokenSalt == null)
                 {
                     authSettings.ApiTokenSalt = Encryption.GenerateSalt();
                     context.SaveChanges();
