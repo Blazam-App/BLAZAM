@@ -9,7 +9,10 @@ namespace BLAZAM.Database.Models.Templates
         public CustomActiveDirectoryField? CustomField { get; set; }
         public int? CustomFieldId { get; set; }
 
-        public string? Value { get; set; } = "";
+        public string? Value { get; set; } = null;
+
+        public DirectoryTemplateFieldValueList? ValueList { get; set; } = null;
+
 
         /// <summary>
         /// Indicates whether a regular user should be able to modify
@@ -26,6 +29,7 @@ namespace BLAZAM.Database.Models.Templates
 
         [NotMapped]
         public string? FieldDisplayName => Field != null ? Field?.DisplayName : CustomField?.DisplayName;
+
 
         public object Clone(IDatabaseContext context)
         {
