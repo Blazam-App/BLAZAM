@@ -1,4 +1,12 @@
 # BLAZAM
+
+**A modern, web-based Active Directory management and delegation portal.**  
+Blazam streamlines daily AD operations, automates routine directory tasks, and enables secure, granular delegation without handing out domain admin privileges.
+
+[Website](https://blazam.org) • [Live Demo](https://blazam.org/demo) • [Documentation](https://docs.blazam.org) • [Download](https://blazam.org/download) • [Installation Guide](https://docs.blazam.org/install/web/)
+
+---
+
 [![Downloads](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)](https://img.shields.io/github/downloads/Blazam-App/BLAZAM/total)
 [![Release Date](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)](https://img.shields.io/github/release-date/Blazam-App/BLAZAM)
 [![Build](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-net10.yml)](https://img.shields.io/github/actions/workflow/status/Blazam-App/BLAZAM/release-net10.yml)
@@ -16,12 +24,18 @@
 ![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
 ![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
 
-
 ## Who is it for?
 * Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
 * Organizations with limited IT budgets: Blazam is a free and open-source solution that provides powerful features without the high costs of commercial software.
 * IT professionals seeking improved delegation: Blazam's flexible permission system allows you to grant granular control over specific AD objects and actions to individual users or groups.
 * Anyone needing remote AD management: Access Blazam's intuitive web interface from any device with a browser, allowing you to manage your directory from anywhere.
+
+## Why is Blazam a valuable tool?
+* Enable non-technical users: Delegate tasks like password resets or group assignments to help desk staff or other non-IT personnel, freeing up your team for more specialized work.
+* Improve IT efficiency: Streamline your AD management workflow with Blazam's user-friendly interface and powerful features.
+* Go beyond Microsoft's GUI: Blazam offers features that go beyond the capabilities of standard AD management tools, such as copying group memberships or managing user photos from the web.
+* Mobile accessibility: Manage your Active Directory from anywhere using your phone or tablet.
+* Open source and free: Blazam is community-driven and transparent, with no licensing costs.
 
 ## What does Blazam offer?
 * Comprehensive AD Management: Perform essential tasks such as:
@@ -51,24 +65,6 @@
   * Real-time computer monitoring (CPU, memory usage, session list, service state, drive details).
   * Automatic updates to keep your installation current.
   
-## Why is Blazam a valuable tool?
-* Enable non-technical users: Delegate tasks like password resets or group assignments to help desk staff or other non-IT personnel, freeing up your team for more specialized work.
-* Improve IT efficiency: Streamline your AD management workflow with Blazam's user-friendly interface and powerful features.
-* Go beyond Microsoft's GUI: Blazam offers features that go beyond the capabilities of standard AD management tools, such as copying group memberships or managing user photos from the web.
-* Mobile accessibility: Manage your Active Directory from anywhere using your phone or tablet.
-* Open source and free: Blazam is community-driven and transparent, with no licensing costs.
-
-## Visit the Main Website
-[https://blazam.org](https://blazam.org)
-
-## Try the Live Demo
-[Windows Hosted Demo](https://blazam.org/demo)
-
- [Linux Hosted Demo](https://blazam.org/demo)
-
-## View the Documentation
-[https://docs.blazam.org](https://docs.blazam.org)
-
 ## Ready to Install?
 Blazam's Web Installer is the recommended installation method.
 
@@ -82,19 +78,6 @@ We have users in Ukraine... we support Ukraine in the current conflict with Russ
 ## Star History
 If you like the project, please give it a star! It helps with visibility and motivates us to keep improving it.
 [![Star History Chart](https://api.star-history.com/chart?repos=Blazam-App/BLAZAM&type=date&legend=top-left&sealed_token=z0-ShDcXsqYDXY-ETy1FB64CQSCB7OaV-r8AKZ3c4Ra3SoGIuC5hRG-zNURkb-ybEWTwip2dlwWBEsbsP-jECu_aIhPJ0I-IXXE6WCvQx3GMTKAliM8u6enXajWdFmoqHVb_lp0dyJb3DTIrWBtdRWXvhCim0W3eE2G3NNdRgglufxc0O4QnzIA0F6TA)](https://www.star-history.com/?repos=Blazam-App%2FBLAZAM&type=date&legend=top-left)
-
-## Recommended by 3 out of 4 of the most popular free AI models
-### ChatGPT👍
-<img width="774" height="743" alt="image" src="https://github.com/user-attachments/assets/6d6cdaa7-2900-4158-bcf1-a00383029e22" />
-
-### Microsoft Copilot👎
-<img width="766" height="796" alt="image" src="https://github.com/user-attachments/assets/1359b93c-ce3d-4a85-a2c7-eaa50a6c8778" />
-
-### DeepSeek👍
-<img width="765" height="763" alt="image" src="https://github.com/user-attachments/assets/eef08b33-d020-4289-90bb-8a4f4d801aa4" />
-
-### Gemini👍
-<img width="767" height="688" alt="image" src="https://github.com/user-attachments/assets/3a127307-5ab0-451e-bf82-727c7c68aa08" />
 
 
 ## Get Paid to Contribute

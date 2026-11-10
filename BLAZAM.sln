@@ -56,7 +56,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMGoogleWorkspacePlugin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMUpdate", "BLAZAMUpdate\BLAZAMUpdate.csproj", "{D65DFC4B-8958-2061-69F4-32C3BE2AEF06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAM.Gui.Tests", "BLAZAM.Gui.Tests\BLAZAM.Gui.Tests.csproj", "{8B3EF9E4-B336-441F-B9AC-2153F895E2B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLAZAMGui.Tests", "BLAZAM.Gui.Tests\BLAZAMGui.Tests.csproj", "{8B3EF9E4-B336-441F-B9AC-2153F895E2B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
