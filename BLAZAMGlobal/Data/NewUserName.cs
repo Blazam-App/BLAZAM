@@ -4,10 +4,10 @@ namespace BLAZAM.Global.Data
 {
     public class NewUserName
     {
-        private string _givenName = "";
-        public string GivenName
+        private string? _givenName = "";
+        public string? GivenName
         {
-            get => _givenName.Trim();
+            get => _givenName?.Trim();
             set => _givenName = value;
         }
 
