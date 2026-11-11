@@ -21,8 +21,8 @@ Blazam streamlines daily AD operations, automates routine directory tasks, and e
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Blazam-App_BLAZAM&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Blazam-App_BLAZAM)
 
 ## Screenshots
-![image](https://github.com/user-attachments/assets/fe56c0b7-f3b9-4a91-8dc1-7b74ea0f67ac)
-![image](https://github.com/user-attachments/assets/cfa35e1f-facb-4c64-8ad4-1a48de5f4a82)
+<img width="634" height="456" alt="image" src="https://github.com/user-attachments/assets/f49a5ffc-19e9-4755-afbd-1705f12ce894" />
+<img width="633" height="453" alt="image" src="https://github.com/user-attachments/assets/ea9c60a3-1c89-481b-87ef-01a998da2162" />
 
 ## Who is it for?
 * Overworked system administrators: Blazam simplifies and automates many routine AD management tasks, freeing up your time for more critical projects.
