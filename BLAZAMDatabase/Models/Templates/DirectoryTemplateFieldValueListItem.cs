@@ -6,6 +6,6 @@ namespace BLAZAM.Database.Models.Templates
 {
     public class DirectoryTemplateFieldValueListItem: AppDbSetBase
     {
-        public string Value { get; set; }
+        public string StringValue { get; set; }
     }
 }

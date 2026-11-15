@@ -165,7 +165,7 @@ namespace BLAZAM.Gui.UI
 
         private async Task<DirectoryTemplate?> LoadTemplateWithParents(int? templateId)
         {
-            if (templateId == null)
+            if (templateId == null || Context == null)
             {
                 return null;
             }

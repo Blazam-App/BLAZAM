@@ -1,16 +1,34 @@
-﻿<MudList T="string">
-    @foreach(var value in DirectoryTemplateFieldValueList.Items)
-    {
-        <MudListItem T="string">
-            <MudText Typo="Typo.body1">@value.Value</MudText>
-        </MudListItem>
-    }
-</MudList>
+﻿@inherits AppModalContent
 
+<MudTextField Label="@AppLocalization[Lang.Name]"
+              @bind-Value="DirectoryTemplateFieldValueList.Name" />
+<Section Title="@AppLocalization[Lang.Value]">
+    <MudStack Row=true Spacing="0">
+        <MudList T="string">
+            @foreach (var value in DirectoryTemplateFieldValueList.Items)
+            {
+                <MudStack Row="true" Spacing="0">
+                    <MudTextField Typo="Typo.body1"
+                                  @bind-Value="value.StringValue" />
+                    <MudSpacer />
+                    <AppIconButton Icon="@Icons.Material.Filled.Remove"
+                                   Color="Color.Error"
+                                   OnClick="@(()=>{DirectoryTemplateFieldValueList.Items.Remove(value);})" />
+                </MudStack>
+                
+            }
+        </MudList>
+    </MudStack>
+    <AppIconButton Icon=@Icons.Material.Filled.Add
+                   Color="Color.Success"
+                   OnClick="@(() => { DirectoryTemplateFieldValueList.Items.Add(new()); })" />
+
+</Section>
 @code {
     /// <summary>
     /// The list of values for the template field.
     /// </summary>
     [Parameter]
     public DirectoryTemplateFieldValueList DirectoryTemplateFieldValueList { get; set; } = new DirectoryTemplateFieldValueList();
+
 }

@@ -133,8 +133,8 @@ namespace BLAZAM.Database.Models.Templates
         }
 
         public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = [];
-        [NotMapped]
 
+        [NotMapped]
         public List<DirectoryTemplateFieldValue> EffectiveFieldValues
         {
             get

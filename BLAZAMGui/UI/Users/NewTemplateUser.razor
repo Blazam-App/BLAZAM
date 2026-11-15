@@ -109,6 +109,7 @@
                                     @if (field.CustomField != null)
                                     {
                                         <DynamicMudInput Immediate=true
+                                                         ValueList="@(TemplateValueList(field.CustomField))"
                                                          Required=@(field.Required)
                                                          Label="@field.FieldDisplayName"
                                                          Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"

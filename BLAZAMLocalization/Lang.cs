@@ -184,6 +184,7 @@ namespace BLAZAM.Localization
         public static readonly string Rename_OU = "Rename OU";
         public static readonly string Refresh_Session = "Refresh Session";
         public static readonly string Change_Thumbnail = "Change Thumbnail";
+        public static readonly string Edit_Value_List = "Edit Value List";
         public static readonly string Upload_File = "Upload File";
         public static readonly string Save_Photo = "Save Photo";
         public static readonly string Upload_Thumbnail_Photo = "Upload Thumbnail Photo";
@@ -318,6 +319,7 @@ namespace BLAZAM.Localization
         public static readonly string Required = "Required";
         public static readonly string Editable = "Editable";
         public static readonly string Value = "Value";
+        public static readonly string Value_List = "Value List";
         public static readonly string Negate = "Negate";
         public static readonly string Domain = "Domain";
         public static readonly string Apply = "Apply";

@@ -4,6 +4,8 @@ namespace BLAZAM.Gui.UI.Settings.Templates
 {
     public partial class EditDirectoryTemplate : ValidatedForm
     {
+        private DirectoryTemplateFieldValueList? _editedValueList;
+        private AppModal? _valueListModal;
         private string? _testFirstName;
         private string? _testMiddleName;
         private string? _testLastName;
@@ -85,16 +87,25 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             get;
             set;
         }
-        private async Task<IEnumerable<string>>? SearchValueLists(string? value,CancellationToken cancellationToken=default)
+        private async Task<IEnumerable<DirectoryTemplateFieldValueList?>> SearchValueLists(string? value,CancellationToken cancellationToken=default)
         {
+            var fieldValues = new List<DirectoryTemplateFieldValueList?>();
+
             if (Context == null)
             {
                 return [];
             }
-            var fieldValues = await Context.DirectoryTemplateFieldValueLists
-                .Where(fvl => fvl.Name.Contains(value))
-                .Select(fvl => fvl.Name)
-                .ToListAsync();
+            if (value == null || value == String.Empty)
+            {
+                fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
+                    .ToListAsync());
+            }
+            else
+            {
+                fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
+                    .Where(fvl => fvl.Name.Contains(value))
+                    .ToListAsync());
+            }
             return fieldValues;
         }
 
@@ -346,6 +357,28 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             await ClearSelectedTemplate.InvokeAsync();
         }
+
+        private async Task SaveValueListAsync()
+        {
+            if (_editedValueList != null)
+            {
+                if (Context == null)
+                {
+                    throw new AppException("Database not available");
+                }
+               if(_editedValueList.Id == 0)
+                {
+                    await Context.DirectoryTemplateFieldValueLists.AddAsync(_editedValueList);
+                }
+                else
+                {
+                    Context.DirectoryTemplateFieldValueLists.Update(_editedValueList);
+                }
+                await Context.SaveChangesAsync();
+                await _valueListModal.CloseAsync();
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
+            }
+        }
         protected async Task SaveTemplate()
         {
             if (Context == null)
@@ -449,6 +482,14 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             else if (field is CustomActiveDirectoryField customField)
             {
                 _workingTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { CustomField = customField });
+            }
+        }
+        private async Task CreateNewValueList()
+        {
+            _editedValueList= new DirectoryTemplateFieldValueList();
+            if (_valueListModal != null)
+            {
+                await _valueListModal.ShowAsync();
             }
         }
     }

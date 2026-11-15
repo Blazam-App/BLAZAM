@@ -4,7 +4,6 @@
 {
     <CascadingValue Value="_workingTemplate">
         <MudForm @ref=Form IsValidChanged="@((val) => { SaveDisabled = !val; })">
-            <CascadingValue Value="_workingTemplate">
                 <MudStack>
                     <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @_workingTemplate.Name</MudText>
                     <MudSelectList T="DirectoryTemplate"
@@ -35,11 +34,11 @@
                     <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
                         <AddTemplateCategoryModalContent Categories="@categories"
                                                          CategoryAdded="@(async (newCategory) =>
-                                                                             {
-                                                                                 _workingTemplate.Category = newCategory;
-                                                                                 categories.Add(newCategory);
-                                                                                 await StateHasChangedAsync();
-                                                                             })" />
+                                                                                                                                                                                                                                                                                     {
+                                                                                                                                                                                                                                                                                         _workingTemplate.Category = newCategory;
+                                                                                                                                                                                                                                                                                         categories.Add(newCategory);
+                                                                                                                                                                                                                                                                                         await StateHasChangedAsync();
+                                                                                                                                                                                                                                                                                     })" />
                     </AppModal>
                     <MudSwitch Label="@AppLocalization[Lang.Visible]"
                                UncheckedColor="Color.Warning"
@@ -307,9 +306,56 @@
                                         </TemplateColumn>
                                         <TemplateColumn Title=@AppLocalization[Lang.Value]>
                                             <CellTemplate Context="cellContext">
-                                                <MudTextField T=string Value=cellContext.Item.Value
-                                                              ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
-                                                              <MudAutocomplete SearchFunc="SearchValueLists"/>
+
+
+                                                @if (cellContext.Item.Field?.FieldType == ActiveDirectoryFieldType.Text 
+                                                     || cellContext.Item.CustomField?.FieldType == ActiveDirectoryFieldType.Text)
+                                                {
+                                                    <MudTabs Elevation="0"
+                                                             Rounded="false"
+                                                             ApplyEffectsToContainer="true"
+                                                             TabPanelsClass=""
+                                                             ActivePanelIndex="@(cellContext.Item.ValueList!=null?1:0)">
+                                                        <MudTabPanel Text="@AppLocalization[Lang.Value]">
+                                                            <MudTextField T=string Value=cellContext.Item.Value
+                                                                          ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
+                                                        </MudTabPanel>
+                                                        <MudTabPanel Text="@AppLocalization[Lang.Value_List]">
+                                                            <MudAutocomplete @bind-Value="cellContext.Item.ValueList"
+                                                                             Clearable="true"
+                                                                             CoerceText=true
+                                                                             MaxItems="15"
+                                                                             ToStringFunc="@((list)=>{return list?.Name;})"
+                                                                             SearchFunc="SearchValueLists">
+                                                                <NoItemsTemplate>
+                                                                    <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
+                                                                </NoItemsTemplate>
+                                                                <ItemTemplate>
+                                                                    <MudStack Row="true" Spacing="0">
+                                                                        <MudText>@context?.Name</MudText>
+                                                                        <MudSpacer />
+                                                                        <AppIconButton Icon="@Icons.Material.Filled.Edit"
+                                                                                       OnClick="@((e) => { _editedValueList = context; _valueListModal?.ShowAsync(); })" />
+                                                                    </MudStack>
+                                                                </ItemTemplate>
+                                                            </MudAutocomplete>
+                                                            <AppIconButton Icon="@Icons.Material.Filled.Add"
+                                                                           Color="Color.Success"
+                                                                           OnClick="CreateNewValueList" />
+                                                        </MudTabPanel>
+                                                    </MudTabs>
+
+                                                    <AppModal @ref="_valueListModal"
+                                                              OnYes="SaveValueListAsync"
+                                                              Title="@AppLocalization[Lang.Edit_Value_List]">
+                                                        <TemplateValueListEditor DirectoryTemplateFieldValueList="@_editedValueList" />
+                                                    </AppModal>
+                                                }
+                                                else
+                                                {
+                                                    <MudTextField T=string Value=cellContext.Item.Value
+                                                                  ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
+                                                }
                                             </CellTemplate>
                                         </TemplateColumn>
                                         <TemplateColumn Title=@AppLocalization[Lang.Editable]>
@@ -455,9 +501,8 @@
 
 
 
-            </CascadingValue>
         </MudForm>
- @*        @if (_workingTemplate.GetChanges(_originalTemplate).Count > 0)
+        @*        @if (_workingTemplate.GetChanges(_originalTemplate).Count > 0)
         {
             <UnsavedChangesPrompt SaveChanges="SaveTemplate" DiscardChanges="LoadData" />
         } *@

@@ -115,6 +115,14 @@ namespace BLAZAM.Helpers
                 entity.Navigation(e => e.FieldValues).AutoInclude();
                 entity.Navigation(e => e.AssignedGroupSids).AutoInclude();
             });
+            modelBuilder.Entity<DirectoryTemplateFieldValue>(entity =>
+            {
+                entity.Navigation(e => e.ValueList).AutoInclude();
+            });
+            modelBuilder.Entity<DirectoryTemplateFieldValueList>(entity =>
+            {
+                entity.Navigation(e => e.Items).AutoInclude();
+            });
         }
 
         internal static void AddAutomationRuleConfig(ModelBuilder modelBuilder)

@@ -50,7 +50,27 @@
                 return Template.InTemplate(field);
             }
         }
+        protected DirectoryTemplateFieldValueList? TemplateValueList(IActiveDirectoryField field)
+        {
+            if (Template == null)
+            {
+                return null;
+            }
 
+            if (Template.FieldValues.Any(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+                var customFV = Template.FieldValues.Where(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return customFV?.ValueList;
+            }
+
+            if (Template.FieldValues.Any(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+
+                var fV = Template.FieldValues.Where(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return fV?.ValueList;
+            }
+            return null;
+        }
         protected bool RequireField(IActiveDirectoryField field)
         {
             if (Disabled)
