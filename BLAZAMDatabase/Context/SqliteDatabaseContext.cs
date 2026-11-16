@@ -26,7 +26,7 @@ namespace BLAZAM.Database.Context
         {
             try
             {
-                lock(_saveChangesLock)
+                lock (_saveChangesLock)
                 {
                     return base.SaveChanges();
                 }

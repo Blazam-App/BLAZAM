@@ -50,7 +50,7 @@
                 return Template.InTemplate(field);
             }
         }
-        
+
         protected bool RequireField(IActiveDirectoryField field)
         {
             if (Disabled)

@@ -1,7 +1,6 @@
 ﻿
 using BLAZAM.Common.Data.Validators;
 using BLAZAM.Helpers;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

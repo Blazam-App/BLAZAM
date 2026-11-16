@@ -1,6 +1,5 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
-using BlazorTemplater;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -232,7 +231,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber).Replace(" ","");
+            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber).Replace(" ", "");
 
 
         }
@@ -377,7 +376,7 @@ namespace BLAZAM.Database.Models.Templates
 
         public DirectoryTemplateFieldValueList? TemplateValueList(IActiveDirectoryField field)
         {
-            
+
 
             if (EffectiveFieldValues.Any(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
             {

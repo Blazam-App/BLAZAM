@@ -90,7 +90,7 @@ namespace BLAZAM.Services
                     ValidateIssuer = true,
                     ValidIssuer = DatabaseCache.ApplicationSettings?.AppName,
                     ValidateAudience = true,
-                    ValidAudience = ApplicationInfo.installationId.ToString(),  
+                    ValidAudience = ApplicationInfo.installationId.ToString(),
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 

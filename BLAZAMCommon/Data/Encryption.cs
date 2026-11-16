@@ -219,7 +219,7 @@ namespace BLAZAM.Common.Data
             // Generate a random value and store it in the byte array
             randomGenerator.GetBytes(ivSeedBytes);
 
-   
+
 
             byte[] iv = RandomNumberGenerator.GetBytes(16);
 

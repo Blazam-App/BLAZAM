@@ -87,7 +87,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             get;
             set;
         }
-        private async Task<IEnumerable<DirectoryTemplateFieldValueList?>> SearchValueLists(string? value,CancellationToken cancellationToken=default)
+        private async Task<IEnumerable<DirectoryTemplateFieldValueList?>> SearchValueLists(string? value, CancellationToken cancellationToken = default)
         {
             var fieldValues = new List<DirectoryTemplateFieldValueList?>();
 
@@ -366,7 +366,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 {
                     throw new AppException("Database not available");
                 }
-               if(_editedValueList.Id == 0)
+                if (_editedValueList.Id == 0)
                 {
                     await Context.DirectoryTemplateFieldValueLists.AddAsync(_editedValueList);
                 }
@@ -486,7 +486,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         }
         private async Task CreateNewValueList()
         {
-            _editedValueList= new DirectoryTemplateFieldValueList();
+            _editedValueList = new DirectoryTemplateFieldValueList();
             if (_valueListModal != null)
             {
                 await _valueListModal.ShowAsync();

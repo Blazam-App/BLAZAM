@@ -131,7 +131,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 var pageOffset = 1;
 
-           
+
 
                 if (EnabledOnly == false)
                 {
