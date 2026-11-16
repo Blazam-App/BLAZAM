@@ -16,7 +16,7 @@
     @if (ShowField(ActiveDirectoryFields.Description))
     {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.Description))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.Description))"
                          Label="@AppLocalization[Lang.Description]"
                          @bind-Value="@Contact.Description"
                              Required=@(RequireField(ActiveDirectoryFields.Description))
@@ -44,7 +44,7 @@
     @if (ShowField(ActiveDirectoryFields.Department))
     {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.Department))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.Department))"
                          Label="@AppLocalization[Lang.Department]"
                          @bind-Value="@Contact.Department"
                              Required=@(RequireField(ActiveDirectoryFields.Department))
@@ -53,7 +53,7 @@
     @if (ShowField(ActiveDirectoryFields.Company))
     {
         <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.Company))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.Company))"
                          Label="@AppLocalization[Lang.Company]"
                          @bind-Value="@Contact.Company"
                              Required=@(RequireField(ActiveDirectoryFields.Company))
@@ -71,7 +71,7 @@
     @if (ShowField(ActiveDirectoryFields.Title))
     {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.Title))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.Title))"
                          Label="@AppLocalization[Lang.Job_Title]"
                          @bind-Value="@Contact.Title"
                              Required=@(RequireField(ActiveDirectoryFields.Title))
@@ -80,7 +80,7 @@
     @if (ShowField(ActiveDirectoryFields.PhysicalDeliveryOffice))
     {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.PhysicalDeliveryOffice))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.PhysicalDeliveryOffice))"
                          Label="@AppLocalization[Lang.Office]"
                          @bind-Value="@Contact.PhysicalDeliveryOfficeName"
                              Required=@(RequireField(ActiveDirectoryFields.PhysicalDeliveryOffice))

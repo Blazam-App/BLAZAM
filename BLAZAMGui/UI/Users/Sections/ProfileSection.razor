@@ -8,7 +8,9 @@
         {
             <MudStack Row=true Spacing="0">
 
-                <DynamicMudInput T=string Label="@AppLocalization[Lang.Home_Directory]"
+                <DynamicMudInput T=string 
+                    Label="@AppLocalization[Lang.Home_Directory]"
+                                 ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.HomeDirectory))"
                                  @bind-Value="@User.HomeDirectory"
                                  Required=@(RequireField(ActiveDirectoryFields.HomeDirectory))
                                  Disabled=@(DisableField(ActiveDirectoryFields.HomeDirectory)) />
@@ -31,6 +33,7 @@
         @if (ShowField(ActiveDirectoryFields.ScriptPath))
         {
             <DynamicMudInput T=string
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.ScriptPath))"
                              Label="@AppLocalization[Lang.Script_Path]"
                              @bind-Value="@User.ScriptPath"
                              Required=@(RequireField(ActiveDirectoryFields.ScriptPath))
@@ -39,6 +42,7 @@
         @if (ShowField(ActiveDirectoryFields.ProfilePath))
         {
             <DynamicMudInput T=string
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.ProfilePath))"
                              Label="@AppLocalization[Lang.Profile_Path]"
                              @bind-Value="@User.ProfilePath"
                              Required=@(RequireField(ActiveDirectoryFields.ProfilePath))

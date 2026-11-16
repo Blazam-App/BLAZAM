@@ -7,7 +7,7 @@
         @if (ShowField(ActiveDirectoryFields.TelephoneNumber))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.TelephoneNumber))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.TelephoneNumber))"
                              Label="@AppLocalization[Lang.Telephone_Number]"
                              @bind-Value="@Contact.TelephoneNumber"
                              Required=@(RequireField(ActiveDirectoryFields.TelephoneNumber))
@@ -17,7 +17,7 @@
         @if (ShowField(ActiveDirectoryFields.HomePhone))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.HomePhone))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.HomePhone))"
                              Label="@AppLocalization[Lang.Home_Phone]"
                              @bind-Value="@Contact.HomePhone"
                              Required=@(RequireField(ActiveDirectoryFields.HomePhone))
@@ -27,7 +27,7 @@
         @if (ShowField(ActiveDirectoryFields.StreetAddress))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.StreetAddress))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.StreetAddress))"
                              Label="@AppLocalization[Lang.Street_Address]"
                              @bind-Value="@Contact.StreetAddress"
                              Required=@(RequireField(ActiveDirectoryFields.StreetAddress))
@@ -36,7 +36,7 @@
         @if (ShowField(ActiveDirectoryFields.POBox))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.POBox))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.POBox))"
                              Label="@AppLocalization[Lang.PO_Box]"
                              @bind-Value="@Contact.POBox"
                              Required=@(RequireField(ActiveDirectoryFields.POBox))
@@ -45,7 +45,7 @@
         @if (ShowField(ActiveDirectoryFields.City))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.City))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.City))"
                              Label="@AppLocalization[Lang.City]"
                              @bind-Value="@Contact.City"
                              Required=@(RequireField(ActiveDirectoryFields.City))
@@ -54,7 +54,7 @@
         @if (ShowField(ActiveDirectoryFields.State))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.State))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.State))"
                              Label="@AppLocalization[Lang.State]"
                              @bind-Value="@Contact.State"
                              Required=@(RequireField(ActiveDirectoryFields.State))
@@ -63,7 +63,7 @@
         @if (ShowField(ActiveDirectoryFields.PostalCode))
         {
             <DynamicMudInput T=string
-                             ValueList="@(TemplateValueList(ActiveDirectoryFields.PostalCode))"
+                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.PostalCode))"
                              Label="@AppLocalization[Lang.Zip_Code]"
                              @bind-Value="@Contact.Zip"
                              Required=@(RequireField(ActiveDirectoryFields.PostalCode))

@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Global.Data;
 using BLAZAM.Helpers;
+using BlazorTemplater;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -231,7 +232,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber);
+            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber).Replace(" ","");
 
 
         }
@@ -372,6 +373,26 @@ namespace BLAZAM.Database.Models.Templates
 
             // Return the final processed value.
             return value;
+        }
+
+        public DirectoryTemplateFieldValueList? TemplateValueList(IActiveDirectoryField field)
+        {
+            
+
+            if (EffectiveFieldValues.Any(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+
+                var customFV = EffectiveFieldValues.Where(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return customFV?.ValueList;
+            }
+
+            if (EffectiveFieldValues.Any(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+
+                var fV = EffectiveFieldValues.Where(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return fV?.ValueList;
+            }
+            return null;
         }
         private static string Substring(string? str, int start, int count)
         {
