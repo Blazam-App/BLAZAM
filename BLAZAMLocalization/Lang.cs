@@ -391,6 +391,7 @@ namespace BLAZAM.Localization
         public static readonly string Email_Enabled = "Email Enabled";
         public static readonly string Use_TLS = "Use TLS";
         public static readonly string Base_DN = "Base DN";
+        public static readonly string Max_Search_Results = "Maximum Search Results";
         public static readonly string User_Activity = "User Activity";
         public static readonly string Memory = "Memory";
         public static readonly string Rename_Computer = "Rename Computer";
