@@ -15,7 +15,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.22");
 
             modelBuilder.Entity("AccessLevelFieldAccessMapping", b =>
                 {
@@ -90,6 +90,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("MaxSearchResults")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(3000);
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -110,10 +115,7 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings", t =>
-                        {
-                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
-                        });
+                    b.ToTable("ActiveDirectorySettings");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>
@@ -916,6 +918,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("AdminPassword")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("ApiTokenSalt")
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("DuoApiHost")
                         .HasColumnType("TEXT");
@@ -2037,6 +2042,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ValueListId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomFieldId");
@@ -2045,7 +2053,44 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasIndex("FieldId");
 
+                    b.HasIndex("ValueListId");
+
                     b.ToTable("DirectoryTemplateFieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectoryTemplateFieldValueLists");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueListItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DirectoryTemplateFieldValueListId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StringValue")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectoryTemplateFieldValueListId");
+
+                    b.ToTable("DirectoryTemplateFieldValueListItem");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateGroup", b =>
@@ -2117,6 +2162,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PreferredLanguage")
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("ProfilePicture")
@@ -2695,9 +2743,22 @@ namespace BLAZAM.Common.Migrations.Sqlite
                         .WithMany()
                         .HasForeignKey("FieldId");
 
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", "ValueList")
+                        .WithMany()
+                        .HasForeignKey("ValueListId");
+
                     b.Navigation("CustomField");
 
                     b.Navigation("Field");
+
+                    b.Navigation("ValueList");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueListItem", b =>
+                {
+                    b.HasOne("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", null)
+                        .WithMany("Items")
+                        .HasForeignKey("DirectoryTemplateFieldValueListId");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.ApiToken", b =>
@@ -2889,6 +2950,11 @@ namespace BLAZAM.Common.Migrations.Sqlite
             modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplate", b =>
                 {
                     b.Navigation("FieldValues");
+                });
+
+            modelBuilder.Entity("BLAZAM.Database.Models.Templates.DirectoryTemplateFieldValueList", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.User.AppUser", b =>
