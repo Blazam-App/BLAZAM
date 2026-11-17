@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>A conta está ativada.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>A conta está bloqueada.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>A conta está bloqueada</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>A conta não está bloqueada.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Unidade Organizacional</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>UO</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Alterar Senha</value>
   </data>
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Gerar Novo Token de API</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
-    <value>Membro do Grupo Adicionado</value>
+  <data name="Group member added" xml:space="preserve">
+    <value>Membro do grupo adicionado</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>Membro do Grupo Removido</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>Membro do grupo removido</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>Grupo Pesquisado</value>
@@ -1391,5 +1388,89 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Insira o valor aqui</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Nenhuma entrada correspondente</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contato</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Plugins</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Pergunta</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Resposta</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Ir para usuário</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Imprimir</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Removido do Grupo</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Adicionado ao Grupo</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>O utilizador está bloqueado</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Verificar atualizações</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Adicionar membro</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Objeto eliminado</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Criar Contacto</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Tipo de conexão</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Distribuição</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Data de início</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Data de término</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Falta o nome de utilizador</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>A palavra-passe está em falta</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Descartar tudo</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Token expirado</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>O usuário está desativado</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Computadores</value>
+  </data>
+  <data name="hin" xml:space="preserve">
+    <value>Pesquisar</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Pesquisar</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Notificações lidas</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Modificado pelo utilizador</value>
   </data>
 </root>

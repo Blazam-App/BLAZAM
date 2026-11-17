@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>खाता सक्षम है।</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>खाता बंद है।</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>खाता बंद है</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>खाता बंद नहीं है।</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>संगठनात्मक इकाई</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>ओ</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>पास परिवर्तन</value>
   </data>
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>नया एपीआई टोकन जनरेट करें</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
+  <data name="Group member added" xml:space="preserve">
     <value>समूह सदस्य जोड़ा गया</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>समूह सदस्य को हटाया गया</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>समूह सदस्य हटाया गया</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>समूह खोजा गया</value>
@@ -1391,5 +1388,89 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>यहाँ मान दर्ज करें</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>कोई मेल खाती प्रविष्टियाँ नहीं मिलीं</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>संपर्क</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>प्लगइन्स</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>प्रश्न</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>उत्तर</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>उपयोगकर्ता पर जाएँ</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>प्रिंट करें</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>समूह से हटाया गया</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>समूह में जोड़ा गया</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>उपयोगकर्ता लॉक हो गया है</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>अपडेट की जाँच करें</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>सदस्य जोड़ें</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>ऑब्जेक्ट हटा दिया गया</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>संपर्क बनाएँ</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>कनेक्शन प्रकार</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>वितरण</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>प्रारंभ तिथि</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>समाप्ति तिथि</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>उपयोगकर्ता नाम गायब है</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>पासवर्ड नहीं है</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>सभी खारिज करें</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>टोकन की समय-सीमा समाप्त हो गई है</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>उपयोगकर्ता अक्षम है</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>कंप्यूटर</value>
+  </data>
+  <data name="hin" xml:space="preserve">
+    <value>खोजें</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>खोजें</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>सूचनाएँ पढ़ें</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>User Modified</value>
   </data>
 </root>

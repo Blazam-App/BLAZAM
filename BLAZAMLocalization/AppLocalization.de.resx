@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>Konto ist aktiviert.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>Das Konto ist gesperrt.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>Das Konto ist gesperrt</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>Das Konto ist nicht gesperrt.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Organisationseinheit</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>OE</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Pass-Änderung</value>
   </data>
@@ -1122,10 +1119,10 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Neues API-Token generieren</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
+  <data name="Group member added" xml:space="preserve">
     <value>Gruppenmitglied hinzugefügt</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
+  <data name="Group  member removed" xml:space="preserve">
     <value>Gruppenmitglied entfernt</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
@@ -1391,5 +1388,89 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Wert hier eingeben</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Keine passenden Einträge</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Plugins</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Frage</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Antwort</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Gehe zu Benutzer</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Drucken</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Aus der Gruppe entfernt</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Zur Gruppe hinzugefügt</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>Benutzer ist gesperrt</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Nach Updates suchen</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Mitglied hinzufügen</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Objekt gelöscht</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Kontakt erstellen</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Verbindungstyp</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Verteilung</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Startdatum</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Enddatum</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Benutzername fehlt</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>Passwort fehlt</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Alle verwerfen</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Token abgelaufen</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>Benutzer ist deaktiviert</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Computer</value>
+  </data>
+  <data name="hin" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Gelesene Benachrichtigungen</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Vom Benutzer geändert</value>
   </data>
 </root>
