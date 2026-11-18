@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20261116225519_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql")]
+    [Migration("20261118021134_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql")]
     partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql
     {
         /// <inheritdoc />

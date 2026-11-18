@@ -228,14 +228,13 @@ namespace BLAZAM.Helpers
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.MaxSearchResults).HasDefaultValue(3000);
                 if (context.Database.IsMySql())
-                    if (context.Database.IsMySql())
-                    {
-                        entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
-                    }
-                    else
-                    {
-                        entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
-                    }
+                {
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, MYSQL_ID_1));
+                }
+                else
+                {
+                    entity.ToTable(t => t.HasCheckConstraint(CK_TABLE_COLUMN, SQL_ID_1));
+                }
             });
         }
 

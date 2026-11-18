@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDatabaseContext))]
-    [Migration("20261116225406_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sqlite")]
+    [Migration("20261118021016_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sqlite")]
     partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sqlite
     {
         /// <inheritdoc />
@@ -118,7 +118,10 @@ namespace BLAZAM.Database.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings");
+                    b.ToTable("ActiveDirectorySettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>

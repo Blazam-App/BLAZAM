@@ -115,7 +115,10 @@ namespace BLAZAM.Common.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings");
+                    b.ToTable("ActiveDirectorySettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>

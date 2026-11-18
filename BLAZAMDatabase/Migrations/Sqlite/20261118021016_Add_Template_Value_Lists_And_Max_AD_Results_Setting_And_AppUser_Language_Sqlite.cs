@@ -10,10 +10,6 @@ namespace BLAZAM.Database.Migrations.Sqlite
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column",
-                table: "ActiveDirectorySettings");
-
             migrationBuilder.AddColumn<string>(
                 name: "PreferredLanguage",
                 table: "UserSettings",
@@ -128,11 +124,6 @@ namespace BLAZAM.Database.Migrations.Sqlite
             migrationBuilder.DropColumn(
                 name: "MaxSearchResults",
                 table: "ActiveDirectorySettings");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column",
-                table: "ActiveDirectorySettings",
-                sql: "[Id] = 1");
         }
     }
 }

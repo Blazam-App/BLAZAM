@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.Sql
 {
     [DbContext(typeof(SqlDatabaseContext))]
-    [Migration("20261116225443_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sql")]
+    [Migration("20261118021056_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sql")]
     partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sql
     {
         /// <inheritdoc />
@@ -123,7 +123,10 @@ namespace BLAZAM.Database.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings");
+                    b.ToTable("ActiveDirectorySettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>
@@ -611,7 +614,8 @@ namespace BLAZAM.Database.Migrations.Sql
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
+                                .HasName("CK_Table_Column1");
                         });
                 });
 
@@ -979,7 +983,7 @@ namespace BLAZAM.Database.Migrations.Sql
                     b.ToTable("AuthenticationSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
-                                .HasName("CK_Table_Column1");
+                                .HasName("CK_Table_Column2");
                         });
 
                     b.HasData(
@@ -1173,7 +1177,7 @@ namespace BLAZAM.Database.Migrations.Sql
                     b.ToTable("EmailSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
-                                .HasName("CK_Table_Column2");
+                                .HasName("CK_Table_Column3");
                         });
                 });
 

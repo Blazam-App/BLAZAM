@@ -10,22 +10,6 @@ namespace BLAZAM.Database.Migrations.Sql
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column3",
-                table: "EmailSettings");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column2",
-                table: "AuthenticationSettings");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column1",
-                table: "AppSettings");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column",
-                table: "ActiveDirectorySettings");
-
             migrationBuilder.AddColumn<string>(
                 name: "PreferredLanguage",
                 table: "UserSettings",
@@ -90,25 +74,10 @@ namespace BLAZAM.Database.Migrations.Sql
                 column: "ApiTokenSalt",
                 value: null);
 
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column2",
-                table: "EmailSettings",
-                sql: "[Id] = 1");
-
             migrationBuilder.CreateIndex(
                 name: "IX_DirectoryTemplateFieldValues_ValueListId",
                 table: "DirectoryTemplateFieldValues",
                 column: "ValueListId");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column1",
-                table: "AuthenticationSettings",
-                sql: "[Id] = 1");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column",
-                table: "AppSettings",
-                sql: "[Id] = 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DirectoryTemplateFieldValueListItem_DirectoryTemplateFieldValueListId",
@@ -136,21 +105,9 @@ namespace BLAZAM.Database.Migrations.Sql
             migrationBuilder.DropTable(
                 name: "DirectoryTemplateFieldValueLists");
 
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column2",
-                table: "EmailSettings");
-
             migrationBuilder.DropIndex(
                 name: "IX_DirectoryTemplateFieldValues_ValueListId",
                 table: "DirectoryTemplateFieldValues");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column1",
-                table: "AuthenticationSettings");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CK_Table_Column",
-                table: "AppSettings");
 
             migrationBuilder.DropColumn(
                 name: "PreferredLanguage",
@@ -167,26 +124,6 @@ namespace BLAZAM.Database.Migrations.Sql
             migrationBuilder.DropColumn(
                 name: "MaxSearchResults",
                 table: "ActiveDirectorySettings");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column3",
-                table: "EmailSettings",
-                sql: "[Id] = 1");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column2",
-                table: "AuthenticationSettings",
-                sql: "[Id] = 1");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column1",
-                table: "AppSettings",
-                sql: "[Id] = 1");
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CK_Table_Column",
-                table: "ActiveDirectorySettings",
-                sql: "[Id] = 1");
         }
     }
 }

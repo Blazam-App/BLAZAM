@@ -120,7 +120,10 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveDirectorySettings");
+                    b.ToTable("ActiveDirectorySettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                        });
                 });
 
             modelBuilder.Entity("BLAZAM.Database.Models.ActiveDirectoryField", b =>
@@ -608,7 +611,8 @@ namespace BLAZAM.Common.Migrations.Sql
 
                     b.ToTable("AppSettings", t =>
                         {
-                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1");
+                            t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
+                                .HasName("CK_Table_Column1");
                         });
                 });
 
@@ -976,7 +980,7 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("AuthenticationSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
-                                .HasName("CK_Table_Column1");
+                                .HasName("CK_Table_Column2");
                         });
 
                     b.HasData(
@@ -1170,7 +1174,7 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.ToTable("EmailSettings", t =>
                         {
                             t.HasCheckConstraint("CK_Table_Column", "[Id] = 1")
-                                .HasName("CK_Table_Column2");
+                                .HasName("CK_Table_Column3");
                         });
                 });
 
