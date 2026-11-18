@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>Computer</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>Suchen</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Suchen</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>Vom Benutzer geändert</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Mitglied</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Löschen bestätigen</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Anmeldedaten OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory-Verbindungsstatus</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Domänencontroller</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Seriennummer</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapazität</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Verzögerung in Sekunden</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Belegt</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Delegierter</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Sicherheit</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Verschlüsselt</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Globale Einstellungen</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Universell</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Negieren</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Zugang</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Ereignisse</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Fortschritt</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbunden</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Betreff</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>An</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Genehmigen</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Herunterfahren</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Neustart</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Neuigkeiten</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Passwortablauf</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Kennwort läuft nie ab</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Aktion</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Ziel</value>
   </data>
 </root>

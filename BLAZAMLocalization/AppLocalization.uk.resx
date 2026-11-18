@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>Комп’ютери</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>Пошук</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Пошук</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>Змінено користувачем</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Член</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Підтвердити видалення</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Облікові дані дійсні</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Стан підключення до Active Directory</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Контролери домену</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Серійний</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Ємність</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Затримка в секундах</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Використовується</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Делегат</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Безпека</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категорія</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Зашифровано</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Глобальні налаштування</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Глобальний</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Універсальний</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Вхід</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Інвертувати</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Дії</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Події</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Прогрес</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Результат</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Підключено</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Кому</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Схвалити</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Вимкнути</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Перезавантажити</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Новини</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версія</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Термін дії пароля</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Термін дії пароля ніколи не закінчується</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Дія</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Ціль</value>
   </data>
 </root>

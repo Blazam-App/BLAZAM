@@ -1461,10 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>计算机</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="hin" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="Search" xml:space="preserve">
     <value>搜索</value>
   </data>
@@ -1473,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>用户已修改</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>成员</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>确认删除</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>凭据正常</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory 连接状态</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>域控制器</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>序列号</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>容量</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>延迟（秒）</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>正在使用</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>代表</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>安全</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>类别</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>已加密</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>全局设置</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>全局</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>通用</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>取反</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>访问权限</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>事件</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>进度</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>已连接</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>收件人</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>批准</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>关机</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>重启</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>新闻</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>密码过期</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>密码永不过期</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>目标</value>
   </data>
 </root>

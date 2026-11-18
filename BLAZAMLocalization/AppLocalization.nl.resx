@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>Computers</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>Zoeken</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Zoeken</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>Door gebruiker gewijzigd</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tijd</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Lid</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Verwijderen bevestigen</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Inloggegevens OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Status van Active Directory-verbinding</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Domeincontrollers</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Serienummer</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Capaciteit</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Vertraging in seconden</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>In gebruik</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Afgevaardigde</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Beveiliging</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Versleuteld</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Algemene instellingen</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Globaal</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Universeel</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Aanmelden</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Toepassen</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Ontkennen</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Toegang</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acties</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Gebeurtenissen</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Voortgang</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultaat</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbonden</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Onderwerp</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Aan</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Goedkeuren</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Herstarten</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Nieuws</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Wachtwoordvervaldatum</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Wachtwoord verloopt nooit</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Actie</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Doel</value>
   </data>
 </root>

@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>コンピューター</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>検索</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>検索</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>ユーザーによる変更</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>メンバー</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>削除の確認</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>認証情報は正常です</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory 接続状態</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>ドメイン コントローラー</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>シリアル</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>容量</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>遅延（秒）</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>使用中</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>代表者</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>セキュリティ</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>カテゴリー</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>暗号化済み</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>グローバル設定</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>グローバル</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>ユニバーサル</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>否定</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>アクセス</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>イベント</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>進行状況</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>接続済み</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>件名</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>宛先</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>承認</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>シャットダウン</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>再起動</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>ニュース</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>パスワードの有効期限</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>パスワードの有効期限なし</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>対象</value>
   </data>
 </root>

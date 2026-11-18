@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>कंप्यूटर</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>खोजें</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>खोजें</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>User Modified</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>तारीख</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>समय</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>सदस्य</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>हटाने की पुष्टि करें</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>क्रेडेंशियल्स ठीक हैं</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>एक्टिव डायरेक्टरी कनेक्शन स्थिति</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>डोमेन नियंत्रक</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>क्रमांक</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>क्षमता</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>सेकंड में विलंब</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>उपयोग में है</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>प्रतिनिधि</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>सुरक्षा</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>श्रेणी</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>एन्क्रिप्टेड</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>त्रुटि</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>वैश्विक सेटिंग्स</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>वैश्विक</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>सार्वभौमिक</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>लॉगिन</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>लागू करें</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>नकारें</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>पहुँच</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>कार्रवाइयाँ</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>इवेंट्स</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>प्रगति</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>परिणाम</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>कनेक्टेड</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>विषय</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>प्रति</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>स्वीकृत करें</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>शटडाउन</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>रीबूट</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>समाचार</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>संस्करण</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>पासवर्ड की समय-सीमा समाप्ति</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>पासवर्ड कभी समाप्त नहीं होता</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>कार्रवाई</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>लक्ष्य</value>
   </data>
 </root>

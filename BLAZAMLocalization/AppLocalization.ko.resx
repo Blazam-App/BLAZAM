@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>컴퓨터</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>검색</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>검색</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>사용자 수정됨</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>회원</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>삭제 확인</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>자격 증명 확인됨</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory 연결 상태</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>도메인 컨트롤러</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>일련 번호</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>용량</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>초 단위 지연</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>사용 중</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>대표</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>보안</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>카테고리</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>암호화됨</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>전역 설정</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>전역</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>범용</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>적용</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>부정</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>접근 권한</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>작업</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>이벤트</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>진행률</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>결과</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>연결됨</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>제목</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>받는 사람</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>승인</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>재부팅</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>뉴스</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>비밀번호 만료</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>암호가 만료되지 않음</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>작업</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>대상</value>
   </data>
 </root>

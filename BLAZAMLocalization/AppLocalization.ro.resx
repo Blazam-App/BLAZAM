@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>Calculatoare</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>Căutare</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Căutare</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>Modificat de utilizator</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Timp</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Membru</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Confirmă ștergerea</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Datele de autentificare sunt OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Stare conexiune Active Directory</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Controlere de domeniu</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Serie</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Capacitate</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Întârziere în secunde</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Folosit</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Delegat</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Securitate</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Criptat</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Eroare</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Setări globale</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Universal</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Autentificare</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Aplică</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Negare</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Acces</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acțiuni</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Evenimente</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progres</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Rezultat</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Conectat</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subiect</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Către</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Aprobă</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Închidere</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Repornire</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Știri</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versiune</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Expirarea parolei</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Parola nu expiră niciodată</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Acțiune</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Țintă</value>
   </data>
 </root>

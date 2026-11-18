@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>Bilgisayarlar</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>Ara</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Ara</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>Kullanıcı Tarafından Değiştirildi</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Zaman</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Üye</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Silmeyi onayla</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Kimlik bilgileri geçerli</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory Bağlantı Durumu</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Etki Alanı Denetleyicileri</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Seri</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapasite</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Saniye cinsinden gecikme</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Kullanımda</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Delege</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Güvenlik</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Şifrelenmiş</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Genel Ayarlar</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Küresel</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Evrensel</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Olumsuzla</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Erişim</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Eylemler</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Etkinlikler</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>İlerleme</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Sonuç</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Bağlı</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Konu</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Kime</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Onayla</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Yeniden Başlat</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Haberler</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Sürüm</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Parola Süresinin Dolması</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Parolanın Süresi Asla Dolmaz</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Eylem</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Hedef</value>
   </data>
 </root>

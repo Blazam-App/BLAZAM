@@ -1461,9 +1461,6 @@
   <data name="Computers" xml:space="preserve">
     <value>أجهزة الكمبيوتر</value>
   </data>
-  <data name="hin" xml:space="preserve">
-    <value>بحث</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>بحث</value>
   </data>
@@ -1472,5 +1469,122 @@
   </data>
   <data name="User Modified" xml:space="preserve">
     <value>معدّل من قبل المستخدم</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>عضو</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>بيانات الاعتماد سليمة</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>حالة اتصال Active Directory</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>وحدات تحكم المجال</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>تسلسلي</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>السعة</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>التأخير بالثواني</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>قيد الاستخدام</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>مندوب</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>الأمان</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>مشفّر</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>الإعدادات العامة</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>عالمي</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>عالمي</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>تطبيق</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>نفي</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>الوصول</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>الأحداث</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>التقدم</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>النتيجة</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>متصل</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>الموضوع</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>إلى</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>اعتماد</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>إعادة التشغيل</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>الأخبار</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>الإصدار</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>انتهاء صلاحية كلمة المرور</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>كلمة المرور لا تنتهي صلاحيتها أبدًا</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>إجراء</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>الهدف</value>
   </data>
 </root>

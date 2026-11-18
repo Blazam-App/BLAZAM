@@ -1472,4 +1472,130 @@
   <data name="User Modified" xml:space="preserve">
     <value>User Modified</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+    <comment>Like "What is today's date"</comment>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Member</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Confirm deletion</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Credentials OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory Connection Status</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Domain Controllers</value>
+    <comment>LDAP Domain Controllers</comment>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Serial</value>
+    <comment>Like a Serial Number</comment>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Capacity</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Delay in seconds</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Used</value>
+    <comment>Like "this computer is being used"</comment>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Delegate</value>
+    <comment>Like "He is a delegate of the organization"</comment>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Encrypted</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Global Settings</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Universal</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+    <comment>Like "Apply that setting"</comment>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Negate</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Access</value>
+    <comment>Like "does he have access?"</comment>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subject</value>
+    <comment>Like "What is the email subject?"</comment>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+    <comment>Like "who do i send this to"</comment>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>News</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Password Expiration</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Password Never Expires</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
+  </data>
 </root>
