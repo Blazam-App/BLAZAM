@@ -101,36 +101,34 @@
 
     void RefreshData()
     {
-        _ = Task.Run(async () =>
+        _ = Task.Run(() =>
             {
                 lock (_refreshLock)
                 {
-                    if (!LoadingData)
+                    LoadingData = true;
+                    try
                     {
-                        LoadingData = true;
-                        try
-                        {
-                            if (Mapping == null) return;
+                        if (Mapping == null) return;
 
-                            if (Context != null)
+                        if (Context != null)
+                        {
+                            if (Mapping.Id > 0 && !Context.EntityIsTracked(Mapping))
                             {
-                                if (Mapping.Id > 0 && !Context.EntityIsTracked(Mapping))
-                                {
-                                    Mapping =  Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id && pm.DeletedAt == null).FirstOrDefault();
-                                }
-                                _accessLevels =  Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToList();
-                                _permissionDelegates =  Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToList();
-                                if (Mapping?.Id != 0)
-                                {
-                                    ConcatenateStrings();
-                                }
+                                Mapping = Context.PermissionMap.Include(m => m.PermissionDelegates).Where(pm => pm.Id == Mapping.Id && pm.DeletedAt == null).FirstOrDefault();
+                            }
+                            _accessLevels = Context.AccessLevels.Where(x => x.DeletedAt == null && !x.Name.Equals(AccessLevel.SelfAccessLevelName)).ToList();
+                            _permissionDelegates = Context.PermissionDelegate.Where(p => !p.IsSuperAdmin && p.DeletedAt == null).ToList();
+                            if (Mapping?.Id != 0)
+                            {
+                                ConcatenateStrings();
                             }
                         }
-                        finally
-                        {
-                            LoadingData = false;
-                        }
                     }
+                    finally
+                    {
+                        LoadingData = false;
+                    }
+
                 }
             });
 
