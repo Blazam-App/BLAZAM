@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Hedef</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Tetikleyiciler</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Parola değiştirildi</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Düzenlemeyi Bitir</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Hesap Etkin</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Dizinde Ara</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Eşleşen girdi yok</value>
+  </data>
 </root>

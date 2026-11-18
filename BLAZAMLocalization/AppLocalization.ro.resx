@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Țintă</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Declanșatoare</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Parola a fost schimbată</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Termină editarea</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Cont activat</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Caută directorul</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Nicio intrare corespunzătoare</value>
+  </data>
 </root>

@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Destino</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Desencadenadores</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Contraseña cambiada</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Finalizar edición</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Cuenta habilitada</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Buscar directorio</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>No hay entradas coincidentes</value>
+  </data>
 </root>

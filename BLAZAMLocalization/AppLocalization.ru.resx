@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Цель</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Триггеры</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Пароль изменён</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Завершить редактирование</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Учетная запись включена</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Поиск в каталоге</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Нет соответствующих записей</value>
+  </data>
 </root>

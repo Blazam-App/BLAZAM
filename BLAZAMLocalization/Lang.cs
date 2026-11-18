@@ -53,6 +53,7 @@ namespace BLAZAM.Localization
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
         public static readonly string Text = "Text";
+        public static readonly string Filters = "Filters";
         public static readonly string Language = "Language";
         public static readonly string PIN = "PIN";
         public static readonly string Removed_from_Group = "Removed from Group";
@@ -346,6 +347,9 @@ namespace BLAZAM.Localization
         public static readonly string Change_History = "Change History";
         public static readonly string Change_Password = "Change Password";
         public static readonly string Last_Change = "Last Change";
+        public static readonly string Add_Action = "Add Action";
+        public static readonly string Remove_Action = "Remove Action";
+        public static readonly string Add_Or_Filter = "Add Or Filter";
         public static readonly string Pass_Change = "Pass Change";
         public static readonly string Password_Expiration = "Password Expiration";
         public static readonly string Lockout_Time = "Lockout Time";

@@ -106,6 +106,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Enabled.
+        /// </summary>
+        public static string Account_Enabled {
+            get {
+                return ResourceManager.GetString("Account Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account Expiration.
         /// </summary>
         public static string Account_Expiration {
@@ -1663,6 +1672,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to End Edit.
+        /// </summary>
+        public static string End_Edit {
+            get {
+                return ResourceManager.GetString("End Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter value here.
         /// </summary>
         public static string Enter_value_here {
@@ -2646,6 +2664,15 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to No matching entries.
         /// </summary>
+        public static string No_matching_entries {
+            get {
+                return ResourceManager.GetString("No matching entries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matching entries.
+        /// </summary>
         public static string No_matching_results {
             get {
                 return ResourceManager.GetString("No_matching_results", resourceCulture);
@@ -2847,6 +2874,15 @@ namespace BLAZAM.Localization {
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password changed.
+        /// </summary>
+        public static string Password_changed {
+            get {
+                return ResourceManager.GetString("Password changed", resourceCulture);
             }
         }
         
@@ -3490,6 +3526,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search Directory.
+        /// </summary>
+        public static string Search_Directory {
+            get {
+                return ResourceManager.GetString("Search Directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Security.
         /// </summary>
         public static string Security {
@@ -3981,6 +4026,15 @@ namespace BLAZAM.Localization {
         public static string Trigger {
             get {
                 return ResourceManager.GetString("Trigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triggers.
+        /// </summary>
+        public static string Triggers {
+            get {
+                return ResourceManager.GetString("Triggers", resourceCulture);
             }
         }
         

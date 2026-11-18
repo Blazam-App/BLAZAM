@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Cible</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Déclencheurs</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Mot de passe modifié</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Terminer l’édition</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Compte activé</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Rechercher dans le répertoire</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Aucune entrée correspondante</value>
+  </data>
 </root>

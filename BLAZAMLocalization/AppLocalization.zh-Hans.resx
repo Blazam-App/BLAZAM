@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>目标</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>触发器</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>密码已更改</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>结束编辑</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>账户已启用</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>搜索目录</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>没有匹配的条目</value>
+  </data>
 </root>

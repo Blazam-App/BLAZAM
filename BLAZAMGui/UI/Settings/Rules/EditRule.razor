@@ -55,7 +55,7 @@
             <MudDivider Class="py-3" />
         }
 
-        <MudText Typo="Typo.h6">Filters</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Filters]</MudText>
 
         <AdvancedFilterEditor Filters="_workingRule.Filters"
                               NoFiltersWarning=@(AppHelpLocalization[HelpLang.Rule_No_Filter_Warning,
@@ -65,7 +65,7 @@
 
         <MudDivider />
 
-        <MudText Typo="Typo.h6">Actions</MudText>
+        <MudText Typo="Typo.h6">@AppLocalization[Lang.Actions]</MudText>
         <MudStack Row="true">
 
             <MudStack>
@@ -80,7 +80,7 @@
             <MudSpacer />
             <MudButton OnClick="AddAction"
                        Color="Color.Success"
-                       StartIcon="@Icons.Material.Filled.Add">Add Action</MudButton>
+                       StartIcon="@Icons.Material.Filled.Add">@AppLocalization[Lang.Add_Action]</MudButton>
 
         </MudStack>
         <MudField Label="@AppLocalization[Lang.After_Executing]">

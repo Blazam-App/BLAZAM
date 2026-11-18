@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>Ціль</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Тригери</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Пароль змінено</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Завершити редагування</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Обліковий запис увімкнено</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Пошук у каталозі</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Немає відповідних записів</value>
+  </data>
 </root>

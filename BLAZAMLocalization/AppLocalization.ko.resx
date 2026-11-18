@@ -1587,4 +1587,22 @@
   <data name="Target" xml:space="preserve">
     <value>대상</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>트리거</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>비밀번호가 변경되었습니다</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>편집 종료</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>계정 활성화됨</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>디렉터리 검색</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>일치하는 항목이 없습니다</value>
+  </data>
 </root>

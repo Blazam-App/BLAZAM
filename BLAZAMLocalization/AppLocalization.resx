@@ -1598,4 +1598,22 @@
   <data name="Target" xml:space="preserve">
     <value>Target</value>
   </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Triggers</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Password changed</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>End Edit</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Account Enabled</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Search Directory</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>No matching entries</value>
+  </data>
 </root>
