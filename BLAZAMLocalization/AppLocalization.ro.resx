@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Încărcare Pictogramă</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Despre</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Nicio intrare corespunzătoare</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Program de execuție</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Preia știri</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Execută</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Creează altul</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Șablon curent</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Utilizator blocat</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Membru al grupului eliminat</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Grupuri excluse</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Intrare modificată</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Nu sunteți autorizat să vă autentificați</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Eroare necunoscută la încercarea de autentificare</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Întrebări de securitate</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Șterge maparea permisiunilor</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Nicio notificare necitită</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Cerere de acces trimisă</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Setări salvate</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Salvarea setărilor a eșuat</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Niciodată folosit</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Vizualizare compactă</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Începeți să tastați pentru a căuta...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Ne pare rău, nu au fost găsite rezultate 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Ne pare rău, nu au fost găsite potriviri exacte, încercați să adăugați mai multe caractere</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Faceți clic pentru detalii</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Faceți clic pentru a vedea documentația API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Este programată o actualizare automată.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Rulați acum</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>După executare</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operator</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Niciodată</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Personalizat</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacte</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Adaugă widget</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Regulă programată</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>Și</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Valori</value>
   </data>
 </root>

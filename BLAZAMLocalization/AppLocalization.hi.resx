@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>अपलोड आइकन</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>करीबन</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>कोई मेल खाती प्रविष्टियाँ नहीं</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>निष्पादन अनुसूची</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>समाचार प्राप्त करें</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>निष्पादित करें</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>फ़िल्टर</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>एक और बनाएँ</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>वर्तमान टेम्पलेट</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>उपयोगकर्ता लॉक हो गया है</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>समूह सदस्य हटा दिया गया</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>बहिष्कृत समूह</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>प्रविष्टि संशोधित की गई</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>आप लॉगिन करने के लिए अधिकृत नहीं हैं</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>लॉग इन करने का प्रयास करते समय अज्ञात त्रुटि हुई</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>सुरक्षा प्रश्न</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>अनुमति मैपिंग हटाएँ</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>कोई अपठित सूचना नहीं</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>पहुँच अनुरोध भेजा गया</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>सेटिंग्स सहेजी गईं</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>सेटिंग्स सहेजने में विफल रहा</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>कभी उपयोग नहीं किया गया</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>कॉम्पैक्ट दृश्य</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>खोजने के लिए टाइप करना शुरू करें...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>क्षमा करें, कोई परिणाम नहीं मिला 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>क्षमा करें, कोई सटीक मिलान नहीं मिला, अधिक वर्ण जोड़कर देखें</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>विवरण के लिए क्लिक करें</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>API दस्तावेज़ देखने के लिए क्लिक करें</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>एक स्वचालित अपडेट निर्धारित है।</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>अभी चलाएँ</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>निष्पादन के बाद</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>ऑपरेटर</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>कभी नहीं</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>कस्टम</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>संपर्क</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>विजेट जोड़ें</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>अनुसूचित नियम</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>और</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>मान</value>
   </data>
 </root>

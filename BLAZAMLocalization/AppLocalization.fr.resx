@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Icône de téléchargement</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Environ</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Aucune entrée correspondante</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Planification d'exécution</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Récupérer les actualités</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Exécuter</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtres</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Créer un autre</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Modèle actuel</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Utilisateur bloqué</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Membre du groupe supprimé</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Groupes exclus</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Entrée modifiée</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Vous n'êtes pas autorisé à vous connecter</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Erreur inconnue lors de la tentative de connexion</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Questions de sécurité</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Supprimer le mappage des autorisations</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Aucune notification non lue</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Demande d’accès envoyée</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Paramètres enregistrés</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Échec de l’enregistrement des paramètres</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Jamais utilisé</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Vue compacte</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Commencez à taper pour rechercher...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Désolé aucun résultat n’a été trouvé 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Désolé, aucune correspondance exacte n'a été trouvée, essayez d'ajouter plus de caractères</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Cliquez pour plus de détails</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Cliquez pour voir la documentation de l’API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Une mise à jour automatique est planifiée.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Exécuter maintenant</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Après exécution</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Opérateur</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Jamais</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Personnalisé</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Ajouter un widget</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Règle planifiée</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>Et</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Valeurs</value>
   </data>
 </root>

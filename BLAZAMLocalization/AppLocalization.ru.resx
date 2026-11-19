@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Значок загрузки</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Около</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Нет соответствующих записей</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Расписание выполнения</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Получить новости</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Выполнить</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Создать ещё</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Текущий шаблон</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Пользователь заблокирован</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Участник группы удалён</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Исключенные группы</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Запись изменена</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>У вас нет прав для входа</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Неизвестная ошибка при попытке входа в систему</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Контрольные вопросы</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Удалить сопоставление разрешений</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Нет непрочитанных уведомлений</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Запрос на доступ отправлен</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Настройки сохранены</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Не удалось сохранить настройки</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Никогда не использовалось</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Компактный вид</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Начните вводить текст для поиска...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Извините, результаты не найдены 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>К сожалению, точных совпадений не найдено, попробуйте добавить больше символов</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Нажмите для подробностей</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Нажмите, чтобы просмотреть документацию API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Запланировано автоматическое обновление.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Запустить հիմա</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>После выполнения</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Оператор</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Никогда</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Пользовательский</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Добавить виджет</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Запланированное правило</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>И</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Значения</value>
   </data>
 </root>

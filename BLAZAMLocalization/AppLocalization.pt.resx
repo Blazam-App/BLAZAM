@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Enviar Ícone</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Sobre</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Nenhuma entrada correspondente</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Agendamento de execução</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Buscar notícias</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Executar</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtros</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Criar outro</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Modelo atual</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Utilizador bloqueado</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Membro do grupo removido</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Grupos excluídos</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Entrada modificada</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Não está autorizado a iniciar sessão</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Erro desconhecido ao tentar iniciar sessão</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Perguntas de segurança</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Excluir mapeamento de permissões</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Sem notificações não lidas</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Pedido de acesso enviado</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Configurações guardadas</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Falha ao guardar definições</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Nunca usado</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Visualização compacta</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Comece a digitar para pesquisar...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Desculpe, nenhum resultado foi encontrado 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Lamentamos, não foram encontradas correspondências exatas, tente adicionar mais caracteres</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Clique para ver detalhes</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Clique para ver a documentação da API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Está agendada uma atualização automática.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Executar agora</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Após Executar</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operador</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nunca</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Personalizado</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contactos</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Adicionar widget</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Regra agendada</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>E</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Valores</value>
   </data>
 </root>

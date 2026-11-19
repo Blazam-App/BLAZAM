@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Simge Yükle</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Hakkında</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Eşleşen girdi yok</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Yürütme Zamanlaması</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Haberleri Getir</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Yürüt</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtreler</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Bir Tane Daha Oluştur</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Geçerli Şablon</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Kullanıcı kilitlendi</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Grup üyesi kaldırıldı</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Hariç Tutulan Gruplar</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Girdi değiştirildi</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Oturum açma yetkiniz yok</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Giriş yapılmaya çalışılırken bilinmeyen bir hata oluştu</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Güvenlik Soruları</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>İzin eşlemesini sil</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Okunmamış bildirim yok</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Erişim isteği gönderildi</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Ayarlar kaydedildi</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Ayarlar kaydedilemedi</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Hiç kullanılmadı</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Kompakt Görünüm</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Aramak için yazmaya başlayın...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Üzgünüm, sonuç bulunamadı 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Üzgünüz tam eşleşme bulunamadı, daha fazla karakter eklemeyi deneyin</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Ayrıntılar için tıklayın</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>API belgelerini görüntülemek için tıklayın</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Otomatik bir güncelleme zamanlandı.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Şimdi Çalıştır</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Yürütüldükten Sonra</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operatör</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Asla</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kişiler</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Bileşen Ekle</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Zamanlanmış Kural</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>Ve</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Değerler</value>
   </data>
 </root>

@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>アップロードアイコン</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>に関しては</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>一致するエントリがありません</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>実行スケジュール</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>ニュースを取得</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>フィルター</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>もう1つ作成</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>現在のテンプレート</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>ユーザーがロックアウトされました</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>グループメンバーが削除されました</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>除外グループ</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>エントリが変更されました</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>ログインする権限がありません</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>ログインを試行中に不明なエラーが発生しました</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>セキュリティの質問</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>権限マッピングを削除</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>未読の通知はありません</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>アクセス リクエストを送信しました</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>設定が保存されました</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>設定の保存に失敗しました</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>未使用</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>コンパクト表示</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>検索するには入力を開始してください...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>申し訳ありません 結果は見つかりませんでした 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>申し訳ありませんが完全一致する結果は見つかりませんでした、さらに文字を入力してみてください</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>クリックして詳細を表示</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>クリックしてAPIドキュメントを表示</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>自動更新が予定されています.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>今すぐ実行</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>実行後</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>演算子</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>カスタム</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>連絡先</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>ウィジェットを追加</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>スケジュールされたルール</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>および</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>値</value>
   </data>
 </root>

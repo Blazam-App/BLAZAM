@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>تحميل أيقونة</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>حول</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>لا توجد إدخالات مطابقة</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>جدول التنفيذ</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>جلب الأخبار</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>تنفيذ</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>عوامل التصفية</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>إنشاء آخر</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>القالب الحالي</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>تم قفل المستخدم</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>تمت إزالة عضو المجموعة</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>المجموعات المستبعدة</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>تم تعديل الإدخال</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>غير مصرح لك بتسجيل الدخول</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>خطأ غير معروف أثناء محاولة تسجيل الدخول</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>أسئلة الأمان</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>حذف تعيين الأذونات</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>لا توجد إشعارات غير مقروءة</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>تم إرسال طلب الوصول</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>تم حفظ الإعدادات</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>فشل حفظ الإعدادات</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>لم يُستخدم مطلقًا</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>عرض مضغوط</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>ابدأ الكتابة للبحث...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>عذرًا لم يتم العثور على أي نتائج 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>عذرًا، لم يتم العثور على مطابقات تامة، جرّب إضافة المزيد من الأحرف</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>انقر للحصول على التفاصيل</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>انقر لعرض وثائق API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>تمت جدولة تحديث تلقائي.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>تشغيل الآن</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>بعد التنفيذ</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>عامل</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>أبدًا</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>مخصص</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>جهات الاتصال</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>إضافة أداة</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>قاعدة مجدولة</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>و</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>القيم</value>
   </data>
 </root>

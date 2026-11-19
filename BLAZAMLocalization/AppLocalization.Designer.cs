@@ -63,9 +63,9 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        public static string About {
+        public static string _0 {
             get {
-                return ResourceManager.GetString("About", resourceCulture);
+                return ResourceManager.GetString("0", resourceCulture);
             }
         }
         
@@ -84,6 +84,15 @@ namespace BLAZAM.Localization {
         public static string Access_Levels {
             get {
                 return ResourceManager.GetString("Access Levels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access request sent.
+        /// </summary>
+        public static string Access_request_sent {
+            get {
+                return ResourceManager.GetString("Access request sent", resourceCulture);
             }
         }
         
@@ -277,6 +286,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Widget.
+        /// </summary>
+        public static string Add_Widget {
+            get {
+                return ResourceManager.GetString("Add Widget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Added to Group.
         /// </summary>
         public static string Added_to_Group {
@@ -331,6 +349,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to After Executing.
+        /// </summary>
+        public static string After_Executing {
+            get {
+                return ResourceManager.GetString("After Executing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string All {
@@ -376,11 +403,29 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An automatic update is scheduled..
+        /// </summary>
+        public static string An_automatic_update_is_scheduled {
+            get {
+                return ResourceManager.GetString("An automatic update is scheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error has occurred while trying to create the template user.
         /// </summary>
         public static string An_error_has_occurred_while_trying_to_create_the_template_user {
             get {
                 return ResourceManager.GetString("An error has occurred while trying to create the template user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to And.
+        /// </summary>
+        public static string And {
+            get {
+                return ResourceManager.GetString("And", resourceCulture);
             }
         }
         
@@ -853,6 +898,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click for details.
+        /// </summary>
+        public static string Click_for_details {
+            get {
+                return ResourceManager.GetString("Click for details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to view API documentation.
+        /// </summary>
+        public static string Click_to_view_API_documentation {
+            get {
+                return ResourceManager.GetString("Click to view API documentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to view help documentation.
         /// </summary>
         public static string Click_to_view_help_documentation {
@@ -867,6 +930,15 @@ namespace BLAZAM.Localization {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compact View.
+        /// </summary>
+        public static string Compact_View {
+            get {
+                return ResourceManager.GetString("Compact View", resourceCulture);
             }
         }
         
@@ -997,6 +1069,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contacts.
+        /// </summary>
+        public static string Contacts {
+            get {
+                return ResourceManager.GetString("Contacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy template.
         /// </summary>
         public static string Copy_Template {
@@ -1038,6 +1119,15 @@ namespace BLAZAM.Localization {
         public static string Create_Access_Level {
             get {
                 return ResourceManager.GetString("Create Access Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Another.
+        /// </summary>
+        public static string Create_Another {
+            get {
+                return ResourceManager.GetString("Create Another", resourceCulture);
             }
         }
         
@@ -1132,6 +1222,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Template.
+        /// </summary>
+        public static string Current_Template {
+            get {
+                return ResourceManager.GetString("Current Template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current Template:.
         /// </summary>
         public static string Current_Template_ {
@@ -1146,6 +1245,15 @@ namespace BLAZAM.Localization {
         public static string Current_Version {
             get {
                 return ResourceManager.GetString("Current Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        public static string Custom {
+            get {
+                return ResourceManager.GetString("Custom", resourceCulture);
             }
         }
         
@@ -1281,6 +1389,15 @@ namespace BLAZAM.Localization {
         public static string Delete_Access_Level {
             get {
                 return ResourceManager.GetString("Delete Access Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete permission mapping.
+        /// </summary>
+        public static string Delete_permission_mapping {
+            get {
+                return ResourceManager.GetString("Delete permission mapping", resourceCulture);
             }
         }
         
@@ -1690,6 +1807,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entry modified.
+        /// </summary>
+        public static string Entry_modified {
+            get {
+                return ResourceManager.GetString("Entry modified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -1722,6 +1848,33 @@ namespace BLAZAM.Localization {
         public static string Events {
             get {
                 return ResourceManager.GetString("Events", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excluded Groups.
+        /// </summary>
+        public static string Excluded_Groups {
+            get {
+                return ResourceManager.GetString("Excluded Groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execute.
+        /// </summary>
+        public static string Execute {
+            get {
+                return ResourceManager.GetString("Execute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution Schedule.
+        /// </summary>
+        public static string Execution_Schedule {
+            get {
+                return ResourceManager.GetString("Execution Schedule", resourceCulture);
             }
         }
         
@@ -1762,11 +1915,29 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to save settings.
+        /// </summary>
+        public static string Failed_to_save_settings {
+            get {
+                return ResourceManager.GetString("Failed to save settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Favorites.
         /// </summary>
         public static string Favorites {
             get {
                 return ResourceManager.GetString("Favorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetch News.
+        /// </summary>
+        public static string Fetch_News {
+            get {
+                return ResourceManager.GetString("Fetch News", resourceCulture);
             }
         }
         
@@ -1803,6 +1974,15 @@ namespace BLAZAM.Localization {
         public static string Fields {
             get {
                 return ResourceManager.GetString("Fields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filters.
+        /// </summary>
+        public static string Filters {
+            get {
+                return ResourceManager.GetString("Filters", resourceCulture);
             }
         }
         
@@ -1933,6 +2113,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Authenticator.
+        /// </summary>
+        public static string Google_Authenticator {
+            get {
+                return ResourceManager.GetString("Google Authenticator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
         public static string Group {
@@ -1956,6 +2145,15 @@ namespace BLAZAM.Localization {
         public static string Group_member_added {
             get {
                 return ResourceManager.GetString("Group member added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group member removed.
+        /// </summary>
+        public static string Group_member_removed {
+            get {
+                return ResourceManager.GetString("Group member removed", resourceCulture);
             }
         }
         
@@ -2572,6 +2770,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Never.
+        /// </summary>
+        public static string Never {
+            get {
+                return ResourceManager.GetString("Never", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Never used.
+        /// </summary>
+        public static string Never_used {
+            get {
+                return ResourceManager.GetString("Never used", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Computers.
         /// </summary>
         public static string New_Computers {
@@ -2676,6 +2892,15 @@ namespace BLAZAM.Localization {
         public static string No_matching_results {
             get {
                 return ResourceManager.GetString("No_matching_results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No unread notifications.
+        /// </summary>
+        public static string No_unread_notifications {
+            get {
+                return ResourceManager.GetString("No unread notifications", resourceCulture);
             }
         }
         
@@ -2806,6 +3031,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operator.
+        /// </summary>
+        public static string Operator {
+            get {
+                return ResourceManager.GetString("Operator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to or.
         /// </summary>
         public static string or {
@@ -2914,6 +3148,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password Reset Enabled.
+        /// </summary>
+        public static string Password_Reset_Enabled {
+            get {
+                return ResourceManager.GetString("Password Reset Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password Reset Settings.
+        /// </summary>
+        public static string Password_Reset_Settings {
+            get {
+                return ResourceManager.GetString("Password Reset Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password Change.
         /// </summary>
         public static string PasswordChange {
@@ -2937,6 +3189,15 @@ namespace BLAZAM.Localization {
         public static string Photo {
             get {
                 return ResourceManager.GetString("Photo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN.
+        /// </summary>
+        public static string PIN {
+            get {
+                return ResourceManager.GetString("PIN", resourceCulture);
             }
         }
         
@@ -3472,6 +3733,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run Now.
+        /// </summary>
+        public static string Run_Now {
+            get {
+                return ResourceManager.GetString("Run Now", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running.
         /// </summary>
         public static string Running {
@@ -3508,6 +3778,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scheduled Rule.
+        /// </summary>
+        public static string Scheduled_Rule {
+            get {
+                return ResourceManager.GetString("Scheduled Rule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Script Path.
         /// </summary>
         public static string Script_Path {
@@ -3540,6 +3819,15 @@ namespace BLAZAM.Localization {
         public static string Security {
             get {
                 return ResourceManager.GetString("Security", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security Questions.
+        /// </summary>
+        public static string Security_Questions {
+            get {
+                return ResourceManager.GetString("Security Questions", resourceCulture);
             }
         }
         
@@ -3643,6 +3931,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings saved.
+        /// </summary>
+        public static string Settings_saved {
+            get {
+                return ResourceManager.GetString("Settings saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show more.
         /// </summary>
         public static string Show_more {
@@ -3724,6 +4021,24 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sorry no result were found 😒.
+        /// </summary>
+        public static string Sorry_no_result_were_found {
+            get {
+                return ResourceManager.GetString("Sorry no result were found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry no exact matches were found, try adding more characters.
+        /// </summary>
+        public static string Sorry_try_typing_more {
+            get {
+                return ResourceManager.GetString("Sorry_try_typing_more", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Source Code.
         /// </summary>
         public static string Source_Code {
@@ -3774,6 +4089,15 @@ namespace BLAZAM.Localization {
         public static string Start_Time {
             get {
                 return ResourceManager.GetString("Start Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start typing to search....
+        /// </summary>
+        public static string Start_typing_to_search {
+            get {
+                return ResourceManager.GetString("Start typing to search", resourceCulture);
             }
         }
         
@@ -4093,6 +4417,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown error while attempting to log in.
+        /// </summary>
+        public static string Unknown_error_while_attempting_to_log_in {
+            get {
+                return ResourceManager.GetString("Unknown error while attempting to log in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unlock.
         /// </summary>
         public static string Unlock {
@@ -4336,6 +4669,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User locked out.
+        /// </summary>
+        public static string User_locked_out {
+            get {
+                return ResourceManager.GetString("User locked out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Modified.
         /// </summary>
         public static string User_Modified {
@@ -4417,6 +4759,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Values.
+        /// </summary>
+        public static string Values {
+            get {
+                return ResourceManager.GetString("Values", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variables.
         /// </summary>
         public static string Variables {
@@ -4485,6 +4836,15 @@ namespace BLAZAM.Localization {
         public static string Year {
             get {
                 return ResourceManager.GetString("Year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to login.
+        /// </summary>
+        public static string You_are_not_authorized_to_login {
+            get {
+                return ResourceManager.GetString("You are not authorized to login", resourceCulture);
             }
         }
         

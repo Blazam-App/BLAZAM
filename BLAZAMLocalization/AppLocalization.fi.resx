@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Lataa ikoni</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Tietoa</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Ei vastaavia kohteita</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Suoritusaikataulu</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Hae uutiset</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Suorita</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Suodattimet</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Luo toinen</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Nykyinen malli</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Käyttäjä lukittu ulos</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Ryhmän jäsen poistettu</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Poissuljetut ryhmät</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Tietue muokattu</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Sinulla ei ole oikeutta kirjautua sisään</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Tuntematon virhe yritettäessä kirjautua sisään</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Turvakysymykset</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Poista käyttöoikeuskartoitus</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Ei lukemattomia ilmoituksia</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Käyttöoikeuspyyntö lähetetty</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Asetukset tallennettu</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Asetusten tallentaminen epäonnistui</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Ei koskaan käytetty</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Tiivis näkymä</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Aloita kirjoittaminen hakeaksesi...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Valitettavasti tuloksia ei löytynyt 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Valitettavasti tarkkoja osumia ei löytynyt, yritä lisätä merkkejä</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Napsauta nähdäksesi tiedot</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Napsauta nähdäksesi API-dokumentaation</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Automaattinen päivitys on ajoitettu.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Suorita nyt</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Suorituksen jälkeen</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operaattori</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Ei koskaan</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Mukautettu</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Yhteystiedot</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Lisää pienoisohjelma</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Ajastettu sääntö</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Arvot</value>
   </data>
 </root>

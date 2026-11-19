@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Pictogram uploaden</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Over</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>Geen overeenkomende items</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Uitvoeringsschema</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Nieuws ophalen</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Uitvoeren</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Nog een maken</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Huidige sjabloon</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Gebruiker buitengesloten</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Groepslid verwijderd</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Uitgesloten groepen</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Vermelding gewijzigd</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Je bent niet bevoegd om in te loggen</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Onbekende fout bij het proberen in te loggen</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Beveiligingsvragen</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Machtigingskoppeling verwijderen</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Geen ongelezen meldingen</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Toegangsverzoek verzonden</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Instellingen opgeslagen</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Instellingen opslaan mislukt</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Nooit gebruikt</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Compacte weergave</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Begin met typen om te zoeken...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Sorry, er zijn geen resultaten gevonden 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Sorry er zijn geen exacte overeenkomsten gevonden, probeer meer tekens toe te voegen</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Klik voor details</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Klik om API-documentatie te bekijken</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Er is een automatische update gepland.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Nu uitvoeren</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Na uitvoeren</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operator</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nooit</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacten</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Widget toevoegen</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Geplande regel</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>En</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Waarden</value>
   </data>
 </root>

@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>上传图标</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>大约</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1604,5 +1604,116 @@
   </data>
   <data name="No matching entries" xml:space="preserve">
     <value>没有匹配的条目</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>执行计划</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>获取新闻</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>执行</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>筛选器</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>创建另一个</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>当前模板</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>用户被锁定</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>群组成员已移除</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>排除的组</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>条目已修改</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>您无权登录</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>尝试登录时发生未知错误</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>安全问题</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>删除权限映射</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>没有未读通知</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>访问请求已发送</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google 身份验证器</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>设置已保存</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>保存设置失败</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>从未使用</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>紧凑视图</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>开始输入以搜索...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>抱歉，未找到结果 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>抱歉，未找到完全匹配项，请尝试添加更多字符</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>点击查看详情</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>点击查看 API 文档</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>已计划自动更新。</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>立即运行</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>执行后</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>运算符</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>从不</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>联系人</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>添加小组件</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>计划规则</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>和</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>值</value>
   </data>
 </root>
