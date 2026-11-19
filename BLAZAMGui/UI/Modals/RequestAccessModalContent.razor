@@ -118,7 +118,7 @@
         if ((_selectedActions != null && _selectedActions.Count > 0) || (_selectedFields != null && _selectedFields.Count > 0))
         {
             LoadingData = true;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
 
             var adminUsers = await GetAdminUsersAsync();
 

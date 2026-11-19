@@ -149,7 +149,7 @@
         {
             DirectoryPortOpen = Directory.PortOpen;
             DirectoryStatus = Enum.GetName(typeof(DirectoryConnectionStatus), Directory.Status);
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }, null, 500, 2000);
     }
     public override void Dispose()

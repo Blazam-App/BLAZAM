@@ -320,6 +320,7 @@ namespace BLAZAM.Localization
         public static readonly string Required = "Required";
         public static readonly string Editable = "Editable";
         public static readonly string Value = "Value";
+        public static readonly string Values = "Values";
         public static readonly string Value_List = "Value List";
         public static readonly string Negate = "Negate";
         public static readonly string Domain = "Domain";

@@ -88,7 +88,7 @@
             settings.AdminPasswordConfirmed = settings.AdminPassword;
 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 
@@ -112,6 +112,6 @@
 
 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

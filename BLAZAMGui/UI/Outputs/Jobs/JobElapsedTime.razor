@@ -22,7 +22,7 @@
     {
         if (Step.Result == JobResult.Running)
         {
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
         else if(Step.Result != JobResult.NotRun)
         {
