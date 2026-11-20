@@ -5,11 +5,17 @@
 namespace BLAZAM.Database.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_Sqlite : Migration
+    public partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_And_LastLogonVersion_Sqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "LastLogonVersion",
+                table: "UserSettings",
+                type: "TEXT",
+                nullable: true);
+
             migrationBuilder.AddColumn<string>(
                 name: "PreferredLanguage",
                 table: "UserSettings",
@@ -108,6 +114,10 @@ namespace BLAZAM.Database.Migrations.Sqlite
             migrationBuilder.DropIndex(
                 name: "IX_DirectoryTemplateFieldValues_ValueListId",
                 table: "DirectoryTemplateFieldValues");
+
+            migrationBuilder.DropColumn(
+                name: "LastLogonVersion",
+                table: "UserSettings");
 
             migrationBuilder.DropColumn(
                 name: "PreferredLanguage",

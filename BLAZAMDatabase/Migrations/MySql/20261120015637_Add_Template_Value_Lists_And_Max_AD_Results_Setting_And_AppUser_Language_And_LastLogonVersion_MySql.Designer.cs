@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BLAZAM.Database.Migrations.MySql
 {
     [DbContext(typeof(MySqlDatabaseContext))]
-    [Migration("20261118021134_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql")]
-    partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql
+    [Migration("20261120015637_Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_And_LastLogonVersion_MySql")]
+    partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_And_LastLogonVersion_MySql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2274,6 +2274,9 @@ namespace BLAZAM.Database.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastLogonVersion")
                         .HasColumnType("longtext");
 
                     b.Property<string>("PreferredLanguage")

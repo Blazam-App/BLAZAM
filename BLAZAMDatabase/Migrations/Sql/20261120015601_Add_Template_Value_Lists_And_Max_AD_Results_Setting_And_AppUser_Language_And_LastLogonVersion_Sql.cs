@@ -1,22 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BLAZAM.Database.Migrations.MySql
+namespace BLAZAM.Database.Migrations.Sql
 {
     /// <inheritdoc />
-    public partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_MySql : Migration
+    public partial class Add_Template_Value_Lists_And_Max_AD_Results_Setting_And_AppUser_Language_And_LastLogonVersion_Sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
+                name: "LastLogonVersion",
+                table: "UserSettings",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
                 name: "PreferredLanguage",
                 table: "UserSettings",
-                type: "longtext",
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "ValueListId",
@@ -27,7 +31,7 @@ namespace BLAZAM.Database.Migrations.MySql
             migrationBuilder.AddColumn<byte[]>(
                 name: "ApiTokenSalt",
                 table: "AuthenticationSettings",
-                type: "longblob",
+                type: "varbinary(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -42,36 +46,32 @@ namespace BLAZAM.Database.Migrations.MySql
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DirectoryTemplateFieldValueLists", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "DirectoryTemplateFieldValueListItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StringValue = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StringValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DirectoryTemplateFieldValueListId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DirectoryTemplateFieldValueListItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DirectoryTemplateFieldValueListItem_DirectoryTemplateFieldVa~",
+                        name: "FK_DirectoryTemplateFieldValueListItem_DirectoryTemplateFieldValueLists_DirectoryTemplateFieldValueListId",
                         column: x => x.DirectoryTemplateFieldValueListId,
                         principalTable: "DirectoryTemplateFieldValueLists",
                         principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.UpdateData(
                 table: "AuthenticationSettings",
@@ -86,12 +86,12 @@ namespace BLAZAM.Database.Migrations.MySql
                 column: "ValueListId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DirectoryTemplateFieldValueListItem_DirectoryTemplateFieldVa~",
+                name: "IX_DirectoryTemplateFieldValueListItem_DirectoryTemplateFieldValueListId",
                 table: "DirectoryTemplateFieldValueListItem",
                 column: "DirectoryTemplateFieldValueListId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_DirectoryTemplateFieldValues_DirectoryTemplateFieldValueList~",
+                name: "FK_DirectoryTemplateFieldValues_DirectoryTemplateFieldValueLists_ValueListId",
                 table: "DirectoryTemplateFieldValues",
                 column: "ValueListId",
                 principalTable: "DirectoryTemplateFieldValueLists",
@@ -102,7 +102,7 @@ namespace BLAZAM.Database.Migrations.MySql
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_DirectoryTemplateFieldValues_DirectoryTemplateFieldValueList~",
+                name: "FK_DirectoryTemplateFieldValues_DirectoryTemplateFieldValueLists_ValueListId",
                 table: "DirectoryTemplateFieldValues");
 
             migrationBuilder.DropTable(
@@ -114,6 +114,10 @@ namespace BLAZAM.Database.Migrations.MySql
             migrationBuilder.DropIndex(
                 name: "IX_DirectoryTemplateFieldValues_ValueListId",
                 table: "DirectoryTemplateFieldValues");
+
+            migrationBuilder.DropColumn(
+                name: "LastLogonVersion",
+                table: "UserSettings");
 
             migrationBuilder.DropColumn(
                 name: "PreferredLanguage",

@@ -2273,6 +2273,9 @@ namespace BLAZAM.Common.Migrations.MySql
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("LastLogonVersion")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PreferredLanguage")
                         .HasColumnType("longtext");
 

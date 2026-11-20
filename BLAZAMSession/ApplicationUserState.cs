@@ -247,6 +247,7 @@ namespace BLAZAM.Session
                         dbUserSettings.Email = Preferences.Email;
                         dbUserSettings.Username = Username;
                         dbUserSettings.PreferredLanguage = Preferences.PreferredLanguage;
+                        dbUserSettings.LastLogonVersion = Preferences.LastLogonVersion;
                         if (Preferences.PasswordResetSettings != null && Preferences.PasswordResetSettings.Id > 0)
                         {
                             var dbPasswordSettings = dbUserSettings.PasswordResetSettings;

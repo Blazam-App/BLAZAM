@@ -2273,6 +2273,9 @@ namespace BLAZAM.Common.Migrations.Sql
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LastLogonVersion")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PreferredLanguage")
                         .HasColumnType("nvarchar(max)");
 

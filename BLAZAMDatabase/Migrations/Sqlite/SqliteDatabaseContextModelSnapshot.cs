@@ -2167,6 +2167,9 @@ namespace BLAZAM.Common.Migrations.Sqlite
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("LastLogonVersion")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PreferredLanguage")
                         .HasColumnType("TEXT");
 
