@@ -4,460 +4,513 @@
 {
     <CascadingValue Value="_workingTemplate">
         <MudForm @ref=Form IsValidChanged="@((val) => { SaveDisabled = !val; })">
-            <CascadingValue Value="_workingTemplate">
-                <MudStack>
-                    <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @_workingTemplate.Name</MudText>
-                    <MudSelectList T="DirectoryTemplate"
-                                   HelperText="@(_dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
-                                   Disabled=@(_dropdownTemplates.IsNullOrEmpty())
-                                   Label=@AppLocalization[Lang.Parent_Template]
-                                   Options="@_dropdownTemplates.OrderBy(t=>t.Name)"
-                                   Value="@_workingTemplate.ParentTemplate"
-                                   ValueChanged="@ParentTemplateChanged" />
+            <MudStack>
+                <MudText Class="mt-5" Typo="Typo.h6">@AppLocalization[Lang.Current_Template]: @_workingTemplate.Name</MudText>
+                <MudSelectList T="DirectoryTemplate"
+                               HelperText="@(_dropdownTemplates.IsNullOrEmpty()?"There are no other templates":null)"
+                               Disabled=@(_dropdownTemplates.IsNullOrEmpty())
+                               Label=@AppLocalization[Lang.Parent_Template]
+                               Options="@_dropdownTemplates.OrderBy(t=>t.Name)"
+                               Value="@_workingTemplate.ParentTemplate"
+                               ValueChanged="@ParentTemplateChanged" />
 
-                    <MudTextField Label="@AppLocalization["Template Id"]"
-                                  ReadOnly=true
-                                  @bind-Value=_workingTemplate.Id />
+                <MudTextField Label="@AppLocalization["Template Id"]"
+                              ReadOnly=true
+                              @bind-Value=_workingTemplate.Id />
 
-                    <MudTextField Label="@AppLocalization[Lang.Template_Name]"
-                                  @bind-Value=_workingTemplate.Name />
-
-
-                    <MudSelectList T="string"
-                                   Adornment="Adornment.End"
-                                   AdornmentIcon="@Icons.Material.Filled.Add"
-                                   AdornmentColor="@Color.Success"
-                                   OnAdornmentClick="@(()=>{_=_categoryModal?.ShowAsync();})"
-                                   Options="@(categories.Count>0?categories:new List<string>())"
-                                   ValueChanged="@((value)=>{_workingTemplate.Category=value;})"
-                                   Value="@_workingTemplate.Category"
-                                   Label="@AppLocalization[Lang.Template_Category]" />
-                    <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
-                        <AddTemplateCategoryModalContent Categories="@categories"
-                                                         CategoryAdded="@(async (newCategory) =>
-                                                                             {
-                                                                                 _workingTemplate.Category = newCategory;
-                                                                                 categories.Add(newCategory);
-                                                                                 await StateHasChangedAsync();
-                                                                             })" />
-                    </AppModal>
-                    <MudSwitch Label="@AppLocalization[Lang.Visible]"
-                               UncheckedColor="Color.Warning"
-                               Color="Color.Success"
-                               @bind-Value=@_workingTemplate.Visible />
-                    <MudExpansionPanel Text=@AppLocalization[Lang.Variables]>
-                        <MudStack>
-                            <MudText Typo="Typo.h6">
-                                @AppLocalization[Lang.Syntax]
-                            </MudText>
-                            <MudText>
-                                {variable:modifier[argument]}, {variable:modifier}, {variable[argument]}, or just {variable}
-                            </MudText>
-                            <MudText Typo="Typo.caption">
-                                Variables Expressions must be surrounded by curly braces eg:{fn}
-                            </MudText>
-                            <MudText Typo="Typo.caption">
-                                Modifiers and Arguments are both optional
-                            </MudText>
-
-                        </MudStack>
-
-                        <VariableTable />
-                    </MudExpansionPanel>
+                <MudTextField Label="@AppLocalization[Lang.Template_Name]"
+                              @bind-Value=_workingTemplate.Name />
 
 
-                    <ViewSection Title=@AppLocalization[Lang.Account_and_Name]>
+                <MudSelectList T="string"
+                               Adornment="Adornment.End"
+                               AdornmentIcon="@Icons.Material.Filled.Add"
+                               AdornmentColor="@Color.Success"
+                               OnAdornmentClick="@(()=>{_=_categoryModal?.ShowAsync();})"
+                               Options="@(categories.Count>0?categories:new List<string>())"
+                               ValueChanged="@((value)=>{_workingTemplate.Category=value;})"
+                               Value="@_workingTemplate.Category"
+                               Label="@AppLocalization[Lang.Template_Category]" />
+                <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
+                    <AddTemplateCategoryModalContent Categories="@categories"
+                                                     CategoryAdded="@(async (newCategory) =>
+                                                                                                                                                                                                                                                                                                                     {
+                                                                                                                                                                                                                                                                                                                         _workingTemplate.Category = newCategory;
+                                                                                                                                                                                                                                                                                                                         categories.Add(newCategory);
+                                                                                                                                                                                                                                                                                                                         await InvokeStateHasChangedAsync();
+                                                                                                                                                                                                                                                                                                                     })" />
+                </AppModal>
+                <MudSwitch Label="@AppLocalization[Lang.Visible]"
+                           UncheckedColor="Color.Warning"
+                           Color="Color.Success"
+                           @bind-Value=@_workingTemplate.Visible />
+                <MudExpansionPanel Text=@AppLocalization[Lang.Variables]>
+                    <MudStack>
+                        <MudText Typo="Typo.h6">
+                            @AppLocalization[Lang.Syntax]
+                        </MudText>
+                        <MudText>
+                            {variable:modifier[argument]}, {variable:modifier}, {variable[argument]}, or just {variable}
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            Variables Expressions must be surrounded by curly braces eg:{fn}
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            Modifiers and Arguments are both optional
+                        </MudText>
 
-                        <MudStack>
+                    </MudStack>
 
+                    <VariableTable />
+                </MudExpansionPanel>
+
+
+                <ViewSection Title=@AppLocalization[Lang.Account_and_Name]>
+
+                    <MudStack>
+
+                        <MudStack Row=true>
                             <MudStack Row=true>
-                                <MudStack Row=true>
-                                    <TemplateOverride SourceTemplate="@_usernameFromTemplate">
-                                        <MudTextField Required="true"
-                                                      RequiredError=@AppLocalization["This field is required"]
-                                                      Label=@AppLocalization[Lang.Username_Format]
-                                                      @bind-Value=_workingTemplate.EffectiveUsernameFormula />
-                                    </TemplateOverride>
-                                    @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveUsernameFormula != _workingTemplate.EffectiveUsernameFormula)
-                                    {
-                                        <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.UsernameFormula = null; }) />
-                                    }
-                                </MudStack>
-                                <MudStack Row=true>
-                                    <TemplateOverride SourceTemplate="@_displayNameFromTemplate">
-                                        <MudTextField Required="true"
-                                                      RequiredError=@AppLocalization["This field is required"]
-                                                      Label=@AppLocalization[Lang.Display_Name_Format]
-                                                      @bind-Value=_workingTemplate.EffectiveDisplayNameFormula />
-                                    </TemplateOverride>
-                                    @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveDisplayNameFormula != _workingTemplate.EffectiveDisplayNameFormula)
-                                    {
-                                        <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.DisplayNameFormula = null; }) />
-                                    }
-                                </MudStack>
-
-
-
-
-                            </MudStack>
-                            <MudStack Row=true>
-
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_passwordFromTemplateName">
+                                <TemplateOverride SourceTemplate="@_usernameFromTemplate">
                                     <MudTextField Required="true"
                                                   RequiredError=@AppLocalization["This field is required"]
-                                                  FullWidth=true
-                                                  Class="password-font"
-                                                  Label=@AppLocalization[Lang.Password]
-                                                  @bind-Value=_workingTemplate.EffectivePasswordFormula />
+                                                  Label=@AppLocalization[Lang.Username_Format]
+                                                  @bind-Value=_workingTemplate.EffectiveUsernameFormula />
                                 </TemplateOverride>
-                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectivePasswordFormula != _workingTemplate.EffectivePasswordFormula)
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveUsernameFormula != _workingTemplate.EffectiveUsernameFormula)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.PasswordFormula = null; }) />
+                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.UsernameFormula = null; }) />
                                 }
                             </MudStack>
                             <MudStack Row=true>
-
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
-                                    <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
-                                               UncheckedColor="Color.Error"
-                                               Color="Color.Success"
-                                               @bind-Value=_workingTemplate.EffectiveAllowUsernameOverride />
+                                <TemplateOverride SourceTemplate="@_displayNameFromTemplate">
+                                    <MudTextField Required="true"
+                                                  RequiredError=@AppLocalization["This field is required"]
+                                                  Label=@AppLocalization[Lang.Display_Name_Format]
+                                                  @bind-Value=_workingTemplate.EffectiveDisplayNameFormula />
                                 </TemplateOverride>
-                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAllowUsernameOverride != _workingTemplate.EffectiveAllowUsernameOverride)
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveDisplayNameFormula != _workingTemplate.EffectiveDisplayNameFormula)
                                 {
-                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.AllowUsernameOverride = null; }) />
+                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.DisplayNameFormula = null; }) />
                                 }
                             </MudStack>
-                            <MudStack Row=true>
-
-                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
-                                    <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
-                                               UncheckedColor="Color.Warning"
-                                               Color="Color.Success"
-                                               @bind-Value=_workingTemplate.EffectiveRequirePasswordChange />
-                                </TemplateOverride>
-                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveRequirePasswordChange != _workingTemplate.EffectiveRequirePasswordChange)
-                                {
-                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.RequirePasswordChange = null; }) />
-                                }
-                            </MudStack>
-                            <TemplateOverride Class="mud-width-full"
-                                              BadgeClass="mud-width-full"
-                                              SourceTemplate="@_sendWelcomeEmailFromTemplate">
-
-                                <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
-                                           UncheckedColor="Color.Error"
-                                           Color="Color.Success"
-                                           @bind-Value=@_workingTemplate.EffectiveSendWelcomeEmail />
-                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveSendWelcomeEmail != _workingTemplate.EffectiveSendWelcomeEmail)
-                                {
-                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.SendWelcomeEmail = null; }) />
-                                }
-                                @if (_workingTemplate.EffectiveSendWelcomeEmail == true && _workingTemplate.EffectiveAskForAlternateEmail != true &&
-                            (_workingTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !_workingTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
-                                {
-                                    <MudAlert Severity="Severity.Warning">
-                                        @AppLocalization["Send Email is true while ask for email is false, you have also set an email value. Welcome Emails will be sent to the email generated by Blazam! This is likely unintended behavior!"]
-                                    </MudAlert>
-                                }
-                            </TemplateOverride>
-
-                            <TemplateOverride Class="mud-width-full"
-                                              BadgeClass="mud-width-full"
-                                              SourceTemplate="@_askForAlternateEmailFromTemplate">
-
-                                <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
-                                           UncheckedColor="Color.Error"
-                                           Color="Color.Success"
-                                           @bind-Value=@_workingTemplate.EffectiveAskForAlternateEmail />
-                            </TemplateOverride>
-                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAskForAlternateEmail != _workingTemplate.EffectiveAskForAlternateEmail)
-                            {
-                                <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.AskForAlternateEmail = null; }) />
-                            }
-                            <MudExpansionPanel Text="@AppLocalization[Lang.Formula_sim]">
-                                <MudGrid>
-                                    <MudItem xs="12" md="6">
-                                        <MudStack>
 
 
-                                            <MudTextField T="string"
-                                                          Label="@AppLocalization[Lang.First_Name]"
-                                                          @bind-Value="@_testFirstName" />
-                                            <MudTextField T="string"
-                                                          Label="@AppLocalization[Lang.Middle_Name]"
-                                                          @bind-Value="@_testMiddleName" />
-                                            <MudTextField T="string"
-                                                          Label="@AppLocalization[Lang.Last_Name]"
-                                                          @bind-Value="@_testLastName" />
 
-                                        </MudStack>
-                                    </MudItem>
-                                    <MudItem xs="12" md="6">
-                                        <MudStack>
-
-                                            @{
-                                                var testName = new NewUserName()
-                                                {
-                                                    GivenName = _testFirstName,
-                                                    MiddleName = _testMiddleName,
-                                                    Surname = _testLastName
-                                                };
-                                            }
-                                            <MudTextField T="string"
-                                                          Label="@AppLocalization[Lang.Username]"
-                                                          Value="@(_workingTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveUsernameFormula,testName):null)" />
-                                            <MudTextField T="string"
-                                                          Label="@AppLocalization[Lang.Display_Name]"
-                                                          Value="@(_workingTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveDisplayNameFormula,testName):null)" />
-                                            <MudTextField T="string"
-                                                          Class="password-font"
-                                                          Label="@AppLocalization[Lang.Password]"
-                                                          Value="@(_workingTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectivePasswordFormula,testName):null)" />
-                                        </MudStack>
-                                    </MudItem>
-                                </MudGrid>
-
-
-                            </MudExpansionPanel>
 
                         </MudStack>
+                        <MudStack Row=true>
 
-                        <MudElement Class="d-flex flex-wrap gap-5">
+                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_passwordFromTemplateName">
+                                <MudTextField Required="true"
+                                              RequiredError=@AppLocalization["This field is required"]
+                                              FullWidth=true
+                                              Class="password-font"
+                                              Label=@AppLocalization[Lang.Password]
+                                              @bind-Value=_workingTemplate.EffectivePasswordFormula />
+                            </TemplateOverride>
+                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectivePasswordFormula != _workingTemplate.EffectivePasswordFormula)
+                            {
+                                <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.PasswordFormula = null; }) />
+                            }
+                        </MudStack>
+                        <MudStack Row=true>
+
+                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
+                                <MudSwitch Label=@AppLocalization[Lang.Allow_Username_Override]
+                                           UncheckedColor="Color.Error"
+                                           Color="Color.Success"
+                                           @bind-Value=_workingTemplate.EffectiveAllowUsernameOverride />
+                            </TemplateOverride>
+                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAllowUsernameOverride != _workingTemplate.EffectiveAllowUsernameOverride)
+                            {
+                                <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.AllowUsernameOverride = null; }) />
+                            }
+                        </MudStack>
+                        <MudStack Row=true>
+
+                            <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
+                                <MudSwitch Label=@AppLocalization[Lang.Require_Password_Change]
+                                           UncheckedColor="Color.Warning"
+                                           Color="Color.Success"
+                                           @bind-Value=_workingTemplate.EffectiveRequirePasswordChange />
+                            </TemplateOverride>
+                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveRequirePasswordChange != _workingTemplate.EffectiveRequirePasswordChange)
+                            {
+                                <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.RequirePasswordChange = null; }) />
+                            }
+                        </MudStack>
+                        <TemplateOverride Class="mud-width-full"
+                                          BadgeClass="mud-width-full"
+                                          SourceTemplate="@_sendWelcomeEmailFromTemplate">
+
+                            <MudSwitch Label="@AppLocalization[Lang.Send_Welcome_Email]"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
+                                       @bind-Value=@_workingTemplate.EffectiveSendWelcomeEmail />
+                            @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveSendWelcomeEmail != _workingTemplate.EffectiveSendWelcomeEmail)
+                            {
+                                <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.SendWelcomeEmail = null; }) />
+                            }
+                            @if (_workingTemplate.EffectiveSendWelcomeEmail == true && _workingTemplate.EffectiveAskForAlternateEmail != true &&
+                        (_workingTemplate.EffectiveFieldValues.Any(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id) && !_workingTemplate.EffectiveFieldValues.First(fv => fv.Field.Id == ActiveDirectoryFields.Mail.Id).Value.IsNullOrEmpty()))
+                            {
+                                <MudAlert Severity="Severity.Warning">
+                                    @AppLocalization["Send Email is true while ask for email is false, you have also set an email value. Welcome Emails will be sent to the email generated by Blazam! This is likely unintended behavior!"]
+                                </MudAlert>
+                            }
+                        </TemplateOverride>
+
+                        <TemplateOverride Class="mud-width-full"
+                                          BadgeClass="mud-width-full"
+                                          SourceTemplate="@_askForAlternateEmailFromTemplate">
+
+                            <MudSwitch Label="@AppLocalization[Lang.Ask_For_Alternate_Email]"
+                                       UncheckedColor="Color.Error"
+                                       Color="Color.Success"
+                                       @bind-Value=@_workingTemplate.EffectiveAskForAlternateEmail />
+                        </TemplateOverride>
+                        @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveAskForAlternateEmail != _workingTemplate.EffectiveAskForAlternateEmail)
+                        {
+                            <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.AskForAlternateEmail = null; }) />
+                        }
+                        <MudExpansionPanel Text="@AppLocalization[Lang.Formula_sim]">
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudStack>
 
 
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization[Lang.First_Name]"
+                                                      @bind-Value="@_testFirstName" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization[Lang.Middle_Name]"
+                                                      @bind-Value="@_testMiddleName" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization[Lang.Last_Name]"
+                                                      @bind-Value="@_testLastName" />
 
+                                    </MudStack>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudStack>
 
-
-
-                        </MudElement>
-
-                    </ViewSection>
-
-
-
-                    <ViewSection Title=@AppLocalization[Lang.Fields]>
-
-
-                        <MudDrawerContainer Class="mud-height-full"
-                                            Style="min-height:350px">
-                            <MudDrawer @bind-Open="@fieldDrawerOpen"
-                                       Elevation="0"
-                                       Variant="@DrawerVariant.Persistent">
-                                <MudStack Class="my-0 py-0">
-                                    @foreach (var field in fields.OrderBy(f => f.DisplayName))
-                                    {
-                                        @if (field.FieldName != ActiveDirectoryFields.SAMAccountName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.UserPrincipalName.FieldName &&
-
-                                   field.FieldName != ActiveDirectoryFields.SN.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.GivenName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.MiddleName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.DisplayName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.CanonicalName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.DistinguishedName.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.MemberOf.FieldName &&
-                                   field.FieldName != ActiveDirectoryFields.ObjectSID.FieldName &&
-                                   !_workingTemplate.EffectiveFieldValues.Any(f => f.Field?.Equals(field) == true) &&
-                                   !_workingTemplate.EffectiveFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
-                                   field.IsFieldAppropriateForObject(_workingTemplate.ObjectType))
-                                        {
-                                            <MudButton Class=" my-0" OnClick=@(() => { AddField(field); })>
-                                                <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
-                                            </MudButton>
-
+                                        @{
+                                            var testName = new NewUserName()
+                                            {
+                                                GivenName = _testFirstName,
+                                                MiddleName = _testMiddleName,
+                                                Surname = _testLastName
+                                            };
                                         }
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization[Lang.Username]"
+                                                      Value="@(_workingTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveUsernameFormula,testName):null)" />
+                                        <MudTextField T="string"
+                                                      Label="@AppLocalization[Lang.Display_Name]"
+                                                      Value="@(_workingTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveDisplayNameFormula,testName):null)" />
+                                        <MudTextField T="string"
+                                                      Class="password-font"
+                                                      Label="@AppLocalization[Lang.Password]"
+                                                      Value="@(_workingTemplate.EffectivePasswordFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectivePasswordFormula,testName):null)" />
+                                    </MudStack>
+                                </MudItem>
+                            </MudGrid>
+
+
+                        </MudExpansionPanel>
+
+                    </MudStack>
+
+                    <MudElement Class="d-flex flex-wrap gap-5">
+
+
+
+
+
+
+                    </MudElement>
+
+                </ViewSection>
+
+
+
+                <ViewSection Title=@AppLocalization[Lang.Fields]>
+
+
+                    <MudDrawerContainer Class="mud-height-full"
+                                        Style="min-height:350px">
+                        <MudDrawer @bind-Open="@fieldDrawerOpen"
+                                   Elevation="0"
+                                   Variant="@DrawerVariant.Persistent">
+                            <MudStack Class="my-0 py-0">
+                                @foreach (var field in fields.OrderBy(f => f.DisplayName))
+                                {
+                                    @if (field.FieldName != ActiveDirectoryFields.SAMAccountName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.UserPrincipalName.FieldName &&
+
+                               field.FieldName != ActiveDirectoryFields.SN.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.GivenName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.MiddleName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.DisplayName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.CanonicalName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.DistinguishedName.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.MemberOf.FieldName &&
+                               field.FieldName != ActiveDirectoryFields.ObjectSID.FieldName &&
+                               !_workingTemplate.EffectiveFieldValues.Any(f => f.Field?.Equals(field) == true) &&
+                               !_workingTemplate.EffectiveFieldValues.Any(f => f.CustomField?.Equals(field) == true) &&
+                               field.IsFieldAppropriateForObject(_workingTemplate.ObjectType))
+                                    {
+                                        <MudButton Class=" my-0" OnClick=@(() => { AddField(field); })>
+                                            <MudText Color="Color.Tertiary">@field.DisplayName</MudText>
+                                        </MudButton>
 
                                     }
-                                    <MudElement Class="py-5 my-5" />
-                                </MudStack>
-                            </MudDrawer>
+
+                                }
+                                <MudElement Class="py-5 my-5" />
+                            </MudStack>
+                        </MudDrawer>
 
 
 
-                            <MudStack Class="d-flex justify-center align-center mud-height-full">
-                                <MudDataGrid Items="@_workingTemplate.EffectiveFieldValues.Where(fv => fv.DeletedAt == null).OrderBy(fv => fv.FieldDisplayName)"
-                                             Dense=true
-                                             Striped=true
-                                             Bordered=true
-                                             Hover=true>
+                        <MudStack Class="d-flex justify-center align-center mud-height-full">
+                            <MudDataGrid Items="@_workingTemplate.EffectiveFieldValues.Where(fv => fv.DeletedAt == null).OrderBy(fv => fv.FieldDisplayName)"
+                                         Dense=true
+                                         Striped=true
+                                         Bordered=true
+                                         Hover=true>
 
-                                    <ToolBarContent>
-                                        <MudButton Variant="Variant.Filled"
-                                                   Color="Color.Secondary"
-                                                   OnClick="@(()=>{fieldDrawerOpen = !fieldDrawerOpen;})">@AppLocalization["Toggle Fields"]</MudButton>
+                                <ToolBarContent>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Secondary"
+                                               OnClick="@(()=>{fieldDrawerOpen = !fieldDrawerOpen;})">@AppLocalization["Toggle Fields"]</MudButton>
 
-                                    </ToolBarContent>
-                                    <Columns>
-                                        <TemplateColumn StickyLeft=true Title=@AppLocalization[Lang.Name]>
-                                            <CellTemplate Context="cellContext">
-                                                @{
-                                                    var fromTemplateName = _dropdownTemplates.FirstOrDefault(ot => ot.FieldValues.Contains(cellContext.Item));
-                                                }
-                                                <TemplateOverride SourceTemplate="@fromTemplateName">
-                                                    <AppTooltip Text="@cellContext.Item.FieldName">
+                                </ToolBarContent>
+                                <Columns>
+                                    <TemplateColumn StickyLeft=true Title=@AppLocalization[Lang.Name]>
+                                        <CellTemplate Context="cellContext">
+                                            @{
+                                                var fromTemplateName = _dropdownTemplates.FirstOrDefault(ot => ot.FieldValues.Contains(cellContext.Item));
+                                            }
+                                            <TemplateOverride SourceTemplate="@fromTemplateName">
+                                                <AppTooltip Text="@cellContext.Item.FieldName">
 
-                                                        <MudText>@cellContext.Item.FieldDisplayName</MudText>
-                                                    </AppTooltip>
+                                                    <MudText>@cellContext.Item.FieldDisplayName</MudText>
+                                                </AppTooltip>
 
-                                                </TemplateOverride>
+                                            </TemplateOverride>
 
 
-                                            </CellTemplate>
-                                        </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization[Lang.Value]>
-                                            <CellTemplate Context="cellContext">
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title=@AppLocalization[Lang.Value]>
+                                        <CellTemplate Context="cellContext">
+
+
+                                            @if (cellContext.Item.Field?.FieldType == ActiveDirectoryFieldType.Text
+                                                 || cellContext.Item.CustomField?.FieldType == ActiveDirectoryFieldType.Text)
+                                            {
+                                                <MudTabs Elevation="0"
+                                                         Rounded="false"
+                                                         ApplyEffectsToContainer="true"
+                                                         TabPanelsClass=""
+                                                         ActivePanelIndex="@(cellContext.Item.ValueList!=null?1:0)">
+                                                    <MudTabPanel Text="@AppLocalization[Lang.Value]">
+                                                        <MudTextField T=string Value=cellContext.Item.Value
+                                                                      ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
+                                                    </MudTabPanel>
+                                                    <MudTabPanel Text="@AppLocalization[Lang.Value_List]">
+                                                        <MudAutocomplete @bind-Value="cellContext.Item.ValueList"
+                                                                        @ref="_valueListAutocomplete"
+                                                                         Clearable="true"
+                                                                         CoerceText=true
+                                                                         MaxItems="15"
+                                                                         ToStringFunc="@((list)=>{return list?.Name;})"
+                                                                         SearchFunc="SearchValueLists">
+                                                            <NoItemsTemplate>
+                                                                <MudText>@AppLocalization[Lang.No_matching_results]</MudText>
+                                                            </NoItemsTemplate>
+                                                            <ItemTemplate>
+                                                                <MudStack Row="true" Spacing="0">
+                                                                    <MudText>@context?.Name</MudText>
+                                                                    <MudSpacer />
+                                                                    <AppIconButton Icon="@Icons.Material.Filled.Edit"
+                                                                                   Color="Color.Primary"
+                                                                                   Tooltip="@AppLocalization[Lang.Edit]"
+                                                                                   OnClick="@((e) => { _editedValueList = context; _valueListModal?.ShowAsync(); })" />
+                                                                    <AppIconButton Icon="@Icons.Material.Filled.Delete"
+                                                                                   Color="Color.Error"
+                                                                                   Tooltip="@AppLocalization[Lang.Delete]"
+                                                                                   OnClick="@((e) => {DeleteValueList(context);})" />
+                                                                </MudStack>
+                                                            </ItemTemplate>
+                                                        </MudAutocomplete>
+                                                        <AppIconButton Icon="@Icons.Material.Filled.Add"
+                                                                       Color="Color.Success"
+                                                                       Tooltip="@AppLocalization[Lang.Create]"
+                                                                       OnClick="CreateNewValueList" />
+                                                    </MudTabPanel>
+                                                </MudTabs>
+
+                                                <AppModal @ref="_valueListModal"
+                                                          OnYes="SaveValueListAsync"
+                                                          Title="@AppLocalization[Lang.Edit_Value_List]">
+                                                    <TemplateValueListEditor DirectoryTemplateFieldValueList="@_editedValueList" />
+                                                </AppModal>
+                                            }
+                                            else
+                                            {
                                                 <MudTextField T=string Value=cellContext.Item.Value
                                                               ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
+                                            }
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title=@AppLocalization[Lang.Editable]>
+                                        <CellTemplate Context="cellContext">
+                                            <MudCheckBox T=bool
+                                                         Value=cellContext.Item.Editable
+                                                         ValueChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 
-                                            </CellTemplate>
-                                        </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization[Lang.Editable]>
-                                            <CellTemplate Context="cellContext">
-                                                <MudCheckBox T=bool
-                                                             Value=cellContext.Item.Editable
-                                                             ValueChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn Title=@AppLocalization[Lang.Required]>
+                                        <CellTemplate Context="cellContext">
+                                            <MudCheckBox T=bool
+                                                         Value=cellContext.Item.Required
+                                                         ValueChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
+                                                         Disabled=@(!cellContext.Item.Editable) />
 
-                                            </CellTemplate>
-                                        </TemplateColumn>
-                                        <TemplateColumn Title=@AppLocalization[Lang.Required]>
-                                            <CellTemplate Context="cellContext">
-                                                <MudCheckBox T=bool
-                                                             Value=cellContext.Item.Required
-                                                             ValueChanged="@((newValue)=>{RequiredChanged(newValue,cellContext.Item);})"
-                                                             Disabled=@(!cellContext.Item.Editable) />
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                    <TemplateColumn>
+                                        <CellTemplate Context="cellContext">
+                                            @if (_workingTemplate.IsValueOverriden(cellContext.Item))
+                                            {
+                                                <RevertTemplateValueButton OnClick=@(async () => { await RemoveField(cellContext.Item); }) />
+                                            }
+                                            else
+                                            {
+                                                <AppTooltip Text="@AppLocalization[Lang.Remove_field]">
+                                                    <AppCloseButton Disabled=@(!_workingTemplate.FieldValues.Contains(cellContext.Item))
+                                                                    Tooltip=@AppLocalization[Lang.Remove]
+                                                                    OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
+                                                </AppTooltip>
+                                            }
 
-                                            </CellTemplate>
-                                        </TemplateColumn>
-                                        <TemplateColumn>
-                                            <CellTemplate Context="cellContext">
-                                                @if (_workingTemplate.IsValueOverriden(cellContext.Item))
-                                                {
-                                                    <RevertTemplateValueButton OnClick=@(async () => { await RemoveField(cellContext.Item); }) />
-                                                }
-                                                else
-                                                {
-                                                    <AppTooltip Text="@AppLocalization[Lang.Remove_field]">
-                                                        <AppCloseButton Disabled=@(!_workingTemplate.FieldValues.Contains(cellContext.Item))
-                                                                        Tooltip=@AppLocalization[Lang.Remove]
-                                                                        OnClick=@(async()=>{await RemoveField(cellContext.Item);}) />
-                                                    </AppTooltip>
-                                                }
+                                        </CellTemplate>
+                                    </TemplateColumn>
+                                </Columns>
+                            </MudDataGrid>
 
-                                            </CellTemplate>
-                                        </TemplateColumn>
-                                    </Columns>
-                                </MudDataGrid>
+                        </MudStack>
+                    </MudDrawerContainer>
 
+                </ViewSection>
+
+
+                <ViewSection Title=@AppLocalization[Lang.OU]>
+                    @if (SelectedOU != null)
+                    {
+                        var ouTemplateSource = GetParentOfValue(_workingTemplate.EffectiveParentOU, template => template.ParentOU);
+                        <MudText Class="mud-width-full" Align="Align.Center">
+                            <MudStack>
+                                <MudText Align="Align.Center">
+                                    @(AppLocalization[Lang.OU] + ": " + SelectedOU?.OU.ToPrettyOu())
+                                </MudText>
+                                @if (!_showOuTree)
+                                {
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Secondary"
+                                               OnClick="@(()=>{_showOuTree=true;})">
+                                        @AppLocalization[Lang.OU]
+                                    </MudButton><br />
+                                }
+                                else
+                                {
+                                    <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.OU"
+                                                    SelectedResult="@SelectedOU"
+                                                    SelectedResultChanged="@((ou) => { SelectedOU = ou as IADOrganizationalUnit; if (_workingTemplate.EffectiveParentOU != ou.DN) _workingTemplate.ParentOU = ou.DN; })" />
+                                    <ADTreeView ShowAllEntries=false
+                                                SelectedEntry=@SelectedOU
+                                                SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(_workingTemplate.EffectiveParentOU!=ou.DN)_workingTemplate.ParentOU = ou.DN;})"
+                                                StartingSelectedOU=@SelectedOU />
+                                    @if (!_workingTemplate.ParentOU.IsNullOrEmpty() && _workingTemplate.ParentTemplateId != null && !_workingTemplate.ParentOU.IsNullOrEmpty())
+                                    {
+                                        <RevertTemplateValueButton OnClick=@(async () => { _workingTemplate.ParentOU = null; await LoadData(); }) />
+
+                                    }
+                                }
                             </MudStack>
-                        </MudDrawerContainer>
 
-                    </ViewSection>
+                        </MudText>
 
+                    }
 
-                    <ViewSection Title=@AppLocalization[Lang.OU]>
-                        @if (SelectedOU != null)
+                </ViewSection>
+                <ViewSection Title=@AppLocalization[Lang.Assigned_Groups]>
+
+                    <MudStack>
+
+                        @foreach (var group in _workingTemplate.EffectiveAssignedGroupSids)
                         {
-                            var ouTemplateSource = GetParentOfValue(_workingTemplate.EffectiveParentOU, template => template.ParentOU);
-                            <MudText Class="mud-width-full" Align="Align.Center">
-                                <MudStack>
-                                    <MudText Align="Align.Center">
-                                        @(AppLocalization[Lang.OU] + ": " + SelectedOU?.OU.ToPrettyOu())
-                                    </MudText>
-                                    @if (!_showOuTree)
-                                    {
-                                        <MudButton Variant="Variant.Filled"
-                                                   Color="Color.Secondary"
-                                                   OnClick="@(()=>{_showOuTree=true;})">
-                                            @AppLocalization[Lang.OU]
-                                        </MudButton><br />
-                                    }
-                                    else
-                                    {
-                                        <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.OU"
-                                                        SelectedResult="@SelectedOU"
-                                                        SelectedResultChanged="@((ou) => { SelectedOU = ou as IADOrganizationalUnit; if (_workingTemplate.EffectiveParentOU != ou.DN) _workingTemplate.ParentOU = ou.DN; })" />
-                                        <ADTreeView ShowAllEntries=false
-                                                    SelectedEntry=@SelectedOU
-                                                    SelectedEntryChanged="@((ou)=>{SelectedOU=ou as IADOrganizationalUnit; if(_workingTemplate.EffectiveParentOU!=ou.DN)_workingTemplate.ParentOU = ou.DN;})"
-                                                    StartingSelectedOU=@SelectedOU />
-                                        @if (!_workingTemplate.ParentOU.IsNullOrEmpty() && _workingTemplate.ParentTemplateId != null && !_workingTemplate.ParentOU.IsNullOrEmpty())
-                                        {
-                                            <RevertTemplateValueButton OnClick=@(async () => { _workingTemplate.ParentOU = null; await LoadData(); }) />
 
-                                        }
-                                    }
-                                </MudStack>
-
-                            </MudText>
-
-                        }
-
-                    </ViewSection>
-                    <ViewSection Title=@AppLocalization[Lang.Assigned_Groups]>
-
-                        <MudStack>
-
-                            @foreach (var group in _workingTemplate.EffectiveAssignedGroupSids)
-                            {
-
-                                //TODO Find a way to identify a single group sid's source template
+                            //TODO Find a way to identify a single group sid's source template
 
                               
                         
-                                <AssignedTemplateGroup Group="group"
-                                                       OnGroupRemoved="@(async (group)=>{await StateHasChangedAsync();})" />
+                            <AssignedTemplateGroup Group="group"
+                                                   OnGroupRemoved="@(async (group)=>{await InvokeStateHasChangedAsync();})" />
 
            
-                            }
+                        }
 
                        
-                            <MudStack Row=true>
-                                <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group
-                                                Label="@AppLocalization[Lang.Groups]"
-                                                @bind-SelectedResult="@SelectedGroup"
-                                                SearchTerm="@SelectedGroup?.CanonicalName"
-                                                AnchorOrigin="Origin.TopCenter"
-                                                TransformOrigin="Origin.BottomCenter" />
-                                <MudFab Size="Size.Small"
-                                        StartIcon=@Icons.Material.Filled.Add
-                                        Color="Color.Primary"
-                                        OnClick="@AssignGroup" />
-                            </MudStack>
+                        <MudStack Row=true>
+                            <ADAutoComplete SearchObjectType=ActiveDirectoryObjectType.Group
+                                            Label="@AppLocalization[Lang.Groups]"
+                                            @bind-SelectedResult="@SelectedGroup"
+                                            SearchTerm="@SelectedGroup?.CanonicalName"
+                                            AnchorOrigin="Origin.TopCenter"
+                                            TransformOrigin="Origin.BottomCenter" />
+                            <MudFab Size="Size.Small"
+                                    StartIcon=@Icons.Material.Filled.Add
+                                    Color="Color.Primary"
+                                    OnClick="@AssignGroup" />
                         </MudStack>
-                    </ViewSection>
+                    </MudStack>
+                </ViewSection>
 
-                </MudStack>
+            </MudStack>
 
-                @{
-                    string buttonText = "";
-                    @if (_workingTemplate.Id == 0)
-                    {
-                        buttonText = "Add this template";
-                    }
-                    else
-                    {
-                        buttonText = "Save this template";
-                    }
+            @{
+                string buttonText = "";
+                @if (_workingTemplate.Id == 0)
+                {
+                    buttonText = "Add this template";
                 }
-                <MudStack Row=true>
+                else
+                {
+                    buttonText = "Save this template";
+                }
+            }
+            <MudStack Row=true>
 
-                    @if (_workingTemplate.Id == 0)
-                    {
-                        <MudButton Color="Color.Warning"
-                                   OnClick="@CancelNewTemplate">Cancel</MudButton>
+                @if (_workingTemplate.Id == 0)
+                {
+                    <MudButton Color="Color.Warning"
+                               OnClick="@CancelNewTemplate">Cancel</MudButton>
 
-                    }
-                    <MudButton Disabled=SaveDisabled
-                               Color="Color.Success"
-                               OnClick="SaveTemplate">@buttonText</MudButton>
-                </MudStack>
+                }
+                <MudButton Disabled=SaveDisabled
+                           Color="Color.Success"
+                           OnClick="SaveTemplate">@buttonText</MudButton>
+            </MudStack>
 
 
 
-            </CascadingValue>
         </MudForm>
- @*        @if (_workingTemplate.GetChanges(_originalTemplate).Count > 0)
+        @*        @if (_workingTemplate.GetChanges(_originalTemplate).Count > 0)
         {
             <UnsavedChangesPrompt SaveChanges="SaveTemplate" DiscardChanges="LoadData" />
         } *@

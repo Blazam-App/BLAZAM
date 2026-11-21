@@ -120,7 +120,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
-            
+
             if (sender != null && sender.Equals(this))
             {
                 return;
@@ -225,7 +225,7 @@ namespace BLAZAM.Services.Background
                 ThreadPriority = ThreadPriority.Lowest
             };
             List<IDirectoryEntryAdapter> filteredEntries;
-            IApplicationUserState rulesUserState = new RulesUserState(dbFactory,rule.Name);
+            IApplicationUserState rulesUserState = new RulesUserState(dbFactory, rule.Name);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
             filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
@@ -390,7 +390,7 @@ namespace BLAZAM.Services.Background
                         eventType = ApplicationEventType.All;
                         return;
                     }
-                    
+
                     groupableEntry.AssignTo(group);
                 }
             }
@@ -553,7 +553,7 @@ namespace BLAZAM.Services.Background
 
             var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
-           
+
         }
 
         /// <summary>

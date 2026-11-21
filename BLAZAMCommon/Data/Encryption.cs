@@ -8,7 +8,6 @@ namespace BLAZAM.Common.Data
 {
     public class Encryption
     {
-        private const string OldSalt = "BLAZAM_SALT";
         private readonly object _cipherCacheLock = new();
         public static Encryption Instance { get; private set; }
 
@@ -16,12 +15,7 @@ namespace BLAZAM.Common.Data
 
         public static byte[] GenerateSalt(int maximumSaltLength = 32)
         {
-            byte[] salt = new byte[maximumSaltLength];
-
-            RandomNumberGenerator.Create().GetNonZeroBytes(salt);
-
-
-            return salt;
+            return RandomNumberGenerator.GetBytes(maximumSaltLength);
         }
 
         /// <summary>
@@ -210,17 +204,7 @@ namespace BLAZAM.Common.Data
         {
             byte[] encryptedBytes;
 
-            // Create a new instance of RandomNumberGenerator
-            var randomGenerator = RandomNumberGenerator.Create();
-
-            // Create a byte array to hold the random value
-            byte[] ivSeedBytes = new byte[4];
-
             // Generate a random value and store it in the byte array
-            randomGenerator.GetBytes(ivSeedBytes);
-
-   
-
             byte[] iv = RandomNumberGenerator.GetBytes(16);
 
             using Aes aes = Aes.Create();
@@ -240,12 +224,12 @@ namespace BLAZAM.Common.Data
 
             encryptedBytes = memoryStream.ToArray();
 
-            var encryptedMessage = iv;
+            var encryptedMessage = new byte[iv.Length + encryptedBytes.Length];
 
-            for (int i = 0; i < encryptedBytes.Length; i++)
-            {
-                encryptedMessage = encryptedMessage.Append(encryptedBytes[i]).ToArray();
-            }
+            //Package cipher bytes
+            Buffer.BlockCopy(iv, 0, encryptedMessage, 0, iv.Length);
+            Buffer.BlockCopy(encryptedBytes, 0, encryptedMessage, iv.Length, encryptedBytes.Length);
+
             var cipherText = Convert.ToBase64String(encryptedMessage);
             cipherText = Convert.ToBase64String(keyPackage.Salt) + "," + cipherText;
 

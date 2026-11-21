@@ -204,7 +204,7 @@
     {
         _delegate.DelegateSid = _delegateEntry.SID;
         await Context.SaveChangesAsync();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
         _ = Analytics.PermissionDelegateChanged(_delegateEntry.ObjectType);
         ApplicationEvents.PermissionsChanged.Invoke();

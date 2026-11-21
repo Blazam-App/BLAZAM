@@ -9,6 +9,28 @@
     </MudDataGrid>
     <LoadingData Loading="LoadingData" />
 </MudExpansionPanel>
+
+<MudExpansionPanel Style="background-color: var(--mud-palette-background);"
+                   Text="@AppLocalization["Applied Database Updates"]">
+                   <MudList T="string">
+                       @foreach(var migration in Context.AppliedMigrations)
+                       {
+                       <MudListItem>@migration</MudListItem>
+                       }
+                   </MudList>
+    <LoadingData Loading="LoadingData" />
+</MudExpansionPanel>
+
+<MudExpansionPanel Style="background-color: var(--mud-palette-background);"
+                   Text="@AppLocalization["Pending Database Updates"]">
+                   <MudList T="string">
+                       @foreach(var migration in Context.PendingMigrations)
+                       {
+                       <MudListItem>@migration</MudListItem>
+                       }
+                   </MudList>
+    <LoadingData Loading="LoadingData" />
+</MudExpansionPanel>
 @code {
     public class TableData
     {

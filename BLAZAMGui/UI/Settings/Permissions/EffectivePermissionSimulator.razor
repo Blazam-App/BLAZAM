@@ -36,10 +36,10 @@
     private async Task onRun()
     {
         simRan = false;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         var simUser = await selectedUser.GetApplicationUser(UserStateService, DbFactory, Directory,AppAuthenticationStateProvider);
         target.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRan = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

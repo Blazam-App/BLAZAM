@@ -1,5 +1,5 @@
 @using System.Text
-@inherits MudElement
+@inherits MudFormComponent<T, string>
 @typeparam T
 
 <MudStack Row=true>
@@ -14,6 +14,7 @@
              @ref=_selectMenu
              Class=@(Class+" mud-width-full")
              ListClass="minw-max"
+             OpenChanged="@OnMenuOpenChanged"             
              MaxHeight="200"
              AnchorOrigin="Origin.BottomCenter"
              TransformOrigin="Origin.TopCenter"
@@ -21,10 +22,12 @@
         <ActivatorContent>
             <MudField Disabled="@Disabled"
                       HelperText="@HelperText"
-                      Label="@Label"
+                      Label="@(Required && !string.IsNullOrWhiteSpace(Label) ? $"{Label}*" : Label)"
+                      Error="@HasErrors"
+                      ErrorText="@GetErrorText()"
                       @onclick="@(() => context.ToggleAsync())">
                 <MudStack Row=true>
-                    @if (Selected !=null && (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T))))
+                    @if (Selected != null && (Selected.Count() > 0 || !EqualityComparer<T>.Default.Equals(Value, default(T))))
                     {
                         <MudText>
                             @Text
@@ -48,6 +51,7 @@
                 {
                     <MudMenuItem Style="min-width:max-content;"
                                  Class="py-0 px-3 ma-0"
+                                 Disabled="ReadOnly"
                                  OnClick="@(async ()=> await ToggleSelected(val))"
                                  AutoClose=@(!MultiSelection)>
                         <MudStack Class="pa-0 ma-0"
@@ -125,21 +129,24 @@
     public bool Disabled { get; set; }
 
     [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
     public bool MultiSelection { get; set; }
 
     [Parameter]
     public Func<T, string> ToStringFunc { get; set; }
 
-    private T _value;
+
 
     [Parameter]
-    public T Value
+    public T? Value
     {
         get => _value;
         set
         {
             _value = value;
-            Selected = [_value];
+            Selected = _value is not null ? [_value] : [];
         }
     }
 
@@ -222,6 +229,20 @@
                 await ValueChanged.InvokeAsync(item);
             }
         }
+        await BeginValidateAsync();
     }
+
+    private async Task OnMenuOpenChanged(bool isOpen)
+    {
+        if (!isOpen)
+        {
+            Touched=true;
+            await BeginValidateAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected override IConverter<T?, string?> GetDefaultConverter()
+        => new DefaultConverter<T>();
 }
 

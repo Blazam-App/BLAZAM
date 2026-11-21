@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Mvc.Filters;
 using MudBlazor;
+using Polly;
 
 namespace BLAZAM.Gui.UI.Settings.Templates
 {
     public partial class EditDirectoryTemplate : ValidatedForm
     {
+        private MudAutocomplete<DirectoryTemplateFieldValueList>? _valueListAutocomplete;
+        private DirectoryTemplateFieldValueList? _editedValueList;
+        private AppModal? _valueListModal;
         private string? _testFirstName;
         private string? _testMiddleName;
         private string? _testLastName;
@@ -84,6 +89,27 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         {
             get;
             set;
+        }
+        private async Task<IEnumerable<DirectoryTemplateFieldValueList?>> SearchValueLists(string? value, CancellationToken cancellationToken = default)
+        {
+            var fieldValues = new List<DirectoryTemplateFieldValueList?>();
+
+            if (Context == null)
+            {
+                return [];
+            }
+            if (value == null || value == String.Empty)
+            {
+                fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
+                    .ToListAsync());
+            }
+            else
+            {
+                fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
+                    .Where(fvl => fvl.Name.Contains(value))
+                    .ToListAsync());
+            }
+            return fieldValues;
         }
 
         protected override async Task OnParametersSetAsync()
@@ -174,7 +200,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                         }
 
                         RefreshGroups();
-                        await StateHasChangedAsync();
+                        await InvokeStateHasChangedAsync();
                         if (Form != null)
                         {
                             await Form.ValidateAsync();
@@ -327,12 +353,59 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         protected async Task RemoveField(DirectoryTemplateFieldValue field)
         {
             _workingTemplate.FieldValues.Remove(field);
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
 
         private async Task CancelNewTemplate()
         {
             await ClearSelectedTemplate.InvokeAsync();
+        }
+        private async Task DeleteValueList(DirectoryTemplateFieldValueList valueList)
+        {
+            if (await MessageService.Confirm("Are you sure you want to delete " + valueList.Name, AppLocalization[Lang.Confirm_deletion]))
+            {
+                if (Context == null)
+                {
+                    throw new AppException("Database not available");
+                }
+                Context.DirectoryTemplateFieldValueLists.Remove(valueList);
+                var changes = await Context.SaveChangesAsync();
+                if (changes > 0)
+                {
+                    SnackBarService.Success(AppLocalization[Lang.Deleted]);
+                    if (_valueListAutocomplete != null)
+                    {
+                        await _valueListAutocomplete.CloseMenuAsync();
+                        await _valueListAutocomplete.OpenMenuAsync();
+                    }
+                    await InvokeStateHasChangedAsync();
+                }
+                else
+                {
+                    SnackBarService.Warning(AppLocalization["No changes"]);
+                }
+            }
+        }
+        private async Task SaveValueListAsync()
+        {
+            if (_editedValueList != null)
+            {
+                if (Context == null)
+                {
+                    throw new AppException("Database not available");
+                }
+                if (_editedValueList.Id == 0)
+                {
+                    await Context.DirectoryTemplateFieldValueLists.AddAsync(_editedValueList);
+                }
+                else
+                {
+                    Context.DirectoryTemplateFieldValueLists.Update(_editedValueList);
+                }
+                await Context.SaveChangesAsync();
+                await _valueListModal.CloseAsync();
+                SnackBarService.Success(AppLocalization[Lang.Changes_have_been_saved]);
+            }
         }
         protected async Task SaveTemplate()
         {
@@ -437,6 +510,14 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             else if (field is CustomActiveDirectoryField customField)
             {
                 _workingTemplate.FieldValues.Add(new DirectoryTemplateFieldValue { CustomField = customField });
+            }
+        }
+        private async Task CreateNewValueList()
+        {
+            _editedValueList = new DirectoryTemplateFieldValueList();
+            if (_valueListModal != null)
+            {
+                await _valueListModal.ShowAsync();
             }
         }
     }

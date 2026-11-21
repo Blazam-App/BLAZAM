@@ -197,7 +197,7 @@
     private async void LoadPFX(IBrowserFile e)
     {
         pfxBytes = await e.ReadByteArrayAsync(5000000);
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }
@@ -206,7 +206,7 @@
     private async void LoadCert(IBrowserFile e)
     {
         crtBytes = await e.ReadByteArrayAsync(5000000);
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }
@@ -218,7 +218,7 @@
         {
             keyBytes = bytes;
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }

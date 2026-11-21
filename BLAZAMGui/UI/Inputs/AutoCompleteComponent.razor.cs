@@ -18,7 +18,7 @@ namespace BLAZAM.Gui.UI.Inputs
 
                 searchTerm = value;
                 SearchTermChanged.InvokeAsync(value);
-                _ = StateHasChangedAsync();
+                _ = InvokeStateHasChangedAsync();
             }
         }
 

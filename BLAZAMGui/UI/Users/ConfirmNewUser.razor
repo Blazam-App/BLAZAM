@@ -146,7 +146,7 @@ else
             if (User is null && Contact is not null)
             {
                 disableCreateUserButton = true;
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
 
                 var createContactJob = new Job(AppLocalization[Lang.Create_Contact]);
                 createContactJob.StopOnFailedStep = false;
@@ -159,7 +159,7 @@ else
                 var result = await Contact.CommitChangesAsync(createContactJob);
 
                 disableCreateUserButton = false;
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
 
                 if (result.FailedSteps.Count == 0)
                 {
@@ -174,7 +174,7 @@ else
             else if (User is not null)
             {
                 disableCreateUserButton = true;
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
 
                 var createUserJob = new Job(AppLocalization[Lang.Create_User]);
                 createUserJob.StopOnFailedStep = false;
@@ -189,7 +189,7 @@ else
                 var result = await User.CommitChangesAsync(createUserJob);
 
                 disableCreateUserButton = false;
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
 
                 if (result.FailedSteps.Count == 0)
                 {

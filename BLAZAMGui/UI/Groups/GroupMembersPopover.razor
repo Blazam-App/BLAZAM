@@ -131,7 +131,7 @@ else
                 Members = Group.Members;
             }
             LoadingData = false;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
 
         });
 
@@ -141,12 +141,12 @@ else
     public async Task Open()
     {
        IsOpen = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
       public async void Close()
     {
        IsOpen = false;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
 }
