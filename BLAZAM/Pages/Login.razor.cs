@@ -181,7 +181,7 @@ namespace BLAZAM.Pages
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-                    Nav.NavigateTo(redirectUrl, true);
+                    Nav.PostLogonNavigateTo(redirectUrl);
 
                     break;
             }
