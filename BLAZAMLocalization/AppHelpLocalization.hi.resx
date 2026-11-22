@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>यह सुविधा अभी भी निर्माणाधीन है</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>UPN प्रत्यय को खाली छोड़ने से उपयोगकर्ता को कोई भी उपलब्ध प्रत्यय चुनने की अनुमति मिलेगी, और डिफ़ॉल्ट रूप से डोमेन FQDN का उपयोग होगा।</value>
+  </data>
 </root>

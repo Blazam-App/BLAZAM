@@ -324,4 +324,7 @@ Tente configurar credenciais de atualização personalizadas.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>Este recurso ainda está em construção</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Deixar o sufixo UPN vazio permitirá ao utilizador escolher qualquer sufixo disponível, assumindo por predefinição o FQDN do domínio.</value>
+  </data>
 </root>

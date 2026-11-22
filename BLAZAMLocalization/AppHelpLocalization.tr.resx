@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>Bu özellik hâlâ geliştirme aşamasında</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>UPN son ekini boş bırakmak, kullanıcının mevcut herhangi bir son eki seçmesine izin verir ve varsayılan olarak etki alanı FQDN'si kullanılır.</value>
+  </data>
 </root>

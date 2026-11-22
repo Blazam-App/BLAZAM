@@ -323,4 +323,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>هذه الميزة لا تزال قيد الإنشاء</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>سيؤدي ترك لاحقة UPN فارغة إلى السماح للمستخدم باختيار أي لاحقة متاحة، مع تعيين المجال FQDN كخيار افتراضي.</value>
+  </data>
 </root>

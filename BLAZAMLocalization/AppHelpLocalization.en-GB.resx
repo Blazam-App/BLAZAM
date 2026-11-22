@@ -325,4 +325,7 @@ Try configuring custom update credentials.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>This feature is still under construction</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Leaving the UPN suffix empty will allow the user to choose any available suffix, defaulting to the domain FQDN.</value>
+  </data>
 </root>

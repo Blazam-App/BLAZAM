@@ -324,4 +324,7 @@ Essayez de configurer des informations d'identification de mise à jour personna
   <data name="Construction_Notice" xml:space="preserve">
     <value>Cette fonctionnalité est toujours en cours de développement</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Laisser le suffixe UPN vide permettra à l’utilisateur de choisir n’importe quel suffixe disponible, avec le FQDN du domaine par défaut.</value>
+  </data>
 </root>
