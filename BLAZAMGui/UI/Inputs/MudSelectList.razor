@@ -86,12 +86,15 @@
     {
         if (!AdornmentIcon.IsNullOrEmpty())
         {
-            <MudIconButton Ripple=@(OnAdornmentClick.HasDelegate ? true : false)
-                           Icon="@AdornmentIcon"
+            <AppIconButton Icon="@AdornmentIcon"
                            Color="@AdornmentColor"
-                           OnClick="@OnAdornmentClick"
-                           aria-label="@AdornmentAriaLabel" />
+                           OnClick="@OnAdornmentClick"/>
         }
+    }
+    @if (Clearable && Selected?.Count()>0)
+    {
+    <AppIconButton Icon="@Icons.Material.Filled.Close"
+                   OnClick="@(()=>{ToggleSelected(Value);})" />
     }
 </MudStack>
 
@@ -116,8 +119,6 @@
     [Parameter]
     public string? AdornmentIcon { get; set; }
 
-    [Parameter]
-    public string? AdornmentAriaLabel { get; set; }
 
     [Parameter]
     public Adornment Adornment { get; set; }
@@ -127,6 +128,9 @@
 
     [Parameter]
     public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool Clearable { get; set; }
 
     [Parameter]
     public bool ReadOnly { get; set; }
@@ -213,6 +217,13 @@
             {
                 Selected = Selected.Where(x => !x!.Equals(item)).ToList();
                 await SelectedChanged.InvokeAsync(Selected);
+            }
+            else
+            {
+                Selected = Selected.Where(s => s?.Equals(item)==false).ToList();
+                Value = default;
+                await ValueChanged.InvokeAsync(default);
+
             }
         }
         else
