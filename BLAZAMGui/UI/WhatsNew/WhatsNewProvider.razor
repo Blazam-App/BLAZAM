@@ -1,0 +1,89 @@
+﻿@using BLAZAM.Update
+@inherits AppComponentBase
+<AppModal @ref="_modal" Options="new() { FullWidth = true, FullScreen = false }">
+    @if (_newVersionComponents.Any())
+    {
+    <MudCarousel Class="pb-6" AutoCycle=false TData="string" Style="height:500px;">
+            @foreach (var update in _newVersionComponents.OrderByDescending(u => u.Version))
+            {
+                <MudCarouselItem>
+                    <MudContainer Class="overflow-scroll mb-6" Style="height:500px;">
+                        <MudText>@update.Version</MudText>
+                        <AppMarkdown Value="@update.ReleaseNotes" />
+                    </MudContainer>
+                </MudCarouselItem>
+            }
+        </MudCarousel>
+    }
+</AppModal>
+@code {
+    [Inject]
+    private UpdateService _updateService { get; set; }
+
+    private RenderFragment? _modalContent;
+    private AppModal? _modal;
+    private List<(ApplicationVersion Version, string ReleaseNotes)> _newVersionComponents = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            if (CurrentUser.State.Preferences.LastLogonVersion == null)
+            {
+                _newVersionComponents = await GetWhatsNewComponents(new ApplicationVersion("1.6.0"));
+
+                if (_newVersionComponents.Any())
+                {
+                    await InvokeStateHasChangedAsync();
+                    await _modal.ShowAsync();
+                }
+            }
+            else if (new ApplicationVersion(CurrentUser.State.Preferences.LastLogonVersion) < ApplicationInfo.RunningVersion)
+            {
+                _newVersionComponents = await GetWhatsNewComponents(new ApplicationVersion(CurrentUser.State.Preferences.LastLogonVersion));
+
+                if (_newVersionComponents.Any())
+                {
+                    await InvokeStateHasChangedAsync();
+                    await _modal.ShowAsync();
+                }
+            }
+        }
+
+    }
+
+    private async Task<List<(ApplicationVersion Version, string ReleaseNotes)>> GetWhatsNewComponents(ApplicationVersion? lastLogonVersion)
+    {
+        if (!_updateService.AvailableUpdates.Any())
+        {
+            await _updateService.GetUpdates();
+        }
+
+        return _updateService.AvailableUpdates.Where(u => u.Version > lastLogonVersion && u.Branch != ApplicationReleaseBranches.DevPrefix && u.Branch != ApplicationReleaseBranches.NightlyPrefix)
+               .Select(u => { return (Version: u.Version, ReleaseNotes: u.Release.ReleaseNotes); }).ToList();
+
+
+        var targetNamespace = typeof(WhatsNewProvider).Namespace;
+
+        // return typeof(WhatsNewProvider).Assembly
+        //     .GetTypes()
+        //     .Where(t =>
+        //         t.IsClass &&
+        //         !t.IsAbstract &&
+        //         t.Namespace == targetNamespace &&
+        //         typeof(IComponent).IsAssignableFrom(t) &&
+        //         t.Name.StartsWith("V", StringComparison.OrdinalIgnoreCase))
+        //     .Select(t =>
+        //     {
+        //         // Converts "v1_7_0" -> "1.7.0"
+        //         var versionString = t.Name[1..].Replace('_', '.');
+        //         return (Version: new ApplicationVersion(versionString), ComponentType: t);
+        //     })
+        //     // Only show versions newer than what the user last saw (and <= current running version)
+        //     .Where(x => (lastLogonVersion == null || x.Version > lastLogonVersion)
+        //                 && x.Version <= ApplicationInfo.RunningVersion)
+        //     .OrderByDescending(x => x.Version)
+        //     .ToList();
+    }
+}

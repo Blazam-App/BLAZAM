@@ -1,4 +1,5 @@
-﻿using BLAZAM.Database.Models.Rules;
+﻿using BLAZAM.Common.Services;
+using BLAZAM.Database.Models.Rules;
 using BLAZAM.Logger;
 using BLAZAM.Session.Interfaces;
 using Microsoft.AspNetCore.Components;
@@ -11,7 +12,7 @@ namespace BLAZAM.Services
     public class SearchService
     {
         private readonly IApplicationUserStateService _userStateService;
-        private readonly NavigationManager _nav;
+        private readonly AppNavManager _nav;
         private bool includeDisabled = false;
         private string? searchTerm;
 
@@ -53,7 +54,7 @@ namespace BLAZAM.Services
         /// <param name="userStateService">Service for accessing current user state and preferences.</param>
         /// <param name="nav">Navigation manager for redirecting to search pages.</param>
         /// <exception cref="ArgumentNullException">Thrown if userStateService or nav is null.</exception>
-        public SearchService(IApplicationUserStateService userStateService, NavigationManager nav)
+        public SearchService(IApplicationUserStateService userStateService, AppNavManager nav)
         {
             ArgumentNullException.ThrowIfNull(userStateService);
 

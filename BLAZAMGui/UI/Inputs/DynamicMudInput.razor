@@ -9,7 +9,7 @@
                    Label="@Label"
                    ReadOnly=@ReadOnly
                    Disabled=@Disabled
-                   Options = "ValueList.Items.Select(x=>x.StringValue)"
+                   Options = "ValueList"
                    Value = "@Value?.ToString()"
                    ValueChanged="@(changed => { Value = (T)(object)changed; })"
                    ToStringFunc = "@((item)=>{return item.ToString();})" />
@@ -168,7 +168,7 @@ else
 
 @code {
     [Parameter]
-    public DirectoryTemplateFieldValueList? ValueList { get; set; } = null;
+    public IEnumerable<string>? ValueList { get; set; } = null;
     private string? _newItem = null;
     private T? _originalValue;
     private T? objValue;
