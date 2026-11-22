@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>Ця функція все ще в розробці</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Якщо залишити суфікс UPN порожнім, користувач зможе вибрати будь-який доступний суфікс, а за замовчуванням використовуватиметься FQDN домену.</value>
+  </data>
 </root>

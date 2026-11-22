@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>この機能は現在も開発中です</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>UPN サフィックスを空のままにすると、ユーザーは利用可能な任意のサフィックスを選択でき、既定ではドメイン FQDN が使用されます。</value>
+  </data>
 </root>

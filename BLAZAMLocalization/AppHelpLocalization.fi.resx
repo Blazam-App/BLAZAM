@@ -324,4 +324,7 @@ Yritä määrittää mukautetut päivityksen tunnistetiedot.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>Tämä ominaisuus on vielä rakenteilla</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>UPN-päätteen jättäminen tyhjäksi sallii käyttäjän valita minkä tahansa käytettävissä olevan päätteen, jolloin oletuksena on toimialueen FQDN.</value>
+  </data>
 </root>

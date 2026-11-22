@@ -50,6 +50,7 @@
         public static readonly string Lacks_Group_Member_Remove_Permission = "Lacks_Group_Member_Remove_Permission";
         public static readonly string Lacks_Group_Member_Read_Permission = "Lacks_Group_Member_Read_Permission";
         public static readonly string Confirm_Group_Creation = "Confirm_Group_Creation";
+        public static readonly string Template_Empty_Upn_Suffix = "Template_Empty_Upn_Suffix";
         public static readonly string Rearrange_Dashboard_Help = "Rearrange_Dashboard_Help";
         public static readonly string News_Provider_Description = "News_Provider_Description";
         public static readonly string No_News = "No_News";

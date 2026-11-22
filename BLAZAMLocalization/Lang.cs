@@ -150,6 +150,7 @@ namespace BLAZAM.Localization
         public static readonly string Reset_Password = "Reset Password";
         public static readonly string Rename_User = "Rename User";
         public static readonly string Employee_Id = "Employee Id";
+        public static readonly string UPN_Suffix = "UPN Suffix";
         public static readonly string Not_Configured = "Not Configured";
         public static readonly string Contact_Info = "Contact Info";
         public static readonly string Allow_password_reset = "Allow password reset";
