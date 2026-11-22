@@ -84,6 +84,18 @@ namespace BLAZAM.Database.Models.Templates
             set => UsernameFormula = value;
         }
 
+        public string? UpnSuffix { get; set; }
+        [NotMapped]
+        public string? EffectiveUpnSuffix
+        {
+            get
+            {
+                return GetEffectiveValue<string>(t => t.UpnSuffix, t => t.EffectiveUpnSuffix);
+
+            }
+            set => UpnSuffix = value;
+        }
+
         public string? ParentOU { get; set; }
         [NotMapped]
         public string? EffectiveParentOU
@@ -374,7 +386,7 @@ namespace BLAZAM.Database.Models.Templates
             return value;
         }
 
-        public DirectoryTemplateFieldValueList? TemplateValueList(IActiveDirectoryField field)
+        public DirectoryTemplateFieldValueList? GetTemplateValueList(IActiveDirectoryField field)
         {
 
 
