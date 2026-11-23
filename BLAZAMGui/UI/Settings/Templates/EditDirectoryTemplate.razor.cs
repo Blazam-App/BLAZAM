@@ -22,6 +22,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
         private DirectoryTemplate _usernameFromTemplate;
         private DirectoryTemplate _displayNameFromTemplate;
         private DirectoryTemplate _passwordFromTemplateName;
+        private DirectoryTemplate _upnSuffixFromTemplateName;
         private DirectoryTemplate _requirePasswordChangeFromTemplate;
         private DirectoryTemplate _sendWelcomeEmailFromTemplate;
         private DirectoryTemplate _askForAlternateEmailFromTemplate;
@@ -179,6 +180,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                         _usernameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveUsernameFormula, template => template.UsernameFormula);
                         _displayNameFromTemplate = GetParentOfValue<string?>(_workingTemplate.EffectiveDisplayNameFormula, template => template.DisplayNameFormula);
                         _passwordFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectivePasswordFormula, template => template.PasswordFormula);
+                        _upnSuffixFromTemplateName = GetParentOfValue<string?>(_workingTemplate.EffectiveUpnSuffix, template => template.UpnSuffix);
                         _requirePasswordChangeFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveRequirePasswordChange, template => template.RequirePasswordChange);
                         _sendWelcomeEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveSendWelcomeEmail, template => template.SendWelcomeEmail);
                         _askForAlternateEmailFromTemplate = GetParentOfValue<bool?>(_workingTemplate.EffectiveAskForAlternateEmail, template => template.AskForAlternateEmail);

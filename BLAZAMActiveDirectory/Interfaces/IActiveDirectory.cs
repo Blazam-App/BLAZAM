@@ -95,6 +95,7 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         List<string> DomainControllers { get; }
         AuthType AuthType { get; }
         string DomainSid { get; }
+        List<string> UpnSuffixes { get; }
 
         /// <summary>
         /// Searches for an Active Directory object by it's SID
