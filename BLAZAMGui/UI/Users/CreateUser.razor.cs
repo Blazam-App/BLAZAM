@@ -36,7 +36,7 @@ namespace BLAZAM.Gui.UI.Users
             return Task.CompletedTask;
         }
 
-
+        private string _selectedUpnSuffix;
         private string? customUserDisplayName;
         private bool? custom = false;
 
@@ -105,7 +105,10 @@ namespace BLAZAM.Gui.UI.Users
                 LoadingData = true;
                 newUser = await SelectedTemplate.GenerateTemplateUserAsync(newUserName, Directory);
                 _userCreated = false;
-
+                if (!SelectedTemplate.EffectiveUpnSuffix.IsNullOrEmpty())
+                {
+                    newUser.UserPrincipalName = newUser.SAMAccountName + "@" + SelectedTemplate.EffectiveUpnSuffix;
+                }
                 if (IsAdmin || SelectedTemplate.HasEditableFields())
                 {
                     SelectedStep = 2;
@@ -133,6 +136,7 @@ namespace BLAZAM.Gui.UI.Users
             SelectedTemplate = selectedTemplate;
             custom = false;
             SelectedStep = 1;
+            _selectedUpnSuffix = SelectedTemplate?.EffectiveUpnSuffix ?? Directory.UpnSuffixes.First();
             await InvokeStateHasChangedAsync();
         }
         private bool AdditionalShow(IDirectoryEntryAdapter entry)
