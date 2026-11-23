@@ -78,7 +78,7 @@
             }
             else
             {
-                return !IsAdmin && !Template.IsEditableField(field);
+                return !Template.IsEditableField(field);
             }
         }
     }

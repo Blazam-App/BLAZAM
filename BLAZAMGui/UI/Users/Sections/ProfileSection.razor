@@ -10,7 +10,7 @@
 
                 <DynamicMudInput T=string 
                     Label="@AppLocalization[Lang.Home_Directory]"
-                                 ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.HomeDirectory))"
+                                 ValueList="@(Template?.GetTemplateValueList(ActiveDirectoryFields.HomeDirectory)?.Items.Select(x=>x.StringValue))"
                                  @bind-Value="@User.HomeDirectory"
                                  Required=@(RequireField(ActiveDirectoryFields.HomeDirectory))
                                  Disabled=@(DisableField(ActiveDirectoryFields.HomeDirectory)) />
@@ -33,7 +33,7 @@
         @if (ShowField(ActiveDirectoryFields.ScriptPath))
         {
             <DynamicMudInput T=string
-                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.ScriptPath))"
+                             ValueList="@(Template?.GetTemplateValueList(ActiveDirectoryFields.ScriptPath)?.Items.Select(x=>x.StringValue))"
                              Label="@AppLocalization[Lang.Script_Path]"
                              @bind-Value="@User.ScriptPath"
                              Required=@(RequireField(ActiveDirectoryFields.ScriptPath))
@@ -42,7 +42,7 @@
         @if (ShowField(ActiveDirectoryFields.ProfilePath))
         {
             <DynamicMudInput T=string
-                             ValueList="@(Template?.TemplateValueList(ActiveDirectoryFields.ProfilePath))"
+                             ValueList="@(Template?.GetTemplateValueList(ActiveDirectoryFields.ProfilePath)?.Items.Select(x=>x.StringValue))"
                              Label="@AppLocalization[Lang.Profile_Path]"
                              @bind-Value="@User.ProfilePath"
                              Required=@(RequireField(ActiveDirectoryFields.ProfilePath))
