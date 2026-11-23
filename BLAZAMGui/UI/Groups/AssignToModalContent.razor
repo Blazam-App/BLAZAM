@@ -180,7 +180,7 @@
     }
     IGroupableDirectoryAdapter? CopyFromMember => CopyFrom as IGroupableDirectoryAdapter;
     new IDirectoryEntryAdapter Group { get; set; }
-    async void AddGroupInput()
+    async Task AddGroupInput()
     {
         additionalGroups.Add(additionalGroups.Count, null);
         await InvokeStateHasChangedAsync();

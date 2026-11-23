@@ -31,7 +31,7 @@
         Modal.Title = AppLocalization[Lang.Change_Thumbnail];
         await InvokeStateHasChangedAsync();
     }
-    private async void LoadIcon(IBrowserFile e)
+    private async Task LoadIcon(IBrowserFile e)
     {
         try
         {

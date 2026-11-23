@@ -108,7 +108,7 @@
 
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
-            InvokeStateHasChanged();
+            await InvokeStateHasChangedAsync();
         }
     }
     public async Task GenerateLoginSeries2()
@@ -146,7 +146,7 @@
 
             LoginSeries.Add(loginChart);
             LoginSeries.Add(uniqueUsersChart);
-            InvokeStateHasChanged();
+            await InvokeStateHasChangedAsync();
         }
     }
 }

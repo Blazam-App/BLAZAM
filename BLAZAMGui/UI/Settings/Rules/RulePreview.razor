@@ -324,7 +324,7 @@
             SnackBarService.Error(Lang.Error);
         }
     }
-    private async void RunRule()
+    private async Task RunRule()
     {
         _ruleRunning = true;
         await InvokeStateHasChangedAsync();

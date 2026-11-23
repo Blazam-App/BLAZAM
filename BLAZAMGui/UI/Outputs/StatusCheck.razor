@@ -36,7 +36,7 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    protected override async void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
 
         if (Status == true)

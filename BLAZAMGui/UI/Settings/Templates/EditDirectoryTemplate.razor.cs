@@ -102,13 +102,13 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             if (value == null || value == String.Empty)
             {
                 fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
-                    .ToListAsync());
+                    .ToListAsync(cancellationToken));
             }
             else
             {
                 fieldValues.AddRange(await Context.DirectoryTemplateFieldValueLists
                     .Where(fvl => fvl.Name.Contains(value))
-                    .ToListAsync());
+                    .ToListAsync(cancellationToken));
             }
             return fieldValues;
         }
