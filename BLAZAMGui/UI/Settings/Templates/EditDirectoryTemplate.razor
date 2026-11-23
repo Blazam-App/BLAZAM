@@ -34,11 +34,11 @@
                 <AppModal @ref=_categoryModal Title=@AppLocalization[Lang.Add_Category]>
                     <AddTemplateCategoryModalContent Categories="@categories"
                                                      CategoryAdded="@(async (newCategory) =>
-                                                                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                                                                         _workingTemplate.Category = newCategory;
-                                                                                                                                                                                                                                                                                                                         categories.Add(newCategory);
-                                                                                                                                                                                                                                                                                                                         await InvokeStateHasChangedAsync();
-                                                                                                                                                                                                                                                                                                                     })" />
+                                                                                                                                                                                                                                                                                                                                                                     {
+                                                                                                                                                                                                                                                                                                                                                                         _workingTemplate.Category = newCategory;
+                                                                                                                                                                                                                                                                                                                                                                         categories.Add(newCategory);
+                                                                                                                                                                                                                                                                                                                                                                         await InvokeStateHasChangedAsync();
+                                                                                                                                                                                                                                                                                                                                                                     })" />
                 </AppModal>
                 <MudSwitch Label="@AppLocalization[Lang.Visible]"
                            UncheckedColor="Color.Warning"
@@ -114,6 +114,27 @@
                                 <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.PasswordFormula = null; }) />
                             }
                         </MudStack>
+
+                        @if (Directory.UpnSuffixes.Count > 1)
+                        {
+                            <MudStack Row=true>
+
+                                <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_upnSuffixFromTemplateName">
+                                    <MudSelectList T="string"
+                                                   Clearable="!_workingTemplate.UpnSuffix.IsNullOrEmpty()"
+                                                   HelperText="@(_workingTemplate.EffectiveUpnSuffix.IsNullOrEmpty()?AppHelpLocalization[HelpLang.Template_Empty_Upn_Suffix]:null)"
+                                                   Label=@AppLocalization[Lang.UPN_Suffix]
+                                                   Options="Directory.UpnSuffixes"
+                                                   @bind-Value="@_workingTemplate.EffectiveUpnSuffix" />
+                                </TemplateOverride>
+                                @if (_workingTemplate.ParentTemplate != null && _workingTemplate.ParentTemplate.EffectiveUpnSuffix != _workingTemplate.EffectiveUpnSuffix)
+                                {
+                                    <RevertTemplateValueButton OnClick=@(() => { _workingTemplate.UpnSuffix = null; }) />
+                                }
+                            </MudStack>
+
+                            
+                        }
                         <MudStack Row=true>
 
                             <TemplateOverride Class="mud-width-full" BadgeClass="mud-width-full" SourceTemplate="@_requirePasswordChangeFromTemplate">
@@ -205,7 +226,7 @@
                                         }
                                         <MudTextField T="string"
                                                       Label="@AppLocalization[Lang.Username]"
-                                                      Value="@(_workingTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveUsernameFormula,testName):null)" />
+                                                      Value="@(!_workingTemplate.EffectiveUsernameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveUsernameFormula,testName):null)" />
                                         <MudTextField T="string"
                                                       Label="@AppLocalization[Lang.Display_Name]"
                                                       Value="@(_workingTemplate.EffectiveDisplayNameFormula.IsNullOrEmpty()==false?_workingTemplate.ReplaceVariables(_workingTemplate.EffectiveDisplayNameFormula,testName):null)" />
@@ -321,10 +342,12 @@
                                                                       ValueChanged=@((newValue)=>{ValueChanged(newValue,cellContext.Item);}) />
                                                     </MudTabPanel>
                                                     <MudTabPanel Text="@AppLocalization[Lang.Value_List]">
-                                                        <MudAutocomplete @bind-Value="cellContext.Item.ValueList"
-                                                                        @ref="_valueListAutocomplete"
+                                                        <MudAutocomplete Value="cellContext.Item.ValueList"
+                                                                         ValueChanged="@((val)=>{cellContext.Item.ValueList=val;cellContext.Item.Editable=true;})"
+                                                                         @ref="_valueListAutocomplete"
                                                                          Clearable="true"
                                                                          CoerceText=true
+                                                                         T="DirectoryTemplateFieldValueList"
                                                                          MaxItems="15"
                                                                          ToStringFunc="@((list)=>{return list?.Name;})"
                                                                          SearchFunc="SearchValueLists">
@@ -369,6 +392,7 @@
                                     <TemplateColumn Title=@AppLocalization[Lang.Editable]>
                                         <CellTemplate Context="cellContext">
                                             <MudCheckBox T=bool
+                                                         Disabled="cellContext.Item.ValueList!=null"
                                                          Value=cellContext.Item.Editable
                                                          ValueChanged="@((newValue)=>{EditableChanged(newValue,cellContext.Item);})" />
 

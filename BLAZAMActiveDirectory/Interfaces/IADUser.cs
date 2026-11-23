@@ -39,6 +39,11 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         string? UserPrincipalName { get; set; }
 
         /// <summary>
+        /// Gets or sets the user principal name (UPN) suffix.
+        /// </summary>
+        string? UserPrincipalNameSuffix { get; set; }
+
+        /// <summary>
         /// Gets or sets the list of computers the user is allowed to log on to.
         /// </summary>
         string? LogOnTo { get; set; }

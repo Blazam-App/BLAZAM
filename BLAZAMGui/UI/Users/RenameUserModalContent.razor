@@ -28,7 +28,12 @@
                 @if (Contact.CanEditField(ActiveDirectoryFields.SAMAccountName))
                 {
                     <MudTextField Label="@AppLocalization[Lang.Username]"
+                                 Required=true
                                   @bind-Value="@_privateUser.SAMAccountName" />
+                    <MudSelectList Options="Directory.UpnSuffixes"
+                                   Label="@AppLocalization[Lang.UPN_Suffix]"
+                                   Required=true
+                                   @bind-Value="User.UserPrincipalNameSuffix" />
                 }
             }
             @if (Entry.CanEditField(ActiveDirectoryFields.Mail))
