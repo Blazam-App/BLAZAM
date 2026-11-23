@@ -329,7 +329,7 @@
         await InvokeStateHasChangedAsync();
     }
 
-    async void OUSelected(IDirectoryEntryAdapter entry)
+    async Task OUSelected(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)
         {
@@ -370,47 +370,7 @@
         });
 
     }
-    // async void CreateTemplateUser()
-    // {
-    //     if (SelectedTemplate?.ParentOU == null) throw new AppException("Parent OU for template user was not set on creation!");
-    //     try
-    //     {
-    //         LoadingData = true;
-    //         await InvokeAsync(StateHasChanged);
-    //         newUser = SelectedTemplate.GenerateTemplateUser(newUserName, Directory);
-    //         _userCreated = false;
-
-    //         if (IsAdmin || SelectedTemplate.HasEditableFields())
-    //         {
-    //             SelectedStep = 2;
-    //         }
-    //         else
-    //         {
-    //             //Go to confirm step
-    //             SelectedStep = 7;
-
-    //         }
-
-    //     }
-    //     catch (Exception ex)
-    //     {
-
-    //         Loggers.ActiveDirectoryLogger.Error("Error while creating template user {@Error}", ex);
-
-    //         SnackBarService.Error(AppLocalization["An error has occurred while trying to create the template user: "] + ex.Message);
-    //     }
-    //     LoadingData = false;
-
-    //     await InvokeAsync(StateHasChanged);
-    // }
-
-    // async Task SetTemplate(DirectoryTemplate selectedTemplate)
-    // {
-    //     SelectedTemplate = selectedTemplate;
-    //     custom = false;
-    //     SelectedStep = 1;
-    //     await InvokeAsync(StateHasChanged);
-    // }
+  
     bool AdditionalShow(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)

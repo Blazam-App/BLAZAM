@@ -224,7 +224,7 @@ else if (Notification.Notification.Action == null)
             LoadingData = false;
         });
     }
-    private async void DenyRequest()
+    private async Task DenyRequest()
     {
         if (await MessageService.Confirm(AppHelpLocalization[HelpLang.Deny_Request_Confirmation]))
         {

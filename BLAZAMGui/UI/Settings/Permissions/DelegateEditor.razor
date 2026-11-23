@@ -111,7 +111,7 @@ OnClick="@(()=>{addGroupModal?.ShowAsync();})">
         }
         DelegatesChanged();
     }
-    private async void DelegatesChanged()
+    private async Task DelegatesChanged()
     {
 
         await RefreshDelegates();

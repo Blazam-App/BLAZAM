@@ -39,7 +39,7 @@
         base.OnInitialized();
 
     }
-    private async void Acknowledge()
+    private async Task Acknowledge()
     {
         var existingReadItem = CurrentUser.State.ReadNewsItems.FirstOrDefault(x => x.NewsItemId == Item.Id);
         if (existingReadItem != null)

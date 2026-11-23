@@ -94,7 +94,7 @@
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted
         /// </summary>
-        protected virtual async void DiscardChanges()
+        protected virtual async Task DiscardChanges()
         {
             if (DirectoryEntry != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
             {

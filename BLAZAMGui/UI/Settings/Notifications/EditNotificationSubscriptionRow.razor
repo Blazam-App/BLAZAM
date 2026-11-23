@@ -99,7 +99,7 @@
             }
         }
     }
-    private async void AddSubscription()
+    private async Task AddSubscription()
     {
         await Context.NotificationSubscriptions.AddAsync(Subscription);
         await OnAdded.InvokeAsync();
