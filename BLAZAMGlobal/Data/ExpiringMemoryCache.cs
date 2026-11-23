@@ -6,7 +6,7 @@ namespace BLAZAM.Global.Data
 {
     public class ExpiringMemoryCache
     {
-        private static object _operationLock = new object();
+        private static readonly object _operationLock = new object();
         private TimeSpan _timeToLive { get; set; }
         private object? _cachedData{ get; set; }
         
