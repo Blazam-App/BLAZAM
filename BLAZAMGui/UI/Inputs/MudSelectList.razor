@@ -14,7 +14,7 @@
              @ref=_selectMenu
              Class=@(Class+" mud-width-full")
              ListClass="minw-max"
-             OpenChanged="@OnMenuOpenChanged"             
+             OpenChanged="@OnMenuOpenChanged"
              MaxHeight="200"
              AnchorOrigin="Origin.BottomCenter"
              TransformOrigin="Origin.TopCenter"
@@ -88,17 +88,17 @@
         {
             <AppIconButton Icon="@AdornmentIcon"
                            Color="@AdornmentColor"
-                           OnClick="@OnAdornmentClick"/>
+                           OnClick="@OnAdornmentClick" />
         }
     }
-    @if (Clearable && Selected?.Count()>0)
+    @if (Clearable && Selected?.Count() > 0)
     {
-    <AppIconButton Icon="@Icons.Material.Filled.Close"
-                   OnClick="@(()=>{ToggleSelected(Value);})" />
+        <AppIconButton Icon="@Icons.Material.Filled.Close"
+                       OnClick="@(()=>{ToggleSelected(Value);})" />
     }
 </MudStack>
 
-    @code {
+@code {
     private MudMenu? _selectMenu;
 
     [Parameter]
@@ -168,7 +168,7 @@
                 int i = 0;
                 foreach (var item in Selected)
                 {
-                    if (item != null)
+                    if (EqualityComparer<T>.Default.Equals(item, default(T)))
                     {
                         if (i > 0)
                         {
@@ -220,7 +220,7 @@
             }
             else
             {
-                Selected = Selected.Where(s => s?.Equals(item)==false).ToList();
+                Selected = Selected.Where(s => s?.Equals(item) == false).ToList();
                 Value = default;
                 await ValueChanged.InvokeAsync(default);
 
@@ -247,7 +247,7 @@
     {
         if (!isOpen)
         {
-            Touched=true;
+            Touched = true;
             await BeginValidateAsync();
             await InvokeAsync(StateHasChanged);
         }
