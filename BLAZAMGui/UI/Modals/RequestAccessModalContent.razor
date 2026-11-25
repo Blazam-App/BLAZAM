@@ -53,13 +53,7 @@
                     <MudText>
                         @AppLocalization[field.Field.ToString()]
                     </MudText>
-                    @{
-                        var _canRead=false;
-                        if (Entry.CanReadField(field.Field))
-                        {
-                            _canRead = true;
-                        }
-                    }
+                    
                     <MudToggleIconButton Color="Color.Primary"
                                         Disabled=@(!_selectedFields.Contains(field)|| !field.CanRequestEdit) 
                                         Toggled=@(field.AccessRequested.Id==FieldAccessLevels.Edit.Id)
