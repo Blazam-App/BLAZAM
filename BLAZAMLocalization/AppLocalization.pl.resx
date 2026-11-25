@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Ikona przesyłania</value>
   </data>
-  <data name="0" xml:space="preserve">
+  <data name="About" xml:space="preserve">
     <value>Około</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1715,5 +1715,11 @@
   </data>
   <data name="Values" xml:space="preserve">
     <value>Wartości</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>Brak zmian</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Usuń przypisanie ze wszystkich grup</value>
   </data>
 </root>

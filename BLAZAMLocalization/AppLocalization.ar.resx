@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>تحميل أيقونة</value>
   </data>
-  <data name="0" xml:space="preserve">
+  <data name="About" xml:space="preserve">
     <value>حول</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1715,5 +1715,11 @@
   </data>
   <data name="Values" xml:space="preserve">
     <value>القيم</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>لا توجد تغييرات</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>إلغاء التعيين من جميع المجموعات</value>
   </data>
 </root>

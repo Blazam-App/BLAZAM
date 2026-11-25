@@ -38,11 +38,11 @@ namespace BLAZAM.Gui.UI.Settings
                     var results = await Context.SaveChangesAsync();
                     if (results > 0)
                     {
-                        SnackBarService.Success("Settings have been saved");
+                        SnackBarService.Success(AppLocalization[Lang.Settings_saved]);
                     }
                     else
                     {
-                        SnackBarService.Error(AppHelpLocalization[HelpLang.Unexpected_Error_Occurred]);
+                        SnackBarService.Warning(AppLocalization[Lang.No_changes]);
 
                     }
                 }
