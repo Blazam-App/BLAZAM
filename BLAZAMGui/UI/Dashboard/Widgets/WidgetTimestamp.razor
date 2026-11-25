@@ -14,7 +14,7 @@
         await base.OnParametersSetAsync();
         var localtimestamp = Timestamp?.ToLocalTime();
         _timestampString = localtimestamp.ToString();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 }

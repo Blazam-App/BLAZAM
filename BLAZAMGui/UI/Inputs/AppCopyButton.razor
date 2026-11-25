@@ -30,10 +30,10 @@
             return;
         await JS.InvokeVoidAsync("navigator.clipboard.writeText", TextToCopy);
         _showTooltip = true; 
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         await Task.Delay(3000);
         _showTooltip = false;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 

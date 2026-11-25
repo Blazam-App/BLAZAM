@@ -30,7 +30,7 @@
 
 
 
-    private async void ouChanged(IDirectoryEntryAdapter entry)
+    private async Task ouChanged(IDirectoryEntryAdapter entry)
     {
         var ou = (IADOrganizationalUnit)entry;
         if (ou != null)

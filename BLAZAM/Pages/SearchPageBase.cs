@@ -134,7 +134,7 @@ namespace BLAZAM.Pages
         }
         private void OnSearchUpdated()
         {
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
         }
         /// <summary>
         /// Filter for searching objects of only this type

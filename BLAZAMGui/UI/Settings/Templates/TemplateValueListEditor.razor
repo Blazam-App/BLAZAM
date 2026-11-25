@@ -1,0 +1,50 @@
+﻿@inherits AppModalContent
+
+<MudTextField Label="@AppLocalization[Lang.Name]"
+              Required=true
+              @bind-Value="DirectoryTemplateFieldValueList.Name" />
+<Section Title="@AppLocalization[Lang.Values]">
+    <MudList T="string">
+        @foreach (var value in DirectoryTemplateFieldValueList.Items)
+        {
+            <MudStack Row="true" Spacing="0">
+                <MudTextField Typo="Typo.body1"
+                              @bind-Value="value.StringValue" />
+                <MudSpacer />
+                <AppIconButton Icon="@Icons.Material.Filled.Remove"
+                               Color="Color.Error"
+                               Tooltip="@AppLocalization[Lang.Remove]"
+                               OnClick="@(()=>{DirectoryTemplateFieldValueList.Items.Remove(value);})" />
+            </MudStack>
+
+        }
+    </MudList>
+    <AppIconButton Icon=@Icons.Material.Filled.Add
+                   Tooltip="@AppLocalization[Lang.Add]"
+                   Color="Color.Success"
+                   OnClick="@(() => { DirectoryTemplateFieldValueList.Items.Add(new()); })" />
+
+</Section>
+@code {
+    /// <summary>
+    /// The list of values for the template field.
+    /// </summary>
+    [Parameter]
+    public DirectoryTemplateFieldValueList DirectoryTemplateFieldValueList { get; set; } = new DirectoryTemplateFieldValueList();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Modal?.SetYesText(AppLocalization[Lang.Save]);
+        Modal?.YesEnabled = () => { return IsValid; };
+    }
+    protected override bool IsValid
+    {
+        get => !DirectoryTemplateFieldValueList.Name.IsNullOrEmpty() &&
+                (DirectoryTemplateFieldValueList.Items.Count > 0
+                 && !DirectoryTemplateFieldValueList.Items.First()
+                 .StringValue.IsNullOrEmpty());
+        set => base.IsValid = value;
+    }
+
+}

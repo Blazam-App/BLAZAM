@@ -437,7 +437,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             try
             {
-                Invoke("SetPassword", new[] { password.ToPlainText() });
+                Invoke("SetPassword", new[] { password.FromSecureString() });
                 return true;
             }
             catch (Exception ex)
@@ -458,12 +458,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 ContextType.Domain,
                 DirectorySettings.ServerAddress + ":" + DirectorySettings.ServerPort,
                 DirectorySettings.Username + "@" + DirectorySettings.FQDN,
-                directoryPassword.ToPlainText()
+                directoryPassword.FromSecureString()
             );
             UserPrincipal up = UserPrincipal.FindByIdentity(pContext, SAMAccountName);
             if (up != null)
             {
-                up.SetPassword(password.ToPlainText());
+                up.SetPassword(password.FromSecureString());
                 if (requireChange)
                 {
                     up.ExpirePasswordNow();

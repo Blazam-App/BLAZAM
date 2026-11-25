@@ -24,7 +24,6 @@ namespace BLAZAM.Common.Services
 
         public string BaseUri => _navigationManager.BaseUri;
 
-
         public event EventHandler<LocationChangedEventArgs> LocationChanged
         {
             add => _navigationManager.LocationChanged += value;
@@ -41,7 +40,10 @@ namespace BLAZAM.Common.Services
         {
             return _navigationManager.ToAbsoluteUri(relativeUri);
         }
-
+        public void PostLogonNavigateTo(string uri)
+        {
+            _navigationManager.NavigateTo(uri, true);
+        }
         public void NavigateTo(string uri, bool forceLoad = false, bool replace = false)
         {
             _navigationManager.NavigateTo(uri, forceLoad, replace);

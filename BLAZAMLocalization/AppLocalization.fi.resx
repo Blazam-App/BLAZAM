@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>Tili on käytössä.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>Tili on lukittu.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>Tili on lukittu</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>Tili ei ole lukittu.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Organisaatioyksikkö</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>OU</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Salasanan vaihto</value>
   </data>
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Luo uusi API-tunnus</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
-    <value>Ryhmäjäsen lisätty</value>
+  <data name="Group member added" xml:space="preserve">
+    <value>Ryhmän jäsen lisätty</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>Ryhmäjäsen poistettu</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>Ryhmän jäsen poistettu</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>Ryhmä haettu</value>
@@ -1391,5 +1388,338 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Syötä arvo tähän</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Ei vastaavia merkintöjä</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Yhteystiedot</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Laajennukset</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Kysymys</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Vastaa</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Siirry käyttäjään</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Tulosta</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Poistettu ryhmästä</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Lisätty ryhmään</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>Käyttäjä on lukittu ulos</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Tarkista päivitykset</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Lisää jäsen</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Objekti poistettu</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Luo yhteystieto</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Yhteystyyppi</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Jakelu</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Aloituspäivä</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Loppupäivä</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Käyttäjänimi puuttuu</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>Salasana puuttuu</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Hylkää kaikki</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Tunnus vanhentui</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>Käyttäjä on poistettu käytöstä</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Tietokoneet</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Haku</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Luetut ilmoitukset</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Käyttäjän muokkaama</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Päivämäärä</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Aika</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Jäsen</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Vahvista poisto</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Kirjautumistiedot OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory -yhteyden tila</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Toimialueen ohjaimet</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Sarjanumero</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapasiteetti</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Viive sekunteina</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Käytössä</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Edustaja</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Suojaus</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Luokka</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Salattu</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Virhe</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Yleiset asetukset</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Yleinen</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Yleinen</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Kirjaudu sisään</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Käytä</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Negoi</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Pääsy</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Toiminnot</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Tapahtumat</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Edistyminen</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Tulos</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Yhdistetty</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Aihe</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Vastaanottaja</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Hyväksy</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Sammuta</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Käynnistä uudelleen</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Uutiset</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versio</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Salasanan vanhentuminen</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Salasana ei vanhene koskaan</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Toiminto</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Kohde</value>
+  </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Laukaisimet</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Salasana vaihdettu</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Lopeta muokkaus</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Tili käytössä</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Etsi hakemisto</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Ei vastaavia kohteita</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Suoritusaikataulu</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Hae uutiset</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Suorita</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Suodattimet</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Luo toinen</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Nykyinen malli</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Käyttäjä lukittu ulos</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Ryhmän jäsen poistettu</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Poissuljetut ryhmät</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Tietue muokattu</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Sinulla ei ole oikeutta kirjautua sisään</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Tuntematon virhe yritettäessä kirjautua sisään</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Turvakysymykset</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Poista käyttöoikeuskartoitus</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Ei lukemattomia ilmoituksia</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Käyttöoikeuspyyntö lähetetty</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Asetukset tallennettu</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Asetusten tallentaminen epäonnistui</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Ei koskaan käytetty</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Tiivis näkymä</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Aloita kirjoittaminen hakeaksesi...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Valitettavasti tuloksia ei löytynyt 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Valitettavasti tarkkoja osumia ei löytynyt, yritä lisätä merkkejä</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Napsauta nähdäksesi tiedot</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Napsauta nähdäksesi API-dokumentaation</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Automaattinen päivitys on ajoitettu.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Suorita nyt</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Suorituksen jälkeen</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operaattori</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Ei koskaan</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Mukautettu</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Yhteystiedot</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Lisää pienoisohjelma</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Ajastettu sääntö</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Arvot</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>Ei muutoksia</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Poista määritys kaikista ryhmistä</value>
   </data>
 </root>

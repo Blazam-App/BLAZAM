@@ -80,7 +80,7 @@
         appliedMappings =  Node.DirectPermissionMappings.Where(pm=>pm.DeletedAt==null).ToList();
         inheritedMappings =  Node.InheritedPermissionMappings.Where(pm=>pm.DeletedAt==null).ToList();
         NewMapping = null;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
     void AddNewMapping()
     {

@@ -11,7 +11,7 @@
             Auto-update scheduled! The application will shutdown and update in @timeLeft.Minutes:@timeLeft.Seconds
         </MudBadge>
 
-        Task.Delay(400).ContinueWith(async (s) => { await StateHasChangedAsync(); });
+        Task.Delay(400).ContinueWith(async (s) => { await InvokeStateHasChangedAsync(); });
     }
 }
 
@@ -22,7 +22,7 @@
     {
         await base.OnInitializedAsync();
         ApplicationEvents.OnAutoUpdateQueued.EventHandler += UpdateQueued;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
     public override void Dispose()
     {
@@ -32,6 +32,6 @@
     }
     private void UpdateQueued(object? sender, EventArgs e)
     {
-        _ = StateHasChangedAsync();
+        _ = InvokeStateHasChangedAsync();
     }
 }

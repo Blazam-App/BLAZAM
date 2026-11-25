@@ -98,7 +98,7 @@ else
             Sessions.Remove(session);
         }
 
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     async Task DisconnectSession(IRemoteSession session)
@@ -108,7 +108,7 @@ else
             session.Disconnect();
 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     async void RefreshSessions(object? state)
@@ -139,7 +139,7 @@ else
             sessionsErrorMessage = ex.Message;
         }
 
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
     private void OnSessionDown(IRemoteSession s)
     {
@@ -149,7 +149,7 @@ else
 
     private async void OnSessionUpdated(IRemoteSession s)
     {
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     public override void Dispose()

@@ -138,7 +138,7 @@ namespace BLAZAM.Pages.API.v1
                 }
 
                 //Store password in memory for later
-                var password = newUser.NewPassword.ToPlainText().ToSecureString();
+                var password = newUser.NewPassword.FromSecureString().ToSecureString();
 
                 //Set each field in template
                 template.PopulateFields(newUser, newUserName);

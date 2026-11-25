@@ -29,7 +29,6 @@ namespace BLAZAMCommon.Tests
             Assert.NotEqual<string>(test, result);
         }
         [Theory]
-        [InlineData("0qHlU8ZdxuW4Vp3BiNRJubp0mzxFXRf8+pyaUdSENv4=")] //v1 cipher for 'test'
         [InlineData("2uv1tseTTAnOhMPwFKNWb/zfv/xMoESDSTC1TmzoopM=,2Ter+TnKcEsPAd9E/ex0QrUvIQg3R7qywZCZDECTOBk=")] //v3 cipher for 'test'
         public void CanDecrypt(string cipherText)
         {

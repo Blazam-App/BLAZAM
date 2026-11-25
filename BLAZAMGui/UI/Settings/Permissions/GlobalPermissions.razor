@@ -55,6 +55,7 @@
                                    Options=@_allFields.Where(x => !globalPermissionRequestFields.Any(y => (y.Field!=null && y.Field.Equals(x))||(y.CustomField!=null && y.CustomField.Equals(x)))) />
                     <AppIconButton Icon="@Icons.Material.Filled.Add"
                                    Disabled="@(_selectedField==null)"
+                                   Tooltip="@AppLocalization[Lang.Add]"
                                    Color="Color.Success"
                                    OnClick="@(() => { AddRequestableField(); })" />
                 </MudStack>
@@ -73,6 +74,7 @@
                             <CellTemplate>
                                 <AppIconButton Icon="@Icons.Material.Filled.Remove"
                                                Color="Color.Error"
+                                               Tooltip="@AppLocalization[Lang.Remove]"
                                                OnClick="@(() => { RemoveRequestableField(context.Item); })" />
                             </CellTemplate>
                         </TemplateColumn>
@@ -200,7 +202,7 @@
 
                 }
             }
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
 
 
@@ -229,7 +231,7 @@
                 SnackBarService.Error(ex.Message);
 
             }
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
         else
         {

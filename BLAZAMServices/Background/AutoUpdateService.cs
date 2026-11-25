@@ -14,7 +14,7 @@ namespace BLAZAM.Services.Background
     public class AutoUpdateService : DatabaseBackgroundServiceBase, IDisposable
     {
 
-        
+
         public AppDelegate OnAutoUpdateStarted { get; set; }
         public AppDelegate OnAutoUpdateFailed { get; set; }
 

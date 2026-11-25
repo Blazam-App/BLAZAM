@@ -9,7 +9,7 @@ namespace BLAZAM.Gui.UI.OU
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,

@@ -174,6 +174,7 @@ namespace BLAZAM.Database.Context
         public virtual DbSet<DirectoryTemplate> DirectoryTemplates { get; set; }
         public virtual DbSet<DirectoryTemplateFieldValue> DirectoryTemplateFieldValues { get; set; }
         public virtual DbSet<DirectoryTemplateGroup> DirectoryTemplateGroups { get; set; }
+        public virtual DbSet<DirectoryTemplateFieldValueList> DirectoryTemplateFieldValueLists { get; set; }
 
 
 

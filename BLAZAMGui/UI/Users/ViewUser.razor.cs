@@ -68,7 +68,7 @@ namespace BLAZAM.Gui.UI.Users
         {
             await base.OnInitializedAsync();
 
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
 
 
 

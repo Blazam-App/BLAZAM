@@ -32,7 +32,7 @@ namespace BLAZAM.Common.Data
         /// This value is automatically stored as SecureString to prevent memory sniff exposure
         /// </remarks>
         [Required]
-        public string? Password { get => password == null ? null : password.ToPlainText(); set => password = value?.ToSecureString(); }
+        public string? Password { get => password == null ? null : password.FromSecureString(); set => password = value?.ToSecureString(); }
 
         /// <summary>
         /// Gets the secure representation of the password.

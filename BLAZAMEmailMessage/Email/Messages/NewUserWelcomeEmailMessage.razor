@@ -23,7 +23,7 @@
                 @AppLocalization[Lang.Password]
             </td>
             <td class="mx-2">
-                @Password?.ToPlainText()
+                @Password?.FromSecureString()
             </td>
         </tr>
     </MudSimpleTable>

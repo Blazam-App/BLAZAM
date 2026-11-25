@@ -2,8 +2,15 @@
 @if (_decryptedToken != null && !LoadingData)
 {
     <MudStack Row=true>
-        <MudText>@(_decryptedToken.ToPlainText().Substring(0, 10))...</MudText>
-        <AppCopyButton TextToCopy="@_decryptedToken.ToPlainText()" />
+        <MudText>@(_decryptedToken.FromSecureString().Substring(0, 10))...</MudText>
+        <AppCopyButton TextToCopy="@_decryptedToken.FromSecureString()" />
+        @if (_undecodableJwtToken)
+        {
+            <AppTooltip Text="@AppLocalization[Lang.Error]">
+                <MudIcon Color="Color.Error"
+                         Icon="@Icons.Material.Filled.Error" />
+            </AppTooltip>
+        }
     </MudStack>
 }else if (LoadingData)
 {
@@ -13,6 +20,8 @@
     [Parameter]
     public string? Token { get; set; }
 
+    private bool _undecodableJwtToken;
+
     private SecureString? _decryptedToken;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -20,12 +29,20 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 LoadingData = true;
                 if (Token != null)
                 {
                     _decryptedToken = Token.Decrypt<string>()?.ToSecureString();
+
+                    if(!_decryptedToken.FromSecureString().IsNullOrEmpty()){
+                        var decodedToken = JwtTokenService.DecodeJwtToken(_decryptedToken.FromSecureString());
+                        if (decodedToken == null)
+                        {
+                            _undecodableJwtToken = true;
+                        }
+                    }
                 }
                 LoadingData = false;
                 _ = InvokeAsync(StateHasChanged);

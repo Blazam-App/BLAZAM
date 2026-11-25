@@ -21,7 +21,7 @@
                             {
                                 await CurrentUser.State.MarkRead(Notification);
                                 await Analytics.NotificationDismissed(Notification.Notification.MessageType.ToString());
-                                await StateHasChangedAsync();
+                                await InvokeStateHasChangedAsync();
                             })" />
                 }
     </MudStack>

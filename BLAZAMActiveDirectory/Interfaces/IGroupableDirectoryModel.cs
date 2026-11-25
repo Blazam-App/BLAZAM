@@ -64,6 +64,13 @@ namespace BLAZAM.ActiveDirectory.Interfaces
         /// </summary>
         /// <param name="group">The group to assign this object to.</param>
         void AssignTo(IADGroup group);
+        /// <summary>
+        /// Determines whether the current directory object is a member of the specified group.
+        /// </summary>
+        /// <param name="group">The group to check for membership.</param>
+        /// <returns><see langword="true"/> if the current directory object is a member of <paramref name="group"/>; otherwise,
+        /// <see langword="false"/>.</returns>
+        bool IsAMemberOf(IADGroup? group);
 
         /// <summary>
         /// Determines whether this object is a member of the specified group.

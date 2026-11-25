@@ -120,7 +120,7 @@ namespace BLAZAM.Services.Background
         /// </summary>
         private async void ProcessDirectoryEntryChanged(object? sender, DirectoryEntryChangedEventArgs args)
         {
-            
+
             if (sender != null && sender.Equals(this))
             {
                 return;
@@ -225,7 +225,7 @@ namespace BLAZAM.Services.Background
                 ThreadPriority = ThreadPriority.Lowest
             };
             List<IDirectoryEntryAdapter> filteredEntries;
-            IApplicationUserState rulesUserState = new RulesUserState(dbFactory,rule.Name);
+            IApplicationUserState rulesUserState = new RulesUserState(dbFactory, rule.Name);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
             filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
@@ -390,7 +390,7 @@ namespace BLAZAM.Services.Background
                         eventType = ApplicationEventType.All;
                         return;
                     }
-                    
+
                     groupableEntry.AssignTo(group);
                 }
             }
@@ -402,17 +402,35 @@ namespace BLAZAM.Services.Background
             eventType = ApplicationEventType.Unassign;
             if (entry is IGroupableDirectoryAdapter groupableEntry)
             {
+                bool removeFromAllGroups = false;
                 using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
-                if (group != null)
+
+                if (action.Data != null)
                 {
-                    target = group;
-                    if (!groupableEntry.IsANestedMemberOf(group))
+                    dynamic data = action.Data;
+                    removeFromAllGroups = data.RemoveFromAllGroups ?? false;
+                }
+                if (removeFromAllGroups)
+                {
+                    var groups = groupableEntry.MemberOf;
+                    foreach (var g in groups)
                     {
-                        eventType = ApplicationEventType.All;
-                        return;
+                        groupableEntry.UnassignFrom(g);
                     }
-                    groupableEntry.UnassignFrom(group);
+                }
+                else
+                {
+                    var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
+                    if (group != null)
+                    {
+                        target = group;
+                        if (!groupableEntry.IsAMemberOf(group))
+                        {
+                            eventType = ApplicationEventType.All;
+                            return;
+                        }
+                        groupableEntry.UnassignFrom(group);
+                    }
                 }
             }
         }
@@ -551,9 +569,8 @@ namespace BLAZAM.Services.Background
                 return;
             }
 
-            var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
-           
+
         }
 
         /// <summary>

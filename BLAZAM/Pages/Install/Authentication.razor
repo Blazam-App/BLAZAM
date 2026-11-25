@@ -88,11 +88,11 @@
             settings.AdminPasswordConfirmed = settings.AdminPassword;
 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 
-    public async void SubmitForm()
+    public async Task SubmitForm()
     {
         try
         {
@@ -112,6 +112,6 @@
 
 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

@@ -332,7 +332,7 @@
 
     }
 
-    private async void SaveAccessLevel()
+    private async Task SaveAccessLevel()
     {
         if (Context == null) return;
 
@@ -361,7 +361,7 @@
         await LevelsChanged.InvokeAsync();
 
         ApplicationEvents.PermissionsChanged.Invoke();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 
@@ -454,7 +454,7 @@
             SnackBarService.Success(WorkingModel.Name + " has been deleted");
             await LevelsChanged.InvokeAsync();
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
     /// <summary>
     /// Fields that are either off limits or controled via action permissions

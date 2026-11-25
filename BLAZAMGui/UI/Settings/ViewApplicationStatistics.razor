@@ -45,7 +45,7 @@
 
     private async Task PollData()
     {
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     public override void Dispose()

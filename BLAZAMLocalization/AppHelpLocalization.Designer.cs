@@ -584,6 +584,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Leaving the UPN suffix empty will allow the user to choose any available suffix, defaulting to the domain FQDN..
+        /// </summary>
+        public static string Template_Empty_Upn_Suffix {
+            get {
+                return ResourceManager.GetString("Template_Empty_Upn_Suffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;{0}&quot; copied to clipboard..
         /// </summary>
         public static string Text_Copied_To_Clipboard {

@@ -10,6 +10,7 @@ using BLAZAM.Localization;
 using BLAZAM.Logger;
 using BLAZAM.Services.Audit;
 using BLAZAM.Static;
+using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Components;
@@ -311,7 +312,7 @@ namespace BLAZAM.Services.Background
         {
             var response = await client.SendAsync(message);
 
-            await _audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody, response);
+            await _audit.Email.EmailSent(message.MessageId, message.From.ToString(), message.To.ToString(), message.Cc.ToString(), message.Bcc.ToString(), message.Subject, message.HtmlBody, response.ResponseText);
             return true;
         }
         /// <summary>

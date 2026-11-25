@@ -14,7 +14,7 @@ namespace BLAZAM.Gui.UI.Groups
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(new()
             {
                 EventType = ApplicationEventType.Search,
@@ -52,7 +52,7 @@ namespace BLAZAM.Gui.UI.Groups
             if (await MessageService.Confirm("Are you sure you want to delete " + Group.CanonicalName + "?", "Delete Group"))
             {
                 SavingChanges = true;
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
                 try
                 {
                     Group.Delete();

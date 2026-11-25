@@ -6,27 +6,18 @@
 
 <MudForm @ref=Form @bind-IsValid="IsValid">
     <MudGrid>
-
         <MudItem xs=12 lg="9">
-
             <MudStack Spacing="5">
                 <SettingsField Label="@AppLocalization[Lang.Server]">
-
-
-
-                        <MudTextField Label="@AppLocalization[Lang.Server]"
-                                      AutoFocus=true
-                                      Immediate=true
-                                      HelperText="Can be your domain name in most environments"
-                                      For="(() => settings.ServerAddress)"
-                                      @bind-Value="@(settings.ServerAddress)"/>
-
-
+                    <MudTextField Label="@AppLocalization[Lang.Server]"
+                                  AutoFocus=true
+                                  Immediate=true
+                                  HelperText="Can be your domain name in most environments"
+                                  For="(() => settings.ServerAddress)"
+                                  @bind-Value="@(settings.ServerAddress)" />
                 </SettingsField>
+
                 <SettingsField Label="@AppLocalization[Lang.Port]">
-
-
-
                     @*
                     TODO Add this as a popover
                     <AppTooltip Display="Display.InlineBlock" Multiline Style="max-width:300px" Text="The application will automatically use an SSL
@@ -34,103 +25,69 @@
                     but may lead to unexpected behaviour of other services that listen to Active Directory changes.">
                     <MudIcon Icon="IconName.QuestionCircle" Color="Color.Info" />
                     </AppTooltip>*@
-
-                  
-
-                        <MudNumericField Immediate=true
-                                         Label="@AppLocalization[Lang.Port]"
-                                         HideSpinButtons="true"
-                                         For="(() => settings.ServerPort)"
-                                         @bind-Value="@settings.ServerPort" />
-
-
-
-
-
-
-
-
-
+                    <MudNumericField Immediate=true
+                                     Label="@AppLocalization[Lang.Port]"
+                                     HideSpinButtons="true"
+                                     For="(() => settings.ServerPort)"
+                                     @bind-Value="@settings.ServerPort" />
                 </SettingsField>
 
-
-
                 <SettingsField Label="@AppLocalization[Lang.Username]">
-
-
                     <MudTextField For="(() => settings.Username)"
                                   Immediate=true
                                   Label="@AppLocalization[Lang.Username]"
                                   name="username"
                                   @bind-Value="@settings.Username">
-
-
-
                     </MudTextField>
-
                 </SettingsField>
 
-
-
                 <SettingsField Label="@AppLocalization[Lang.Password]">
-
                     <MudTextField For="(() => settings.Password)"
                                   Immediate=true
                                   Label="@AppLocalization[Lang.Password]"
                                   name="password"
                                   InputType="InputType.Password"
                                   @bind-Value="@settings.Password">
-
-
-
                     </MudTextField>
-
                 </SettingsField>
 
-
-
                 <SettingsField Label="@AppLocalization[Lang.Use_TLS]">
-
                     <MudSwitch For="(() => settings.UseTLS)"
                                Color="Color.Success"
                                Label="@AppLocalization[Lang.Use_TLS]"
                                @bind-Value="@settings.UseTLS" />
-
                 </SettingsField>
 
-
-
                 <SettingsField Label="@AppLocalization[Lang.FQDN]">
-
                     <MudTextField For="(() => settings.FQDN)"
                                   Immediate=true
                                   Label="@AppLocalization[Lang.FQDN]"
                                   name="fqdn"
                                   @bind-Value="@settings.FQDN" />
-
                 </SettingsField>
 
-
-
                 <SettingsField Label="@AppLocalization[Lang.Base_DN]">
-
                     <MudTextField For="(() => settings.ApplicationBaseDN)"
                                   Immediate=true
                                   Label="@AppLocalization[Lang.Base_DN]"
                                   name="baseDN"
                                   @bind-Value="@settings.ApplicationBaseDN" />
-
                 </SettingsField>
 
+                <SettingsField Label="@AppLocalization[Lang.Max_Search_Results]">
+                    <MudNumericField For="(() => settings.MaxSearchResults)"
+                                     Immediate=true
+                                     Label="@AppLocalization[Lang.Max_Search_Results]"
+                                     name="maxSearchReults"
+                                     @bind-Value="settings.MaxSearchResults" />
+                </SettingsField>
 
                 <SettingsField>
-
                     <MudButton Disabled="!IsValid"
                                OnClick="Save"
                                Color="Color.Success">
                         @AppLocalization[Lang.Save_Changes]
                     </MudButton>
-
                 </SettingsField>
             </MudStack>
         </MudItem>
@@ -144,9 +101,6 @@
             </MudItem>
         }
     </MudGrid>
-
-
-
 </MudForm>
 @code {
 
@@ -168,7 +122,6 @@
         {
             settings = set;
             passwordInDb = settings?.Password;
-
         }
         else
         {
@@ -176,11 +129,10 @@
             _insert = true;
         }
         LoadingData = false;
-
     }
+
     protected override async Task Save()
     {
-
         if (!settings.Password.Equals(passwordInDb))
         {
             settings.Password = await settings.Password.EncryptAsync();
@@ -198,7 +150,6 @@
         {
             statusPanel?.RefreshStatuses();
         }
-
     }
 
 }
