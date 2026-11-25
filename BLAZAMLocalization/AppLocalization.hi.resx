@@ -1719,4 +1719,7 @@
   <data name="No_changes" xml:space="preserve">
     <value>कोई बदलाव नहीं</value>
   </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>सभी समूहों से असाइन हटाएँ</value>
+  </data>
 </root>

@@ -109,6 +109,7 @@ namespace BLAZAM.Localization
         public static readonly string Sorry_try_typing_more = "Sorry no exact matches were found, try adding more characters";
         public static readonly string Click_for_details = "Click for details";
         public static readonly string Click_to_view_API_documentation = "Click to view API documentation";
+        public static readonly string Unassign_from_all_groups = "Unassign from all groups";
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
         public static readonly string Password = "Password";
         public static readonly string Run_Now = "Run Now";

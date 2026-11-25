@@ -1719,4 +1719,7 @@
   <data name="No_changes" xml:space="preserve">
     <value>변경 사항 없음</value>
   </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>모든 그룹에서 할당 해제</value>
+  </data>
 </root>

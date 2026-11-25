@@ -1719,4 +1719,7 @@
   <data name="No_changes" xml:space="preserve">
     <value>Sin cambios</value>
   </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Desasignar de todos los grupos</value>
+  </data>
 </root>

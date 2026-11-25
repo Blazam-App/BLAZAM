@@ -1719,4 +1719,7 @@
   <data name="No_changes" xml:space="preserve">
     <value>无更改</value>
   </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>从所有组中取消分配</value>
+  </data>
 </root>

@@ -4399,6 +4399,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unassign from all groups.
+        /// </summary>
+        public static string Unassign_from_all_groups {
+            get {
+                return ResourceManager.GetString("Unassign from all groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UNC Path.
         /// </summary>
         public static string UNC_Path {

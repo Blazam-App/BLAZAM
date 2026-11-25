@@ -1741,4 +1741,7 @@
     <value>No changes</value>
     <comment>Like "No changes to the roster have been made"</comment>
   </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Unassign from all groups</value>
+  </data>
 </root>
