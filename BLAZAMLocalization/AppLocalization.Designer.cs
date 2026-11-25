@@ -63,9 +63,9 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        public static string _0 {
+        public static string About {
             get {
-                return ResourceManager.GetString("0", resourceCulture);
+                return ResourceManager.GetString("About", resourceCulture);
             }
         }
         
@@ -2874,6 +2874,15 @@ namespace BLAZAM.Localization {
         public static string Next {
             get {
                 return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No changes.
+        /// </summary>
+        public static string No_changes {
+            get {
+                return ResourceManager.GetString("No_changes", resourceCulture);
             }
         }
         
