@@ -8,30 +8,6 @@ on:
     
 
 jobs:
-  test:
-    runs-on: windows-latest
-    permissions: write-all
-        
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 10
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 10.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build application (Release)
-        run: dotnet build -c Release
-      - name: Setup Playwright
-        shell: pwsh
-        run: |
-          PlaywrightTests/bin/Release/net10.0/playwright.ps1 install; 
-          
-      - name: Test application
-        run: dotnet test -c Release --no-build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   buildAndRelease:
     runs-on: windows-latest
     permissions: write-all

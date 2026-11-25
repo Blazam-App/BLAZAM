@@ -53,7 +53,7 @@ jobs:
         uses: robinraju/release-downloader@v1.8
         with:
           repository: ${{ github.repository }}
-          tag: 'v1-Nightly'
+          tag: 'Nightly1'
           fileName: 'blazam-nightly-v*.zip'
       
       - name: Shutdown Demo Website
@@ -71,3 +71,28 @@ jobs:
       - name: Delete downloaded zip
         shell: bash
         run: rm -f ./blazam-nightly-v*.zip
+  test:
+    needs: deployLinux
+    runs-on: windows-latest
+    permissions: write-all
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup .NET Core SDK 10
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 10.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build application (Release)
+        run: dotnet build -c Release
+      - name: Setup Playwright
+        shell: pwsh
+        run: |
+          PlaywrightTests/bin/Release/net10.0/playwright.ps1 install; 
+          
+      - name: Test application
+        run: dotnet test -c Release --no-build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
