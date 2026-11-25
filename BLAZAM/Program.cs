@@ -270,7 +270,7 @@ namespace BLAZAM
                     return null;
                 }
 
-                var cert = new X509Certificate2(certBytes);
+                var cert = X509CertificateLoader.LoadCertificate(certBytes);
                 Loggers.SystemLogger.Information("SSL Certificate '{@Subject}' loaded successfully.", cert.Subject);
                 return cert;
             }
