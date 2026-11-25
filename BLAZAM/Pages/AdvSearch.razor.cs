@@ -31,6 +31,12 @@ namespace BLAZAM.Pages
                 await PerformSearch();
             }
         }
+        /// <summary>
+        /// Performs an asynchronous filtered search and updates the result set while indicating loading state.
+        /// </summary>
+        /// <remarks>Results are updated only when the filter collection is not null and contains at least
+        /// one filter.</remarks>
+        /// <returns>A task that represents the asynchronous search operation.</returns>
         protected override async Task PerformSearch()
         {
             LoadingData = true;
