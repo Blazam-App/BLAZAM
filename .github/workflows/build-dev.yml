@@ -32,7 +32,7 @@ jobs:
         run: dotnet test -c Release --no-build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build:
+  buildAndRelease:
     runs-on: windows-latest
     permissions: write-all
         
