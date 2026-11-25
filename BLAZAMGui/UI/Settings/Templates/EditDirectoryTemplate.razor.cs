@@ -384,7 +384,7 @@ namespace BLAZAM.Gui.UI.Settings.Templates
                 }
                 else
                 {
-                    SnackBarService.Warning(AppLocalization["No changes"]);
+                    SnackBarService.Warning(AppLocalization[Lang.No_changes]);
                 }
             }
         }
@@ -490,11 +490,11 @@ namespace BLAZAM.Gui.UI.Settings.Templates
             if (result > 0)
             {
                 Analytics.DirectoryTemplateEdited(_workingTemplate.Name);
-                SnackBarService.Success("Template changes saved");
+                SnackBarService.Success(AppLocalization[Lang.Save_Changes]);
             }
             else
             {
-                SnackBarService.Warning("No changes");
+                SnackBarService.Warning(AppLocalization[Lang.No_changes]);
             }
         }
         public class TemplateVariable

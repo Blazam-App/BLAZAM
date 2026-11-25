@@ -168,7 +168,7 @@
                 int i = 0;
                 foreach (var item in Selected)
                 {
-                    if (EqualityComparer<T>.Default.Equals(item, default(T)))
+                    if (!EqualityComparer<T>.Default.Equals(item, default(T)))
                     {
                         if (i > 0)
                         {

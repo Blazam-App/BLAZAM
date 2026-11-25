@@ -63,9 +63,9 @@ namespace BLAZAM.Localization {
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        public static string _0 {
+        public static string About {
             get {
-                return ResourceManager.GetString("0", resourceCulture);
+                return ResourceManager.GetString("About", resourceCulture);
             }
         }
         
@@ -2878,6 +2878,15 @@ namespace BLAZAM.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No changes.
+        /// </summary>
+        public static string No_changes {
+            get {
+                return ResourceManager.GetString("No_changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No matching entries.
         /// </summary>
         public static string No_matching_entries {
@@ -4386,6 +4395,15 @@ namespace BLAZAM.Localization {
         public static string Unassign {
             get {
                 return ResourceManager.GetString("Unassign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unassign from all groups.
+        /// </summary>
+        public static string Unassign_from_all_groups {
+            get {
+                return ResourceManager.GetString("Unassign from all groups", resourceCulture);
             }
         }
         

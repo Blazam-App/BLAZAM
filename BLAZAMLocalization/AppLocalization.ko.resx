@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>업로드 아이콘</value>
   </data>
-  <data name="0" xml:space="preserve">
+  <data name="About" xml:space="preserve">
     <value>약</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1715,5 +1715,11 @@
   </data>
   <data name="Values" xml:space="preserve">
     <value>값</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>변경 사항 없음</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>모든 그룹에서 할당 해제</value>
   </data>
 </root>

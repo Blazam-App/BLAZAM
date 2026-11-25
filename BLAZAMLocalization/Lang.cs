@@ -73,6 +73,7 @@ namespace BLAZAM.Localization
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
         public static readonly string Excluded_Groups = "Excluded Groups";
+        public static readonly string No_changes = "No changes";
         public static readonly string Entry_modified = "Entry modified";
         public static readonly string Username_is_missing = "Username is missing";
         public static readonly string Password_is_missing = "Password is missing";
@@ -108,6 +109,7 @@ namespace BLAZAM.Localization
         public static readonly string Sorry_try_typing_more = "Sorry no exact matches were found, try adding more characters";
         public static readonly string Click_for_details = "Click for details";
         public static readonly string Click_to_view_API_documentation = "Click to view API documentation";
+        public static readonly string Unassign_from_all_groups = "Unassign from all groups";
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
         public static readonly string Password = "Password";
         public static readonly string Run_Now = "Run Now";

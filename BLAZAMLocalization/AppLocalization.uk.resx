@@ -1032,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Завантажити іконку</value>
   </data>
-  <data name="0" xml:space="preserve">
+  <data name="About" xml:space="preserve">
     <value>Про додаток</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1715,5 +1715,11 @@
   </data>
   <data name="Values" xml:space="preserve">
     <value>Значення</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>Без змін</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Вилучити з усіх груп</value>
   </data>
 </root>
