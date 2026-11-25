@@ -22,7 +22,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MudBlazor;
@@ -33,6 +35,7 @@ using Polly.Extensions.Http;
 using System.Diagnostics;
 using System.Management;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 
 namespace BLAZAM
@@ -158,6 +161,26 @@ namespace BLAZAM
                 options.SupportedCultures = Lang.SupportedCultures;
                 options.SupportedUICultures = Lang.SupportedCultures;
                 // Could set DefaultRequestCulture here if needed
+                options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
+                {
+                    var userId = context.User.FindFirstValue(ClaimTypes.Sid);
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        return null; // Anonymous user: fall back to next provider
+                    }
+
+                    // Resolve your scoped DbContext from the current HTTP request
+                    var db = await context.RequestServices.GetRequiredService<IAppDatabaseFactory>().CreateDbContextAsync();
+                    var culture = await db.UserSettings
+                        .AsNoTracking()
+                        .Where(u => u.UserGUID == userId) // Match your user ID property/type
+                        .Select(u => u.PreferredLanguage)     // Match your culture string property
+                        .FirstOrDefaultAsync();
+
+                    return string.IsNullOrWhiteSpace(culture)
+                        ? null
+                        : new ProviderCultureResult(culture, culture);
+                }));
             });
 
             /* --- Code to force a specific culture during development/testing ---
@@ -650,12 +673,17 @@ namespace BLAZAM
         private static void PreloadServices(WebApplication application)
         {
             Loggers.SystemLogger.Information("Preloading/Starting singleton services...");
+
+
+
             try
             {
                 if (ApplicationInfo.installationCompleted)
                 {
                     Loggers.SystemLogger.Information("Installation complete. Starting background services...");
                     StartBackgroundServices(application);
+                    Loggers.SystemLogger.Information("Ensuring API token salt is preloaded...");
+                    PreloadApiTokenSalt(application);
                     Loggers.SystemLogger.Information("Finished starting background services.");
                 }
                 else
@@ -740,6 +768,33 @@ namespace BLAZAM
             catch (Exception ex)
             {
                 Loggers.SystemLogger.Error(ex, "Error preloading NotificationGenerationService.");
+            }
+        }
+
+        private static void PreloadApiTokenSalt(WebApplication application)
+        {
+            try
+            {
+                Loggers.SystemLogger.Debug("Preloading API Token Salt...");
+                var factory = application.Services.GetRequiredService<IAppDatabaseFactory>();
+                using var context = factory.CreateDbContext();
+                var authSettings = context.AuthenticationSettings.FirstOrDefault();
+                if (authSettings == null)
+                {
+                    Loggers.SystemLogger.Warning("AuthenticationSettings record not found in database. Cannot preload API Token Salt.");
+                    return;
+                }
+                if (authSettings.ApiTokenSalt == null)
+                {
+                    authSettings.ApiTokenSalt = Encryption.GenerateSalt();
+                    context.SaveChanges();
+                }
+                Encryption.Instance.GenerateApiKeyFromSeedString(authSettings.ApiTokenSalt);
+                Loggers.SystemLogger.Debug("API Token Salt preloaded.");
+            }
+            catch (Exception ex)
+            {
+                Loggers.SystemLogger.Error(ex, "Error preloading API Token Key.");
             }
         }
 

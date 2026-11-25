@@ -159,7 +159,7 @@
                     //ignore DNS errors, will show from Directory.ConnectionException
                 }
 
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
                 await Task.Delay(1000);
             }
         });
@@ -170,7 +170,7 @@
         if (Directory.Status == DirectoryConnectionStatus.Connecting)
         {
             showProgress = true;
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
         }
     }
 
@@ -179,7 +179,7 @@
         if (Directory.PortOpen)
         {
             _portStatus = true;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
 
             if (Directory.Status == DirectoryConnectionStatus.OK)
             {

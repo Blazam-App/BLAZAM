@@ -324,4 +324,7 @@ Konfigurieren Sie benutzerdefinierte Update-Anmeldeinformationen.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>Diese Funktion befindet sich noch in der Entwicklung</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Wenn das UPN-Suffix leer bleibt, kann der Benutzer ein beliebiges verfügbares Suffix auswählen, wobei standardmäßig das Domänen-FQDN verwendet wird.</value>
+  </data>
 </root>

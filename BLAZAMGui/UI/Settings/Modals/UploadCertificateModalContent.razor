@@ -140,7 +140,7 @@
         }
         try
         {
-            using var cert = new X509Certificate2(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            using var cert = X509CertificateLoader.LoadPkcs12(pfxBytes, pfxPassword, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
             var rawCert = cert.Export(X509ContentType.Pkcs12);
             if (rawCert != null)
             {
@@ -194,31 +194,31 @@
         }
     }
 
-    private async void LoadPFX(IBrowserFile e)
+    private async Task LoadPFX(IBrowserFile e)
     {
         pfxBytes = await e.ReadByteArrayAsync(5000000);
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }
 
 
-    private async void LoadCert(IBrowserFile e)
+    private async Task LoadCert(IBrowserFile e)
     {
         crtBytes = await e.ReadByteArrayAsync(5000000);
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }
 
-    private async void LoadKey(IBrowserFile e)
+    private async Task LoadKey(IBrowserFile e)
     {
         var bytes = await e.ReadByteArrayAsync(5000000);
         if (bytes != null)
         {
             keyBytes = bytes;
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }

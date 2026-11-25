@@ -14,7 +14,7 @@ namespace BLAZAM.ActiveDirectory.Data
         public LapsCredential(SecureString lapsJson)
         {
 
-            dynamic jsonDynamic = JsonConvert.DeserializeObject(lapsJson.ToPlainText());
+            dynamic jsonDynamic = JsonConvert.DeserializeObject(lapsJson.FromSecureString());
             // Format the final string
             string? rawAccount = jsonDynamic["n"];
             AccountName = rawAccount.ToSecureString();

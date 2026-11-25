@@ -8,12 +8,11 @@
           BadgeClass="badge-repos cursor-pointer"
           Content="@Notifications.Count(n=>!n.IsRead)"
           OnClick="@ToggleNotifications">
-    <AppTooltip Text=@(AppLocalization[Lang.Notifications])>
-        <AppIconButton Size="Size.Large"
-                       OnClick="@ToggleNotifications"
-                       Icon="@(notifs.Any()?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
-                       Color="@(notifs.Any()?Color.Warning:Color.Info)" />
-    </AppTooltip>
+    <AppIconButton Size="Size.Large"
+                   Tooltip="@AppLocalization[Lang.Notifications]"
+                   OnClick="@ToggleNotifications"
+                   Icon="@(notifs.Any()?Icons.Material.Filled.NotificationImportant:Icons.Material.Filled.Notifications)"
+                   Color="@(notifs.Any()?Color.Warning:Color.Info)" />
 </MudBadge>
 
 
@@ -26,14 +25,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
         UserState = CurrentUser.State;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         if (UserState != null)
         {
-            UserState.OnSettingsChanged.EventHandler += LoadNotificaions; 
+            UserState.OnSettingsChanged.EventHandler += LoadNotificaions;
             Notifications = await Context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
         }
@@ -41,7 +40,7 @@
 
         NotificationPublisher.OnNotificationDeleted.EventHandler += LoadNotificaions;
 
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     public override void Dispose()
@@ -78,6 +77,6 @@
 
         Notifications = await context.UserNotifications.Where(un => un.User.Id == UserState.Id && !un.IsRead).ToListAsync();
 
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

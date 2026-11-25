@@ -230,7 +230,7 @@
         return;
 
     }
-    private async void AddSubscription()
+    private async Task AddSubscription()
     {
         if (Context != null)
         {
@@ -270,7 +270,7 @@
             }
         }
     }
-    private async void DeleteExisting(NotificationSubscription subscription)
+    private async Task DeleteExisting(NotificationSubscription subscription)
     {
         if (Context != null)
         {
@@ -300,7 +300,7 @@
 
 
             CalculateEffectiveSubscriptions();
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 

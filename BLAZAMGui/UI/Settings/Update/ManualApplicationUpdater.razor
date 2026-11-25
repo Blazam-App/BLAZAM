@@ -213,7 +213,7 @@
                 await output.RunAsync();
 
             }
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 
@@ -221,7 +221,7 @@
     {
 
         DownladProgress = progress;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 

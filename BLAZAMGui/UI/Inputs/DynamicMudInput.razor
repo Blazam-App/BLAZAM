@@ -1,158 +1,174 @@
 ﻿@inherits MudField
 @inject IStringLocalizer<AppLocalization> AppLocalization
 @typeparam T
-
-@switch (_type?.Name)
+@if (ValueList != null && typeof(T) == typeof(string))
 {
-    case "int":
-    case "Int32":
-    case "double":
-    case "long":
-    case "float":
-        <MudNumericField HelperText="@HelperText"
-                         T=T
-                         Class=@Class
-                         Required=@Required
-                         Label="@Label"
-                         Immediate=@Immediate
-                         HideSpinButtons="false"
-                         @bind-Value="@Value"
-                         ReadOnly=@ReadOnly
-                         Clearable=@Clearable />
-        break;
+    <MudSelectList T="string" 
+                   Class=@Class
+                   Required=@Required
+                   Label="@Label"
+                   ReadOnly=@ReadOnly
+                   Disabled=@Disabled
+                   Options = "ValueList"
+                   Value = "@Value?.ToString()"
+                   ValueChanged="@(changed => { Value = (T)(object)changed; })"
+                   ToStringFunc = "@((item)=>{return item.ToString();})" />
+}
+else
+{
+    @switch (_type?.Name)
+    {
+        case "int":
+        case "Int32":
+        case "double":
+        case "long":
+        case "float":
+            <MudNumericField HelperText="@HelperText"
+                             T=T
+                             Class=@Class
+                             Required=@Required
+                             Label="@Label"
+                             Immediate=@Immediate
+                             HideSpinButtons="false"
+                             @bind-Value="@Value"
+                             ReadOnly=@ReadOnly
+                             Clearable=@Clearable />
+            break;
 
-    case "String":
-        <MudTextField Label="@Label"
-                      T=T
+        case "String":
+            <MudTextField Label="@Label"
+                          T=T
+                          Class=@Class
+                          Required=@Required
+                          HelperText="@HelperText"
+                          Immediate=@Immediate
+                          Clearable=@Clearable
+                          ReadOnly=@ReadOnly
+                          Value=Value
+                          ValueChanged="@((changed)=>{Value =changed;})"
+                          Disabled=@Disabled
+                          InputType="@InputType" />
+            break;
+        case "Boolean":
+            <MudStack>
+                <MudSwitch Color=@Color
+                           Class=@Class
+                           Required=@Required
+                           UncheckedColor=@UncheckedColor
+                           T="T"
+                           ReadOnly=@ReadOnly
+                           Label=@Label
+                           @bind-Value=@Value
+                           Disabled=@Disabled />
+                <MudText Typo="Typo.caption">@HelperText</MudText>
+            </MudStack>
+            break;
+        case "DateTime":
+            <MudDatePicker Clearable=@Clearable
+                           Class=@Class
+                           Required=@Required
+                           HelperText="@HelperText"
+                           ReadOnly=@ReadOnly
+                           Label="@Label"
+                           Date="@dateValue"
+                           DateChanged=@((date) =>{dateValue = date;})
+                           Disabled=@Disabled />
+            break;
+        case "List`1":
+            <MudField Label="@Label"
                       Class=@Class
-                      Required=@Required
                       HelperText="@HelperText"
-                      Immediate=@Immediate
-                      Clearable=@Clearable
-                      ReadOnly=@ReadOnly
-                      Value=Value
-                      ValueChanged="@((changed)=>{Value =changed;})"
-                      Disabled=@Disabled
-                      InputType="@InputType" />
-        break;
-    case "Boolean":
-        <MudStack>
-            <MudSwitch Color=@Color
-                       Class=@Class
-                       Required=@Required
-                       UncheckedColor=@UncheckedColor
-                       T="T"
-                       ReadOnly=@ReadOnly
-                       Label=@Label
-                       @bind-Value=@Value
-                       Disabled=@Disabled />
-            <MudText Typo="Typo.caption">@HelperText</MudText>
-        </MudStack>
-        break;
-    case "DateTime":
-        <MudDatePicker Clearable=@Clearable
-                       Class=@Class
-                       Required=@Required
-                       HelperText="@HelperText"
-                       ReadOnly=@ReadOnly
-                       Label="@Label"
-                       Date="@dateValue"
-                       DateChanged=@((date) =>{dateValue = date;})
-                       Disabled=@Disabled />
-        break;
-    case "List`1":
-        <MudField Label="@Label"
-                  Class=@Class
-                  HelperText="@HelperText"
-                  Disabled=@Disabled>
-            <MudList Disabled=@Disabled
-                     T="string"
-                     Dense=true
-                     Style="max-height:200px; overflow-y:auto;">
-                @foreach (string val in StringValues)
-                {
+                      Disabled=@Disabled>
+                <MudList Disabled=@Disabled
+                         T="string"
+                         Dense=true
+                         Style="max-height:200px; overflow-y:auto;">
+                    @foreach (string val in StringValues)
+                    {
 
-                    <MudListItem OnClick="@(() => { _selectedStringListItem = val; })">
+                        <MudListItem OnClick="@(() => { _selectedStringListItem = val; })">
+                            <ChildContent>
+                                <MudStack Row=true>
+                                    @if (_selectedStringListItem != null && _selectedStringListItem == val)
+                                    {
+                                        <MudTextField T="string"
+                                                      Value="@val"
+                                                      Immediate=false
+                                                      OnBlur="@(()=>{_selectedStringListItem = null;})"
+                                                      ValueChanged="@((newVal)=>{UpdateListItem(val,newVal);})" />
+                                    }
+                                    else
+                                    {
+                                        <MudText>@val</MudText>
+                                    }
+                                    <MudSpacer />
+                                    <MudIconButton Disabled=@Disabled
+                                                   Size="Size.Small"
+                                                   OnClick="@(async()=>{await RemoveListItem(val);})"
+                                                   Class="align-end align-middle"
+                                                   Color=Color.Error
+                                                   Icon="@Icons.Material.Filled.Close" />
+
+                                </MudStack>
+                            </ChildContent>
+                        </MudListItem>
+
+                    }
+                    <MudListItem OnClick="@(() => { _selectedStringListItem = _newItem; })">
                         <ChildContent>
                             <MudStack Row=true>
-                                @if (_selectedStringListItem != null && _selectedStringListItem == val)
+                                @if (_newItem != null)
                                 {
                                     <MudTextField T="string"
-                                                  Value="@val"
+                                                  Placeholder="@AppLocalization[Lang.Enter_value_here]"
+                                                  AutoFocus="@(_newItem==String.Empty)"
+                                                  @bind-Value="@_newItem"
                                                   Immediate=false
-                                                  OnBlur="@(()=>{_selectedStringListItem = null;})"
-                                                  ValueChanged="@((newVal)=>{UpdateListItem(val,newVal);})" />
+                                                  OnBlur="@(()=>{_selectedStringListItem = null;})" />
                                 }
                                 else
                                 {
-                                    <MudText>@val</MudText>
+                                    <MudText>@_newItem</MudText>
                                 }
                                 <MudSpacer />
-                                <MudIconButton Disabled=@Disabled
-                                               Size="Size.Small"
-                                               OnClick="@(async()=>{await RemoveListItem(val);})"
-                                               Class="align-end align-middle"
-                                               Color=Color.Error
-                                               Icon="@Icons.Material.Filled.Close" />
+                                @if (_newItem == null)
+                                {
+                                    <MudIconButton Disabled=@Disabled
+                                                   Size="Size.Small"
+                                                   OnClick="@(async()=>{_newItem=String.Empty;})"
+                                                   Class="align-end align-middle"
+                                                   Color=Color.Primary
+                                                   Icon="@Icons.Material.Filled.Add" />
+                                }
+                                else
+                                {
+                                    <MudIconButton Disabled=@Disabled
+                                                   Size="Size.Small"
+                                                   OnClick="@(async()=>{await AddListItem(_newItem);})"
+                                                   Class="align-end align-middle"
+                                                   Color=Color.Success
+                                                   Icon="@Icons.Material.Filled.Save" />
 
+                                }
                             </MudStack>
                         </ChildContent>
                     </MudListItem>
 
-                }
-                <MudListItem OnClick="@(() => { _selectedStringListItem = _newItem; })">
-                    <ChildContent>
-                        <MudStack Row=true>
-                            @if (_newItem != null)
-                            {
-                                <MudTextField T="string"
-                                              Placeholder="@AppLocalization[Lang.Enter_value_here]"
-                                              AutoFocus="@(_newItem==String.Empty)"
-                                              @bind-Value="@_newItem"
-                                              Immediate=false
-                                              OnBlur="@(()=>{_selectedStringListItem = null;})" />
-                            }
-                            else
-                            {
-                                <MudText>@_newItem</MudText>
-                            }
-                            <MudSpacer />
-                            @if (_newItem == null)
-                            {
-                                <MudIconButton Disabled=@Disabled
-                                               Size="Size.Small"
-                                               OnClick="@(async()=>{_newItem=String.Empty;})"
-                                               Class="align-end align-middle"
-                                               Color=Color.Primary
-                                               Icon="@Icons.Material.Filled.Add" />
-                            }
-                            else
-                            {
-                                <MudIconButton Disabled=@Disabled
-                                               Size="Size.Small"
-                                               OnClick="@(async()=>{await AddListItem(_newItem);})"
-                                               Class="align-end align-middle"
-                                               Color=Color.Success
-                                               Icon="@Icons.Material.Filled.Save" />
 
-                            }
-                        </MudStack>
-                    </ChildContent>
-                </MudListItem>
+                </MudList>
+            </MudField>
 
-            
-            </MudList>
-        </MudField>
+            break;
+        default:
 
-        break;
-    default:
+            throw new AppException("The input type: " + _type?.Name + " could not be matched with a MudInput component");
 
-        throw new AppException("The input type: " + _type?.Name + " could not be matched with a MudInput component");
-
+    }
 }
 
-
 @code {
+    [Parameter]
+    public IEnumerable<string>? ValueList { get; set; } = null;
     private string? _newItem = null;
     private T? _originalValue;
     private T? objValue;

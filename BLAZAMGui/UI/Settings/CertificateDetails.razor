@@ -83,13 +83,13 @@
 
     public async Task LoadCertDetails()
     {
-        
-            LoadingData = true;
 
-            var rawcert = AppSettings.SSLCertificateCipher?.Decrypt<byte[]?>();
-            if (rawcert != null && rawcert.Length > 1000)
-            {
-                using var cert = new X509Certificate2(rawcert);
+        LoadingData = true;
+
+        var rawcert = AppSettings.SSLCertificateCipher?.Decrypt<byte[]?>();
+        if (rawcert != null && rawcert.Length > 1000)
+        {
+                using var cert = X509CertificateLoader.LoadCertificate(rawcert);
                 _valid = true;
                 _friendlyName = cert.FriendlyName;
                 _issuerName = cert.Issuer;

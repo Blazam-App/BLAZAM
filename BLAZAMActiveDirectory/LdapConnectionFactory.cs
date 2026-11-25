@@ -39,6 +39,9 @@ namespace BLAZAM.ActiveDirectory
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the application event used to notify that the application LDAP connection count has changed.
+        /// </summary>
         public static AppEvent? OnCountChanged { get; set; } = new();
 
         /// <summary>

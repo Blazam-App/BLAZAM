@@ -62,10 +62,10 @@
     {
         await base.OnInitializedAsync();
         Searcher = new(Directory);
-        Searcher.ResultsCollected += (async (batch) => { await StateHasChangedAsync(); });
+        Searcher.ResultsCollected += (async (batch) => { await InvokeStateHasChangedAsync(); });
         Searcher.OnSearchCompleted += (async () =>
         {
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         });
     }
 

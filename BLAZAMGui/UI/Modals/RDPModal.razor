@@ -45,10 +45,10 @@
         return "";
     }
 
-    protected async void Connect()
+    protected async Task Connect()
     {
         var hash = await GetPasswordHash();
         rdpUrl = baseRdpUrl + "?__EVENTTARGET=&__EVENTARGUMENT=server=" + computerName + "&user=" + (await Context.ActiveDirectorySettings.FirstOrDefaultAsync())?.Username + "&passwordHash=" + hash + "&connect=Connect%21";
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

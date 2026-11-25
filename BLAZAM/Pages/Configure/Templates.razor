@@ -59,7 +59,7 @@
     private async Task TemplateChanged(DirectoryTemplate template)
     {
         SelectedTemplate = template;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
 

@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>此功能仍在开发中</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>将 UPN 后缀留空将允许用户选择任何可用后缀，默认为域 FQDN。</value>
+  </data>
 </root>

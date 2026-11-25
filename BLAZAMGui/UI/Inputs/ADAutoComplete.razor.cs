@@ -271,7 +271,7 @@ namespace BLAZAM.Gui.UI.Inputs
             {
                 SearchResults = SearchResults.Append(result);
             }
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
         }
         protected override async Task OnInitializedAsync()
         {
@@ -290,7 +290,7 @@ namespace BLAZAM.Gui.UI.Inputs
                         var guidMatch = Directory.FindGlobalEntryByGuid(SelectedGuid.Value.ToByteArray());
                         await InvokeAsync(() => { SelectedResult = guidMatch; SearchTerm = guidMatch.CanonicalName; });
                     }
-                    _ = StateHasChangedAsync();
+                    _ = InvokeStateHasChangedAsync();
                 });
             }
         }

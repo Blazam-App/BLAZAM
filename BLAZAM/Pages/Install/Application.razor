@@ -34,13 +34,13 @@
         if(dbSettings != null){
             settings = dbSettings; 
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
 
 
 
-    private async void Submit()
+    private async Task Submit()
     {
         if (settings.Id == 0)
             Context.AppSettings.Add(settings);

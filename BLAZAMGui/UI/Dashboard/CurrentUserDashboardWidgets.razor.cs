@@ -133,7 +133,7 @@ namespace BLAZAM.Gui.UI.Dashboard
                     Order = order
                 });
                 await CurrentUser.State.SaveDashboardWidgets();
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
                 Analytics.DashboardWidgetAdded(widgetType.ToString());
                 widgetContainer?.Refresh();
             }
@@ -145,7 +145,7 @@ namespace BLAZAM.Gui.UI.Dashboard
             {
                 CurrentUser.State.Preferences?.DashboardWidgets.Remove(widget);
                 await CurrentUser.State.SaveDashboardWidgets();
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
                 Analytics.DashboardWidgetRemoved(widget.WidgetType.ToString());
                 widgetContainer?.Refresh();
             }

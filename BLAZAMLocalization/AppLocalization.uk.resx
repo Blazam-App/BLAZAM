@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>Обліковий запис увімкнено.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>Обліковий запис заблоковано.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>Обліковий запис заблоковано</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>Обліковий запис не заблоковано.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Організаційна одиниця</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>OU</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Зміна пароля</value>
   </data>
@@ -1035,7 +1032,7 @@
   <data name="Upload Icon" xml:space="preserve">
     <value>Завантажити іконку</value>
   </data>
-  <data name="About" xml:space="preserve">
+  <data name="0" xml:space="preserve">
     <value>Про додаток</value>
   </data>
   <data name="Add Category" xml:space="preserve">
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Генерувати новий API-токен</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
-    <value>Члена групи додано</value>
+  <data name="Group member added" xml:space="preserve">
+    <value>Учасника групи додано</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>Члена групи видалено</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>Учасника групи видалено</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>Групу знайдено</value>
@@ -1391,5 +1388,332 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Введіть значення тут</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Немає відповідних записів</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Плагіни</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Питання</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Відповідь</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Перейти до користувача</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Друк</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Видалено з групи</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Додано до групи</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>Користувача заблоковано</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Перевірити наявність оновлень</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Додати учасника</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Об’єкт видалено</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Створити контакт</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Тип підключення</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Розподіл</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Дата початку</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Кінцева дата</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Відсутнє ім'я користувача</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>Пароль відсутній</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Відхилити все</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Термін дії токена минув</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>Користувача вимкнено</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Комп’ютери</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Прочитані сповіщення</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Змінено користувачем</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Член</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Підтвердити видалення</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Облікові дані дійсні</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Стан підключення до Active Directory</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Контролери домену</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Серійний</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Ємність</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Затримка в секундах</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Використовується</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Делегат</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Безпека</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категорія</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Зашифровано</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Глобальні налаштування</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Глобальний</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Універсальний</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Вхід</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Інвертувати</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Дії</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Події</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Прогрес</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Результат</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Підключено</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Кому</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Схвалити</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Вимкнути</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Перезавантажити</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Новини</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версія</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Термін дії пароля</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Термін дії пароля ніколи не закінчується</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Дія</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Ціль</value>
+  </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Тригери</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Пароль змінено</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Завершити редагування</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Обліковий запис увімкнено</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Пошук у каталозі</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Немає відповідних записів</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Розклад виконання</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Отримати новини</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Виконати</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фільтри</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Створити ще одну</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Поточний шаблон</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Користувача заблоковано</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Учасника групи видалено</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Виключені групи</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Запис змінено</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Ви не маєте дозволу на вхід</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Невідома помилка під час спроби входу в систему</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Контрольні запитання</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Видалити зіставлення дозволів</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Немає непрочитаних сповіщень</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Запит на доступ надіслано</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Налаштування збережено</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Не вдалося зберегти налаштування</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Ніколи не використовувалося</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Компактний вигляд</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Почніть вводити текст для пошуку...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>На жаль, результатів не знайдено 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Вибачте, точних збігів не знайдено, спробуйте додати більше символів</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Натисніть, щоб переглянути деталі</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Натисніть, щоб переглянути документацію API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Заплановано автоматичне оновлення.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Запустити зараз</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Після виконання</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Оператор</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Ніколи</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Власний</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакти</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Додати віджет</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Заплановане правило</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>І</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Значення</value>
   </data>
 </root>

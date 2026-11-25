@@ -1,5 +1,4 @@
-﻿using BLAZAM.Common.Services;
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using System.Text;
@@ -49,7 +48,7 @@ namespace BLAZAM.Services
             _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory), "dbFactory cannot be null in Analytics constructor.");
             _jsRuntime = jSRuntime ?? throw new ArgumentNullException(nameof(jSRuntime), "jSRuntime cannot be null in Analytics constructor.");
             _httpClient = httpClient;
-            
+
         }
 
 

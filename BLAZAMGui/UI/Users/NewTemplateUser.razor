@@ -7,20 +7,11 @@
             <CascadingValue Value="GroupableEntry">
                 <CascadingValue Value="Entry">
                     <CascadingValue Value="DirectoryTemplate">
-
-
-                        @{
-                            if (IsAdmin)
-                            {
-                                <MudAlert Class="mud-alert-info">
-                                    All fields are editable because you are an admin.
-                                </MudAlert>
-                            }
-                        }
+                   
                         @if (InDirectoryTemplate(ActiveDirectoryFields.Thumbnail)){
                             <ContactThumbnailPhoto Contact=Contact
                                                    Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Thumbnail))
-                                Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Thumbnail)) />
+                                Disabled=@(!DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Thumbnail)) />
                          }
                         @if (InDirectoryTemplate(ActiveDirectoryFields.LogonHours) ||
                                             InDirectoryTemplate(ActiveDirectoryFields.LogOnTo) ||
@@ -36,7 +27,7 @@
                                                      Label="@AppLocalization[Lang.Account_Expiration]"
                                                      Value="@User.ExpireTime?.ToLocalTime()"
                                                      ValueChanged="@((value)=>{User.ExpireTime=value;})"
-                                                     Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.AccountExpires)) />
+                                                     Disabled=@(!DirectoryTemplate.IsEditableField(ActiveDirectoryFields.AccountExpires)) />
                                 }
                                 <MudStack Row=true>
                                     @if (InDirectoryTemplate(ActiveDirectoryFields.LogOnTo))
@@ -44,7 +35,7 @@
                                         <MudButton Variant="Variant.Filled"
                                                    Color="@(User.LogOnTo == null || User.LogOnTo == String.Empty?Color.Primary:Color.Warning)"
                                                    OnClick="@(()=>{_logOnToModal?.ShowAsync();})"
-                                                   Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogOnTo))>
+                                                   Disabled=@(!DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogOnTo))>
                                             @AppLocalization[Lang.Log_On_To]
                                         </MudButton>
 
@@ -63,7 +54,7 @@
                                         <MudButton Variant="Variant.Filled"
                                                    Color="@(Color.Primary)"
                                                    OnClick="@(()=>{_logonHoursModal?.ShowAsync();})"
-                                                   Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogonHours))>
+                                                   Disabled=@(!DirectoryTemplate.IsEditableField(ActiveDirectoryFields.LogonHours))>
                                             @AppLocalization[Lang.Logon_Hours]
                                         </MudButton>
 
@@ -94,7 +85,7 @@
                             <MudTextField Immediate=true
                                           Label="@AppLocalization[Lang.Site]"
                                           @bind-Value="@Contact.Site"
-                                          Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Site))
+                                          Disabled=@(!DirectoryTemplate.IsEditableField(ActiveDirectoryFields.Site))
                                           Required=@(DirectoryTemplate.IsRequiredField(ActiveDirectoryFields.Site)) />
 
                         }
@@ -109,11 +100,12 @@
                                     @if (field.CustomField != null)
                                     {
                                         <DynamicMudInput Immediate=true
+                                                         ValueList="@(DirectoryTemplate.GetTemplateValueList(field.CustomField)?.Items.Select(x=>x.StringValue))"
                                                          Required=@(field.Required)
                                                          Label="@field.FieldDisplayName"
                                                          Value="@Entry.NewEntryProperties[field.CustomField.FieldName].ToString()"
                                                          ValueChanged="@((string val) => { Entry.NewEntryProperties[field.CustomField.FieldName] = val; })"
-                                                         Disabled=@(!IsAdmin && !DirectoryTemplate.IsEditableField(field.CustomField)) />
+                                                         Disabled=@(!DirectoryTemplate.IsEditableField(field.CustomField)) />
                                     }
                                 }
                             </ViewSection>
@@ -163,7 +155,7 @@
 
         DirectoryTemplate.PopulateFields(User, NewUserName);
         _initialized = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
     bool InDirectoryTemplate(IActiveDirectoryField field)

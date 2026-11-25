@@ -324,4 +324,7 @@ Spróbuj skonfigurować niestandardowe poświadczenia aktualizacji.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>Ta funkcja jest nadal w budowie</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Pozostawienie sufiksu UPN pustego umożliwi użytkownikowi wybranie dowolnego dostępnego sufiksu, przy czym domyślnie zostanie użyty FQDN domeny.</value>
+  </data>
 </root>

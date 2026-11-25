@@ -31,7 +31,7 @@
         {
             if (selectedNode == value) return;
             selectedNode = value;
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
 
         }
     }
@@ -59,8 +59,8 @@
     {
         if (OUTree != null)
         {
-            await OUTree.StateHasChangedAsync();
-            await StateHasChangedAsync();
+            await OUTree.InvokeStateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 

@@ -1,9 +1,10 @@
 ﻿@using System.Security.Claims;
+@using BLAZAM.Common.Services
 @using BLAZAM.Gui.Navs
 @using BLAZAM.Gui.UI.Notifications
 @inherits LayoutComponentBase
 
-@inject NavigationManager Nav
+@inject AppNavManager Nav
 @inject IActiveDirectoryContext directory
 @inject IApplicationUserStateService UserStateService
 @inject IUserDatabaseFactory DbFactory
@@ -143,6 +144,7 @@
                         <DirectoryConnectingIndicator />
                         <PWANotificationSubscriptionProvider />
                         <ExpiredLogonPasswordModalProvider />
+
                     </MudContainer>
 
                 </MudMainContent>
