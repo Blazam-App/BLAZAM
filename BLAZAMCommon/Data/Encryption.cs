@@ -181,17 +181,17 @@ namespace BLAZAM.Common.Data
 
 
             }
-            catch (FormatException)
+            catch (Exception ex) when (ex is IndexOutOfRangeException || ex is FormatException)
             {
                 //If any issues occur while creating
                 //the decrypted object, return the "encypted"
                 //text
                 if (cipherText is T tText)
-                {
-                    return tText;
-                }
-                return default;
+            {
+                return tText;
             }
+            return default;
+            }          
             throw new AppException("Unable to decrypt cipherText");
         }
 
