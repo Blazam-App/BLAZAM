@@ -6,7 +6,7 @@
 
 
         <MudTextField AutoFocus=true
-                      Validation=IsValid
+                      Validation=IsFieldValid
                       Required=true
                       Immediate=true
                       Label="@AppLocalization[Lang.First_Name]"
@@ -24,7 +24,7 @@
 
 
         <MudTextField Label="@AppLocalization[Lang.Last_Name]"
-                      Validation=IsValid
+                      Validation=IsFieldValid
                       Required=true
                       Immediate=true
                       @bind-Value="@NewUserName.Surname" />
@@ -68,7 +68,7 @@
     [Parameter]
     public EventCallback OnBack { get; set; }
 
-    private string? IsValid(string field)
+    protected string? IsFieldValid(string field)
     {
         if (field.AppTrim().IsNullOrEmpty())
         {
