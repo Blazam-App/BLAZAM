@@ -402,17 +402,35 @@ namespace BLAZAM.Services.Background
             eventType = ApplicationEventType.Unassign;
             if (entry is IGroupableDirectoryAdapter groupableEntry)
             {
+                bool removeFromAllGroups = false;
                 using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
-                if (group != null)
+
+                if (action.Data != null)
                 {
-                    target = group;
-                    if (!groupableEntry.IsANestedMemberOf(group))
+                    dynamic data = action.Data;
+                    removeFromAllGroups = data.RemoveFromAllGroups ?? false;
+                }
+                if (removeFromAllGroups)
+                {
+                    var groups = groupableEntry.MemberOf;
+                    foreach (var g in groups)
                     {
-                        eventType = ApplicationEventType.All;
-                        return;
+                        groupableEntry.UnassignFrom(g);
                     }
-                    groupableEntry.UnassignFrom(group);
+                }
+                else
+                {
+                    var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
+                    if (group != null)
+                    {
+                        target = group;
+                        if (!groupableEntry.IsAMemberOf(group))
+                        {
+                            eventType = ApplicationEventType.All;
+                            return;
+                        }
+                        groupableEntry.UnassignFrom(group);
+                    }
                 }
             }
         }
@@ -551,7 +569,6 @@ namespace BLAZAM.Services.Background
                 return;
             }
 
-            var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
 
         }
