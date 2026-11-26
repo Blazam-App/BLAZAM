@@ -2,7 +2,6 @@
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Net;
 using System.Net.NetworkInformation;

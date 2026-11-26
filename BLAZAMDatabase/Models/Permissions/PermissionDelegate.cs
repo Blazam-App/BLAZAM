@@ -1,7 +1,4 @@
-﻿
-using BLAZAM.Helpers;
-
-namespace BLAZAM.Database.Models.Permissions
+﻿namespace BLAZAM.Database.Models.Permissions
 {
     public class PermissionDelegate : RecoverableAppDbSetBase, IComparable, IEquatable<PermissionDelegate?>
     {

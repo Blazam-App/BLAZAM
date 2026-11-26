@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Global;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Diagnostics;
 using System.DirectoryServices.Protocols;
