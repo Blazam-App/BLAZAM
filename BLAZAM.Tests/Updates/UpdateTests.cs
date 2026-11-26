@@ -30,17 +30,15 @@ namespace BLAZAM.Tests.Updates
             {
                 await latest.Download(null);
             }
-
             if (latest == null)
             {
                 Assert.NotNull(latest);
             }
-            else
-            {
-                Assert.True(latest.UpdateFile.Exists);
-                await Update_Stages_OK(latest);
-                await Update_Cleanup_OK(latest);
-            }
+
+            Assert.True(latest.UpdateFile.Exists);
+            await Update_Stages_OK(latest);
+            await Update_Cleanup_OK(latest);
+
         }
 
         private static async Task Update_Stages_OK(ApplicationUpdate latest)
