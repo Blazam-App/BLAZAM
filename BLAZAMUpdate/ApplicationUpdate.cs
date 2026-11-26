@@ -413,33 +413,34 @@ namespace BLAZAM.Update
                         }
                         LogDownloadAttempt();
 
-                        using (var client = new HttpClient())
-                        using (var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead, _cancellationTokenSource.Token))
+                        using var client = new HttpClient();
+                        client.DefaultRequestHeaders.UserAgent.ParseAdd("BLAZAM-Updater");
+                        using var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead, _cancellationTokenSource.Token);
+
+                        if (!response.IsSuccessStatusCode)
                         {
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                Loggers.UpdateLogger?.Error("Unable to connect to download url: {StatusCode}:{ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
-                                return false;
-                            }
-
-                            UpdateDownloadDirectory.EnsureCreated();
-                            if (UpdateFile.Exists)
-                            {
-                                Loggers.UpdateLogger?.Debug("Deleting existing update file");
-                                UpdateFile.Delete();
-                            }
-
-                            using var streamToReadFrom = await response.Content.ReadAsStreamAsync(_cancellationTokenSource.Token);
-                            using var streamToWriteTo = UpdateFile.OpenWriteStream();
-                            progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
-                            bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
-                            if (!result)
-                            {
-                                Loggers.UpdateLogger?.Warning("Download was cancelled or failed");
-                                return false;
-                            }
-                            Loggers.UpdateLogger?.Information("Download completed successfully. File size: {FileSize} bytes", progress.CompletedBytes);
+                            Loggers.UpdateLogger?.Error("Unable to connect to download url: {StatusCode}:{ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            return false;
                         }
+
+                        UpdateDownloadDirectory.EnsureCreated();
+                        if (UpdateFile.Exists)
+                        {
+                            Loggers.UpdateLogger?.Debug("Deleting existing update file");
+                            UpdateFile.Delete();
+                        }
+
+                        using var streamToReadFrom = await response.Content.ReadAsStreamAsync(_cancellationTokenSource.Token);
+                        using var streamToWriteTo = UpdateFile.OpenWriteStream();
+                        progress.ExpectedSize = (int)Release.ExpectedSize.GetValueOrDefault();
+                        bool result = await WriteStreamWithProgress(streamToReadFrom, streamToWriteTo, progress, step);
+                        if (!result)
+                        {
+                            Loggers.UpdateLogger?.Warning("Download was cancelled or failed");
+                            return false;
+                        }
+                        Loggers.UpdateLogger?.Information("Download completed successfully. File size: {FileSize} bytes", progress.CompletedBytes);
+
                         retries = 0;
                     }
                     catch (Exception ex)

@@ -258,7 +258,7 @@ namespace BLAZAM.FileSystem
                 }
             }
 
-            FileProgress progress = new FileProgress
+            FileProgress progress = new()
             {
                 ExpectedSize = totalSize,
                 CompletedBytes = 0
@@ -268,7 +268,7 @@ namespace BLAZAM.FileSystem
             {
                 try
                 {
-                    FileInfo fInfo = new FileInfo(newPath);
+                    FileInfo fInfo = new(newPath);
                     string destPath = newPath.Replace(FullPath, parentDirectory.FullPath);
 
                     File.Copy(newPath, destPath, true);
