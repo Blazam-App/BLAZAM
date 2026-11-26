@@ -21,6 +21,8 @@ jobs:
           dotnet-version: 10.x
       - name: Restore dependencies
         run: dotnet restore
+      - name: Build application (Release)
+        run: dotnet build -c Release
       - name: Setup Playwright
         shell: pwsh
         run: |
