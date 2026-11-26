@@ -38,7 +38,7 @@ namespace BLAZAM.FileSystem
             get
             {
                 string? directoryName = System.IO.Path.GetDirectoryName(FullPath);
-                if (string.IsNullOrEmpty(directoryName))
+                if (directoryName.IsNullOrEmpty())
                 {
                     Loggers.SystemLogger.Warning("SystemFile.ParentDirectory: Could not determine directory name for {FullPath}. Returning current directory representation (\".\").", FullPath);
                     return new SystemDirectory(".");

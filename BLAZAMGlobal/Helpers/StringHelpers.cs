@@ -31,7 +31,7 @@ namespace BLAZAM.Helpers
                 int hash = 17;
                 foreach (char c in input)
                 {
-                    hash = hash * 23 + c;
+                    hash = (hash * 23) + c;
                 }
                 return hash;
             }
@@ -63,7 +63,7 @@ namespace BLAZAM.Helpers
         /// <returns>True if the URL is local; otherwise, false.</returns>
         public static bool IsUrlLocalToHost(this string url)
         {
-            if (string.IsNullOrEmpty(url))
+            if (url.IsNullOrEmpty())
             {
                 return true;
             }
@@ -72,10 +72,10 @@ namespace BLAZAM.Helpers
                 return true;
             }
             // Original logic for empty string was handled by the IsNullOrEmpty check above.
-            return url[0] == '/' && (url.Length == 1 ||
-                    url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
-                    url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
+            return (url[0] == '/' && (url.Length == 1 ||
+                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
+                    (url.Length > 1 &&
+                     url[0] == '~' && url[1] == '/');   // "~/" or "~/foo"
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace BLAZAM.Helpers
         /// <returns>The DN string (e.g., DC=sub,DC=domain,DC=com), or an empty string if input is null or empty.</returns>
         public static string FqdnToDN(this string fqdn)
         {
-            if (string.IsNullOrEmpty(fqdn))
+            if (fqdn.IsNullOrEmpty())
             {
                 return string.Empty;
             }

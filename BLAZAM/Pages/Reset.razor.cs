@@ -263,10 +263,16 @@ namespace BLAZAM.Pages
             try
             {
                 var user = Directory.Users.FindUserByUsername(LoginRequest.Username, exactMatch: true);
-                if (!ValidateUser(user)) return;
+                if (!ValidateUser(user))
+                {
+                    return;
+                }
 
                 appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
-                if (!ValidateAppUser(appUser)) return;
+                if (!ValidateAppUser(appUser))
+                {
+                    return;
+                }
 
                 _effectiveResetPolicy = new EffectivePasswordResetPolicy(appUser.PermissionDelegates);
                 if (!_effectiveResetPolicy.CanResetPassword)
@@ -275,10 +281,25 @@ namespace BLAZAM.Pages
                     return;
                 }
 
-                if (!await IsEmailRequirementMet(appUser)) return;
-                if (!IsPinRequirementMet(appUser)) return;
-                if (!IsQARequirementMet(appUser)) return;
-                if (!await IsMFARequirementMet(appUser)) return;
+                if (!await IsEmailRequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!IsPinRequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!IsQARequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!await IsMFARequirementMet(appUser))
+                {
+                    return;
+                }
 
                 if (_pinValid && _qaValid && _mfaValid)
                 {
@@ -422,7 +443,7 @@ namespace BLAZAM.Pages
             _resetAuditLogger?.Dispose();
         }
     }
-    class ResetAttempt
+    internal class ResetAttempt
     {
         public string Username { get; set; }
         public DateTime AttemptTime { get; set; }

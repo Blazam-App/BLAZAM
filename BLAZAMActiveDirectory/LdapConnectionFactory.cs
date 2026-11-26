@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Global;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Diagnostics;
 using System.DirectoryServices.Protocols;
@@ -11,7 +10,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class LdapConnectionFactory : IDisposable
     {
-        public static int PoolSize => (5 * _connectedUsers);
+        public static int PoolSize => 5 * _connectedUsers;
         private static int _connectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();
@@ -89,17 +88,17 @@ namespace BLAZAM.ActiveDirectory
             //     return false;
             // }
 
-            if (string.IsNullOrEmpty(settings.ServerAddress))
+            if (settings.ServerAddress.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("ServerAddress in ADSettings is null or empty.");
                 return default;
             }
-            if (string.IsNullOrEmpty(settings.Username))
+            if (settings.Username.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("Username in ADSettings is null or empty.");
                 return default;
             }
-            if (string.IsNullOrEmpty(settings.Password))
+            if (settings.Password.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("Password in ADSettings is null or empty.");
                 return default;
@@ -161,7 +160,10 @@ namespace BLAZAM.ActiveDirectory
                     ConnectWithLdaps(settings, out connection, serverHostname);
                 }
                 if (connection == null)
+                {
                     return null;
+                }
+
                 var appConnection = new AppLdapConnection(connection, startedTLS);
 
                 if (_disposerTimer == null)
@@ -186,7 +188,11 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
                     var count = _connectionPool.Count;
-                    if (count < PoolSize) return;
+                    if (count < PoolSize)
+                    {
+                        return;
+                    }
+
                     for (int i = 0; i < count - PoolSize; i++)
                     {
                         if (!_connectionPool[i].IsDisposed
@@ -272,7 +278,7 @@ namespace BLAZAM.ActiveDirectory
         public static bool ConnectWithLdaps(ADSettings settings, out LdapConnection? connection, string? serverHostname = null)
         {
             connection = null;
-            if (string.IsNullOrEmpty(settings.ServerAddress) || settings.ServerPort <= 0 || string.IsNullOrEmpty(settings.Username) || settings.Password == null)
+            if (settings.ServerAddress.IsNullOrEmpty() || settings.ServerPort <= 0 || settings.Username.IsNullOrEmpty() || settings.Password == null)
             {
                 Loggers.ActiveDirectoryLogger.Information("ConnectWithLdaps: Invalid parameters (host, port, username, or password).");
                 return false;
@@ -346,7 +352,7 @@ namespace BLAZAM.ActiveDirectory
 
 
             connection = null;
-            if (string.IsNullOrEmpty(settings.ServerAddress) || settings.ServerPort <= 0 || string.IsNullOrEmpty(settings.Username) || settings.Password == null)
+            if (settings.ServerAddress.IsNullOrEmpty() || settings.ServerPort <= 0 || settings.Username.IsNullOrEmpty() || settings.Password == null)
             {
                 Loggers.ActiveDirectoryLogger.Information("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
                 return false;
@@ -430,7 +436,11 @@ namespace BLAZAM.ActiveDirectory
 
         private static bool StartTls(LdapConnection currentConnection)
         {
-            if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
+            if (OperatingSystem.IsWindows())
+            {
+                throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
+            }
+
             lock (_tlsLock)
             {
                 currentConnection.SessionOptions.StartTransportLayerSecurity(null);

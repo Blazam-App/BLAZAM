@@ -33,7 +33,7 @@ namespace BLAZAM.Helpers
             ConcurrentBag<IDirectoryEntryAdapter> matchedEntries2 = new();
             await Parallel.ForEachAsync(matchedEntries, async (entry, ct) =>
             {
-                if (!(await ShouldSkipEntry(entry, dbFactory, directory)))
+                if (!await ShouldSkipEntry(entry, dbFactory, directory))
                 {
                     matchedEntries2.Add(entry);
                 }

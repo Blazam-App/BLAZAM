@@ -16,7 +16,11 @@ namespace BLAZAM.ActiveDirectory.Data
 
         public AppLdapConnection(LdapConnection ldapConnection, bool startedTLS)
         {
-            if (ldapConnection == null) throw new ArgumentNullException("ldapConnection");
+            if (ldapConnection == null)
+            {
+                throw new ArgumentNullException("ldapConnection");
+            }
+
             LdapConnection = ldapConnection;
             _startedTLS = startedTLS;
             Random random = new Random();

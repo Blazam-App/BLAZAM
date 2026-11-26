@@ -3,7 +3,6 @@ using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using Microsoft.IdentityModel.Tokens;
 using System.DirectoryServices;
@@ -116,10 +115,20 @@ namespace BLAZAM.ActiveDirectory.Searchers
         /// <returns>A list of search results converted and casted to supplied types</returns>
         public List<TInterface> Search<TObject, TInterface>(CancellationToken? token = null) where TObject : TInterface, IDirectoryEntryAdapter, new()
         {
-            if (token != null) cancellationToken = token;
-            else cancellationToken = new CancellationToken();
+            if (token != null)
+            {
+                cancellationToken = token;
+            }
+            else
+            {
+                cancellationToken = new CancellationToken();
+            }
+
             if (cancellationToken?.IsCancellationRequested == true)
+            {
                 return new();
+            }
+
             InitializeSearch();
             try
             {
@@ -143,7 +152,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 }
                 if (SearchDeleted)
+                {
                     LdapFilter = LdapFilter.Substring(0, LdapFilter.Length - 1) + "(isDeleted=TRUE)" + ")";
+                }
 
                 // Generalized FilterQuery for GeneralSearchTerm
                 if (GeneralSearchTerm != null)
@@ -212,32 +223,69 @@ namespace BLAZAM.ActiveDirectory.Searchers
                     FilterQuery = "";
 
                     if (!Fields.CN.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(cn=*{Fields.CN}*)";
+                    }
+
                     if (Fields.Changed != null)
+                    {
                         FilterQuery += $"(whenChanged>={Fields.Changed.Value.ToString("yyyyMMddHHmmss.fZ")})";
+                    }
+
                     if (Fields.Created != null)
+                    {
                         FilterQuery += $"(whenCreated>={Fields.Created.Value.ToString("yyyyMMddHHmmss.fZ")})";
+                    }
+
                     if (!Fields.SamAccountName.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(samaccountname=*{Fields.SamAccountName}*)";
+                    }
+
                     if (Fields.LastLogonTime != null)
+                    {
                         FilterQuery += $"(lastLogonTimestamp<={Fields.LastLogonTime})(!(lastLogonTimestamp=0))";
+                    }
+
                     if (Fields.ExpireTime != null)
+                    {
                         FilterQuery += $"(accountExpires<={Fields.ExpireTime.Value.ToFileTimeUtc().ToString()})(!(accountExpires=0))";
+                    }
 
                     if (!Fields.DN.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(distinguishedName={Fields.DN})";
+                    }
+
                     if (!Fields.MemberOf.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(memberOf=*{Fields.DN})*";
+                    }
+
                     if (!Fields.SID.IsNullOrEmpty())
+                    {
                         FilterQuery += $"(objectSid={Fields.SID})";
+                    }
+
                     if (Fields.GUID != null)
+                    {
                         FilterQuery += $"(objectGUID={Fields.GUID.ToHexADString()})";
+                    }
+
                     if (Fields.NestedMemberOf != null)
+                    {
                         FilterQuery += $"(memberOf:1.2.840.113556.1.4.1941:={Fields.NestedMemberOf.DN})";
+                    }
+
                     if (Fields.BitLockerRecoveryId != null)
+                    {
                         FilterQuery += $"(name=*{Fields.BitLockerRecoveryId}*)";
+                    }
+
                     if (Fields.PasswordLastSet != null)
+                    {
                         FilterQuery += $"(pwdLastSet>={Fields.PasswordLastSet.Value.ToFileTimeUtc().ToString()})";
+                    }
 
                     if (FieldValues.Count > 0)
                     {
@@ -277,12 +325,18 @@ namespace BLAZAM.ActiveDirectory.Searchers
                                 case ActiveDirectoryFieldOperator.HistoricalTimeFrame:
                                     op = ">=";
                                     if (field.Value is TimeSpan timeSpan2)
+                                    {
                                         searchValue = DateTime.Now.Subtract(timeSpan2).ToFileTimeUtc().ToString();
+                                    }
+
                                     break;
                                 case ActiveDirectoryFieldOperator.FutureTimeFrame:
                                     op = "<=";
                                     if (field.Value is TimeSpan timeSpan3)
+                                    {
                                         searchValue = DateTime.Now.Add(timeSpan3).ToFileTimeUtc().ToString();
+                                    }
+
                                     break;
                                 case ActiveDirectoryFieldOperator.BeforeNow:
                                     op = "<=";
@@ -342,7 +396,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
 
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return new();
+                }
 
                 // Construct a search request for the specific entry and attribute
                 SearchRequest searchRequest = new SearchRequest(
@@ -353,7 +409,9 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 );
                 PrepareSearcher(searchRequest);
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return new();
+                }
 
                 using (var connection = _currentUserActiveDirectoryContext.GetConnection())
                 {
@@ -365,14 +423,18 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 }
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return new();
+                }
 
                 SearchState = SearchState.Completed;
 
 
 
                 if (cancellationToken?.IsCancellationRequested == true)
+                {
                     return new();
+                }
 
                 OnSearchCompleted?.Invoke();
                 stopwatch.Stop();
@@ -426,7 +488,10 @@ namespace BLAZAM.ActiveDirectory.Searchers
             do
             {
                 // Check for cancellation before each page request.
-                if (cancellationToken?.IsCancellationRequested == true) break;
+                if (cancellationToken?.IsCancellationRequested == true)
+                {
+                    break;
+                }
 
                 // 2. Send the request and get a single page of results.
                 SearchResponse searchResponse = (SearchResponse)searcher.SendRequest(searchRequest);

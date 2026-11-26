@@ -67,7 +67,10 @@ namespace BLAZAM.ActiveDirectory.Services
         }
         public static void Clear(string? dn)
         {
-            if (dn == null) return;
+            if (dn == null)
+            {
+                return;
+            }
 
             if (DirectoryEntries.ContainsKey(dn))
             {

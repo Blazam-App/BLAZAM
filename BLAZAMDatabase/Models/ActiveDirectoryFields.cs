@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using BLAZAM.Localization;
+﻿using BLAZAM.Localization;
 
 namespace BLAZAM.Database.Models
 {

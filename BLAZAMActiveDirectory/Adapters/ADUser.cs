@@ -2,7 +2,6 @@
 using BLAZAM.Database.Context;
 using BLAZAM.Database.Models;
 using BLAZAM.FileSystem;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;

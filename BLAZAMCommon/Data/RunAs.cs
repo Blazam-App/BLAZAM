@@ -99,7 +99,9 @@ namespace BLAZAM.Common.Data
         public bool ExecuteCommand(string command, uint timeoutMs = 5000, string? workingDirectory = null)
         {
             if (string.IsNullOrWhiteSpace(command))
+            {
                 throw new ArgumentException("Command cannot be null or empty", nameof(command));
+            }
 
             nint phPassword = 0;
             try

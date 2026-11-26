@@ -1,6 +1,5 @@
 ﻿using BLAZAM.ActiveDirectory.Adapters;
 using BLAZAM.Database.Models;
-using BLAZAM.Helpers;
 
 namespace BLAZAM.ActiveDirectory.Searchers
 {
