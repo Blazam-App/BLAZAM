@@ -443,7 +443,7 @@ namespace BLAZAM.Pages
             _resetAuditLogger?.Dispose();
         }
     }
-    class ResetAttempt
+    internal class ResetAttempt
     {
         public string Username { get; set; }
         public DateTime AttemptTime { get; set; }

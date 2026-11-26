@@ -67,8 +67,8 @@ namespace BLAZAM.Gui.UI.Inputs
         [CascadingParameter]
         public SearchService SearchParameters { get; set; }
 
-        IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
-        bool _searchDisabled;
+        private IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
+        private bool _searchDisabled;
 
         /// <summary>
         /// Indicates whether to search for disabled Users/Computers
