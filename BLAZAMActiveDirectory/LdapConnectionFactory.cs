@@ -10,7 +10,7 @@ namespace BLAZAM.ActiveDirectory
 {
     public class LdapConnectionFactory : IDisposable
     {
-        public static int PoolSize => (5 * _connectedUsers);
+        public static int PoolSize => 5 * _connectedUsers;
         private static int _connectedUsers { get; set; }
         private Timer? _disposerTimer = null;
         private static readonly object _poolLock = new object();

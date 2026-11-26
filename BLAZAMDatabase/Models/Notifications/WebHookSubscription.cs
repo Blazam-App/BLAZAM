@@ -79,9 +79,9 @@ namespace BLAZAM.Database.Models.Notifications
         {
             get
             {
-                var valid = ((WebHookAuthorization == WebHookAuthorization.None || !AuthorizationToken.IsNullOrEmpty()) &&
+                var valid = (WebHookAuthorization == WebHookAuthorization.None || !AuthorizationToken.IsNullOrEmpty()) &&
                         NotificationTypes.Count > 0 &&
-                        !URL.IsNullOrEmpty());
+                        !URL.IsNullOrEmpty();
                 return valid;
             }
         }

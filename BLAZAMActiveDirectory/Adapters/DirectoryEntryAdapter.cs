@@ -65,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         // or if it is a custom property that does not exist in the DirectoryEntry
                     }
 
-                    if (currentValue == null && prop.Value != null || currentValue != null && !currentValue.Equals(prop.Value))
+                    if ((currentValue == null && prop.Value != null) || (currentValue != null && !currentValue.Equals(prop.Value)))
                     {
                         changes.Add(new AuditChangeLog()
                         {
@@ -888,8 +888,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                 || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
                             {
                                 if (p.Value == null
-                            || p.Value is string strValue && strValue.IsNullOrEmpty()
-                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                            || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                            || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
                                 {
 
                                     DirectoryEntry.ClearPropertyValue(p.Key);
@@ -944,8 +944,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     foreach (var p in NewEntryProperties)
                     {
                         if (p.Value == null
-                               || p.Value is string strValue && strValue.IsNullOrEmpty()
-                               || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                               || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                               || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
                         {
                             continue;
                         }
@@ -1369,7 +1369,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (!NewEntry)
                 {
 
-                    if (value == null || value is string strValue && strValue == "")
+                    if (value == null || (value is string strValue && strValue == ""))
                     {
                         var currentValue = GetStringAttribute(propertyName);
                         if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)

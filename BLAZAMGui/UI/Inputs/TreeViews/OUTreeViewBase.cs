@@ -282,7 +282,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         }
         protected bool CanExpand(ITreeItemData<IDirectoryEntryAdapter> item)
         {
-            return (item.Value is IADOrganizationalUnit);
+            return item.Value is IADOrganizationalUnit;
         }
         protected IReadOnlyCollection<ITreeItemData<IDirectoryEntryAdapter>> GetChildren(ITreeItemData<IDirectoryEntryAdapter> context)
         {

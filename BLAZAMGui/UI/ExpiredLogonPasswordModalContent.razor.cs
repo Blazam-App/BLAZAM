@@ -72,9 +72,9 @@ namespace BLAZAM.Gui.UI
                 return false;
             }
         }
-        protected override bool IsValid => (!newPassword.IsNullOrEmpty()
+        protected override bool IsValid => !newPassword.IsNullOrEmpty()
                 && !newPasswordConfirm.IsNullOrEmpty()
-                && newPassword.Equals(newPasswordConfirm));
+                && newPassword.Equals(newPasswordConfirm);
 
 
 

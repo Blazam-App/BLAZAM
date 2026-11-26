@@ -311,7 +311,7 @@ namespace BLAZAM.Helpers
         /// <returns>True if the collection is null or empty; false otherwise.</returns>
         public static bool IsNullOrEmpty(this ICollection collection)
         {
-            return (collection == null || collection.Count < 1);
+            return collection == null || collection.Count < 1;
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace BLAZAM.Helpers
                 throw new ArgumentException("Input hex string must have an even number of characters.", nameof(hexString));
             }
 
-            StringBuilder ldapHex = new StringBuilder(hexString.Length + hexString.Length / 2);
+            StringBuilder ldapHex = new StringBuilder(hexString.Length + (hexString.Length / 2));
             for (int i = 0; i < hexString.Length; i += 2)
             {
                 ldapHex.Append('\\');
@@ -590,7 +590,7 @@ namespace BLAZAM.Helpers
 
                 int subAuthorityCount = parts.Length - 3;
                 // Calculate the required byte array size: 8 bytes for the header + 4 bytes for each sub-authority
-                byte[] sidBytes = new byte[8 + subAuthorityCount * 4];
+                byte[] sidBytes = new byte[8 + (subAuthorityCount * 4)];
 
                 // 1. Write Revision Level (1 byte)
                 sidBytes[0] = byte.Parse(parts[1]);
@@ -614,7 +614,7 @@ namespace BLAZAM.Helpers
                     // BitConverter correctly handles little-endian conversion on most architectures
                     byte[] subAuthorityBytes = BitConverter.GetBytes(subAuthority);
                     // Copy the 4 bytes into the correct position in the main byte array
-                    Array.Copy(subAuthorityBytes, 0, sidBytes, 8 + i * 4, 4);
+                    Array.Copy(subAuthorityBytes, 0, sidBytes, 8 + (i * 4), 4);
                 }
 
                 return sidBytes;

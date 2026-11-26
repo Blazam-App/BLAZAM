@@ -383,7 +383,7 @@ namespace BLAZAM.Session
         {
             get
             {
-                return !IsSuperAdmin && (PermissionMappings != null && PermissionMappings.Count == 1 && PermissionMappings[0].Id == -1);
+                return !IsSuperAdmin && PermissionMappings != null && PermissionMappings.Count == 1 && PermissionMappings[0].Id == -1;
             }
         }
 

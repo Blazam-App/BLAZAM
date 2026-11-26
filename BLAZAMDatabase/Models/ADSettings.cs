@@ -26,11 +26,11 @@ namespace BLAZAM.Database.Models
         {
             get
             {
-                return (!FQDN.IsNullOrEmpty()
+                return !FQDN.IsNullOrEmpty()
                     && !Username.IsNullOrEmpty()
                     && !Password.IsNullOrEmpty()
                     && !ServerAddress.IsNullOrEmpty()
-                    && ServerPort != 0);
+                    && ServerPort != 0;
             }
         }
     }

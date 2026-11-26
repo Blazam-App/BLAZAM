@@ -31,7 +31,7 @@ namespace BLAZAM.Helpers
                 int hash = 17;
                 foreach (char c in input)
                 {
-                    hash = hash * 23 + c;
+                    hash = (hash * 23) + c;
                 }
                 return hash;
             }
@@ -68,10 +68,10 @@ namespace BLAZAM.Helpers
                 return true;
             }
             // Original logic for empty string was handled by the IsNullOrEmpty check above.
-            return url[0] == '/' && (url.Length == 1 ||
-                    url[1] != '/' && url[1] != '\\') ||   // "/" or "/foo" but not "//" or "/\"
-                    url.Length > 1 &&
-                     url[0] == '~' && url[1] == '/';   // "~/" or "~/foo"
+            return (url[0] == '/' && (url.Length == 1 ||
+                    (url[1] != '/' && url[1] != '\\'))) ||   // "/" or "/foo" but not "//" or "/\"
+                    (url.Length > 1 &&
+                     url[0] == '~' && url[1] == '/');   // "~/" or "~/foo"
         }
 
         /// <summary>

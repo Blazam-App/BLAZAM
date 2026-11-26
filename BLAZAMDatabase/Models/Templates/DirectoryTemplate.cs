@@ -438,7 +438,7 @@ namespace BLAZAM.Database.Models.Templates
             }
             // symbols
             var symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
-            return symbols[(index.Value) % symbols.Length].ToString();
+            return symbols[index.Value % symbols.Length].ToString();
 
         }
 

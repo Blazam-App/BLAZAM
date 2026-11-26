@@ -252,7 +252,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public override bool Equals(object? obj)
         {
             if (obj is IRemoteSession other && other.Server != null
-                && (other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName)))
+                && other.SessionId.Equals(SessionId) && other.Server.ServerName.Equals(Server?.ServerName))
             {
                 return true;
 

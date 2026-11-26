@@ -40,7 +40,7 @@ namespace BLAZAM.Tests.ActiveDirectory
             var raw = new byte[21];
             for (int i = 0; i < raw.Length; i++)
             {
-                raw[i] = (byte)(i * 13 + 5);
+                raw[i] = (byte)((i * 13) + 5);
             }
 
             var logonHours = new LogonHours();
