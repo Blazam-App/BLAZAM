@@ -503,7 +503,7 @@ namespace BLAZAM.Helpers
         /// <exception cref="ArgumentException">Thrown if the input hex string has an odd number of characters.</exception>
         private static string ToLdapHexString(string? hexString)
         {
-            if (string.IsNullOrEmpty(hexString))
+            if (hexString.IsNullOrEmpty())
             {
                 return string.Empty;
             }
@@ -573,7 +573,7 @@ namespace BLAZAM.Helpers
         /// <exception cref="FormatException">Thrown if the SID string is not in a valid format.</exception>
         public static byte[] ToSidByteArray(this string? sidString)
         {
-            if (string.IsNullOrEmpty(sidString))
+            if (sidString.IsNullOrEmpty())
             {
                 return Array.Empty<byte>();
             }

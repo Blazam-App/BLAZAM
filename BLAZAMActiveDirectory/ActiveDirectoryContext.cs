@@ -607,8 +607,8 @@ namespace BLAZAM.ActiveDirectory
             if (AppRootDirectoryEntry is null || RootDirectoryEntry is null)
             {
                 if (ad == null) throw new ArgumentNullException(nameof(ad), "ADSettings cannot be null for initializing directory entries.");
-                if (string.IsNullOrEmpty(ad.ApplicationBaseDN)) throw new InvalidOperationException("ApplicationBaseDN is not configured.");
-                if (ad.FQDN == null || string.IsNullOrEmpty(ad.FQDN.FqdnToDN())) throw new InvalidOperationException("FQDN is not configured properly to derive root DN.");
+                if (ad.ApplicationBaseDN.IsNullOrEmpty()) throw new InvalidOperationException("ApplicationBaseDN is not configured.");
+                if (ad.FQDN == null || ad.FQDN.FqdnToDN().IsNullOrEmpty()) throw new InvalidOperationException("FQDN is not configured properly to derive root DN.");
 
                 // AppRootDirectoryEntry might be null if ApplicationBaseDN is not set, handle appropriately or ensure it's always set.
                 AppRootDirectoryEntry = new LdapDirectoryEntry(ad.ApplicationBaseDN, this);

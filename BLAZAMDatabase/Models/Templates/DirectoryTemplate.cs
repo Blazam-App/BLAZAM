@@ -323,7 +323,7 @@ namespace BLAZAM.Database.Models.Templates
         private static string ProcessVariable(string? value, string? modifier, string? argument)
         {
             // Return empty string for null/empty input for consistency and safety.
-            if (string.IsNullOrEmpty(value))
+            if (value.IsNullOrEmpty())
             {
                 return string.Empty;
             }
@@ -332,7 +332,7 @@ namespace BLAZAM.Database.Models.Templates
             // so we handle it as a distinct case.
             if (modifier == "regex")
             {
-                if (!string.IsNullOrEmpty(argument))
+                if (!argument.IsNullOrEmpty())
                 {
                     var regex = new Regex(argument);
                     return regex.Match(value).Value;
@@ -342,7 +342,7 @@ namespace BLAZAM.Database.Models.Templates
             }
 
             // First, apply the length constraint from the argument.
-            if (!string.IsNullOrEmpty(argument)
+            if (!argument.IsNullOrEmpty()
                 && int.TryParse(argument, out int number)
                 && number > 0
                 && number <= value.Length)
@@ -351,7 +351,7 @@ namespace BLAZAM.Database.Models.Templates
             }
 
             // Second, apply the case modifier to the (now possibly truncated) value.
-            if (!string.IsNullOrEmpty(modifier))
+            if (!modifier.IsNullOrEmpty())
             {
                 foreach (var mod in modifier)
                 {

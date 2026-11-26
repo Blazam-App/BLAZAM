@@ -56,7 +56,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
             get
             {  // Construct the full LDAP path using the connection context and the object's DN.
                // This replaces the dependency on the old UnderlyingEntry.Path.
-                if (Directory?.ConnectionSettings != null && !string.IsNullOrEmpty(DN))
+                if (Directory?.ConnectionSettings != null && !DN.IsNullOrEmpty())
                 {
                     return $"LDAP://{Directory.ConnectionSettings.ServerAddress}:{Directory.ConnectionSettings.ServerPort}/{DN}";
                 }
@@ -1031,7 +1031,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public List<LdapDirectoryEntry> GetDomainControllers()
         {
             var domainDn = Directory.ConnectionSettings?.FQDN.FqdnToDN();
-            if (string.IsNullOrEmpty(domainDn)) return new();
+            if (domainDn.IsNullOrEmpty())
+            {
+                return new();
+            }
 
             string dcContainerDn = $"CN=Domain Controllers,{domainDn}";
             var searchRequest = new SearchRequest(

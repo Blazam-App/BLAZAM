@@ -86,17 +86,17 @@ namespace BLAZAM.ActiveDirectory
             //     return false;
             // }
 
-            if (string.IsNullOrEmpty(settings.ServerAddress))
+            if (settings.ServerAddress.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("ServerAddress in ADSettings is null or empty.");
                 return default;
             }
-            if (string.IsNullOrEmpty(settings.Username))
+            if (settings.Username.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("Username in ADSettings is null or empty.");
                 return default;
             }
-            if (string.IsNullOrEmpty(settings.Password))
+            if (settings.Password.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Information("Password in ADSettings is null or empty.");
                 return default;
@@ -269,7 +269,7 @@ namespace BLAZAM.ActiveDirectory
         public static bool ConnectWithLdaps(ADSettings settings, out LdapConnection? connection, string? serverHostname = null)
         {
             connection = null;
-            if (string.IsNullOrEmpty(settings.ServerAddress) || settings.ServerPort <= 0 || string.IsNullOrEmpty(settings.Username) || settings.Password == null)
+            if (settings.ServerAddress.IsNullOrEmpty() || settings.ServerPort <= 0 || settings.Username.IsNullOrEmpty() || settings.Password == null)
             {
                 Loggers.ActiveDirectoryLogger.Information("ConnectWithLdaps: Invalid parameters (host, port, username, or password).");
                 return false;
@@ -343,7 +343,7 @@ namespace BLAZAM.ActiveDirectory
 
 
             connection = null;
-            if (string.IsNullOrEmpty(settings.ServerAddress) || settings.ServerPort <= 0 || string.IsNullOrEmpty(settings.Username) || settings.Password == null)
+            if (settings.ServerAddress.IsNullOrEmpty() || settings.ServerPort <= 0 || settings.Username.IsNullOrEmpty() || settings.Password == null)
             {
                 Loggers.ActiveDirectoryLogger.Information("ConnectWithStartTls: Invalid parameters (host, port, username, or password).");
                 return false;

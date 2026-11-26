@@ -149,7 +149,7 @@ namespace BLAZAM.Update.Services
             var client = new GitHubClient(new ProductHeaderValue(Publisher_Name));
 
             var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
-            if (!string.IsNullOrEmpty(token))
+            if (!token.IsNullOrEmpty())
             {
                 client.Credentials = new Credentials(token);
             }

@@ -201,10 +201,10 @@ namespace BLAZAM.Session
                         context.SaveChanges();
                     }
                 }
-                else if (string.IsNullOrEmpty(userSettings.Email)) // Check if existing settings email is empty
+                else if (userSettings.Email.IsNullOrEmpty()) // Check if existing settings email is empty
                 {
                     var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                    if (emailClaim != null && !string.IsNullOrEmpty(emailClaim.Value))
+                    if (emailClaim != null && !emailClaim.Value.IsNullOrEmpty())
                     {
                         userSettings.Email = emailClaim.Value;
                         // Consider if SaveBasicUserPreferences should be called immediately or batched

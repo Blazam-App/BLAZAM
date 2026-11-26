@@ -222,12 +222,12 @@ namespace BLAZAM.Gui.UI.Inputs
             _cancellationList.Add(newSource);
 
 
-            if (string.IsNullOrEmpty(searchText))
+            if (searchText.IsNullOrEmpty())
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }
 
-            if (token.IsCancellationRequested || string.IsNullOrEmpty(searchText))
+            if (token.IsCancellationRequested || searchText.IsNullOrEmpty())
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }

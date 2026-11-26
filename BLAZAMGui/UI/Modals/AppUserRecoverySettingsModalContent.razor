@@ -130,14 +130,14 @@
         var pr = CurrentUser.State.Preferences.PasswordResetSettings;
         if (pin != pr.PIN)
         {
-            pr.PIN = string.IsNullOrEmpty(pin) ? null : await pin.EncryptAsync();
+            pr.PIN = pin.IsNullOrEmpty() ? null : await pin.EncryptAsync();
         }
-        pr.Question1 = string.IsNullOrEmpty(question1) ? null : await question1.EncryptAsync();
-        pr.Answer1 = string.IsNullOrEmpty(answer1) ? null : await answer1.EncryptAsync();
-        pr.Question2 = string.IsNullOrEmpty(question2) ? null : await question2.EncryptAsync();
-        pr.Answer2 = string.IsNullOrEmpty(answer2) ? null : await answer2.EncryptAsync();
-        pr.Question3 = string.IsNullOrEmpty(question3) ? null : await question3.EncryptAsync();
-        pr.Answer3 = string.IsNullOrEmpty(answer3) ? null : await answer3.EncryptAsync();
+        pr.Question1 = question1.IsNullOrEmpty() ? null : await question1.EncryptAsync();
+        pr.Answer1 = answer1.IsNullOrEmpty() ? null : await answer1.EncryptAsync();
+        pr.Question2 = question2.IsNullOrEmpty() ? null : await question2.EncryptAsync();
+        pr.Answer2 = answer2.IsNullOrEmpty() ? null : await answer2.EncryptAsync();
+        pr.Question3 = question3.IsNullOrEmpty() ? null : await question3.EncryptAsync();
+        pr.Answer3 = answer3.IsNullOrEmpty() ? null : await answer3.EncryptAsync();
 
         if (await CurrentUser.State.SaveAllUserSettings())
         {

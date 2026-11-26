@@ -164,7 +164,7 @@ namespace BLAZAM.Services.Background
             AddClaimIfNotNull(userRoles, ClaimTypes.Surname, directoryUser.Sn);
             AddClaimIfNotNull(userRoles, ClaimTypes.Email, directoryUser.Email);
 
-            if (!string.IsNullOrEmpty(impersonatorSid))
+            if (!impersonatorSid.IsNullOrEmpty())
             {
                 userRoles.Add(new Claim(ClaimTypes.UserData, "impersonated"));
                 userRoles.Add(new Claim(ClaimTypes.Actor, impersonatorSid));
@@ -187,7 +187,7 @@ namespace BLAZAM.Services.Background
 
         private static void AddClaimIfNotNull(List<Claim> claims, string type, string? value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 claims.Add(new Claim(type, value));
             }

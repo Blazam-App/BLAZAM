@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BLAZAMGlobal\BLAZAMGlobal.csproj" />
     <ProjectReference Include="..\BLAZAMLoggers\BLAZAMLogger.csproj" />
   </ItemGroup>
 

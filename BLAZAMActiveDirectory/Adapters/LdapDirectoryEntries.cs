@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.DirectoryServices.Protocols;
 
 namespace BLAZAM.ActiveDirectory.Adapters
@@ -97,7 +98,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public IDirectoryEntry Find(string name, string schemaClassName)
         {
             string filter = "(&(objectClass=*)(|(cn=" + name + ")(ou=" + name + ")))";
-            if (!string.IsNullOrEmpty(schemaClassName))
+            if (!schemaClassName.IsNullOrEmpty())
                 filter = "(&(objectClass=" + schemaClassName + ")(|(cn=" + name + ")(ou=" + name + ")))";
 
 

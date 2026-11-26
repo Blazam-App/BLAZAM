@@ -149,7 +149,7 @@ namespace BLAZAM
             var pathBase = AppInstance.Configuration.GetValue<string>("PathBase");
 
             // If a PathBase is configured, apply it to the request pipeline
-            if (!string.IsNullOrEmpty(pathBase))
+            if (!pathBase.IsNullOrEmpty())
             {
                 // Log the PathBase being used for debugging and operational visibility
                 Log.Information("Using PathBase: {PathBase}", pathBase);

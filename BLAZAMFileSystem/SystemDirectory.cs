@@ -27,7 +27,7 @@ namespace BLAZAM.FileSystem
                 // Path.GetFullPath might not add a trailing slash if the directory doesn't exist.
                 // We append one to signify it's a directory for consistency in FullPath.
                 string basePath = base.FullPath; // Get FullPath from base constructor
-                if (!string.IsNullOrEmpty(basePath) &&
+                if (!basePath.IsNullOrEmpty() &&
                     !basePath.EndsWith(Path.DirectorySeparatorChar.ToString()) &&
                     !basePath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
                 {
@@ -38,7 +38,7 @@ namespace BLAZAM.FileSystem
                     FullPath = basePath;
                 }
                 // Re-evaluate FullPath to ensure it's absolute and clean after potential modification
-                if (!string.IsNullOrEmpty(FullPath))
+                if (!FullPath.IsNullOrEmpty())
                 {
                     FullPath = Path.GetFullPath(FullPath);
                 }
@@ -162,7 +162,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                if (string.IsNullOrEmpty(FullPath))
+                if (FullPath.IsNullOrEmpty())
                 {
                     Loggers.SystemLogger.Warning("SystemDirectory.Name: FullPath is null or empty. Cannot determine directory name.");
                     return null;
