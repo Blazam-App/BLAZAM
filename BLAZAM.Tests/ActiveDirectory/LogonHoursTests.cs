@@ -130,7 +130,10 @@ namespace BLAZAM.Tests.ActiveDirectory
             {
                 for (int h = 0; h < 24; h++)
                 {
-                    if (!logonHours.GetLogonHour(day, h)) disallowed++;
+                    if (!logonHours.GetLogonHour(day, h))
+                    {
+                        disallowed++;
+                    }
                 }
             }
             Assert.Equal(1, disallowed);
@@ -141,7 +144,10 @@ namespace BLAZAM.Tests.ActiveDirectory
         {
             var logonHours = new LogonHours();
             var raw = new byte[21];
-            for (int i = 0; i < raw.Length; i++) raw[i] = (byte)(i * 11);
+            for (int i = 0; i < raw.Length; i++)
+            {
+                raw[i] = (byte)(i * 11);
+            }
 
             var hex = logonHours.ToHexString(raw);
 

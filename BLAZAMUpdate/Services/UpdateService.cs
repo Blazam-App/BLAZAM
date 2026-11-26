@@ -457,7 +457,10 @@ namespace BLAZAM.Update.Services
             }
             using var context = _dbFactory?.CreateDbContext();
             if (context == null)
+            {
                 return false;
+            }
+
             WindowsImpersonation? impersonation = null;
 
             var appSettings = context.AppSettings.FirstOrDefault();

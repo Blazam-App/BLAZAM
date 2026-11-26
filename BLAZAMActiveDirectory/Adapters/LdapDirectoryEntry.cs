@@ -270,7 +270,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
             {
                 existingCache = new(new());
             }
-            if (_isNew) return null;
+            if (_isNew)
+            {
+                return null;
+            }
+
             Loggers.ActiveDirectoryLogger.Debug("Creating ldapConnection in LdapDirectoryEntry {@DirectoryNotNull}", Directory != null && Directory.ConnectionSettings != null);
 
             GetAllAttributes(existingCache);
@@ -558,7 +562,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         private static object? ConvertSingleValue(object rawValue, string propertyName)
         {
             var schemaInfo = _schemaCache[propertyName];
-            if (rawValue == null) return null;
+            if (rawValue == null)
+            {
+                return null;
+            }
 
             // Raw value from S.DS.P is often byte[] or string
             // We use oMSyntax for primary type determination
@@ -568,7 +575,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 case 1: // Boolean
                     if (rawValue is byte[] bytesBool) // Sometimes comes as byte array
                     {
-                        if (bytesBool.Length > 0 && bytesBool[0] != 0) return true; // AD often uses 0xFF for TRUE
+                        if (bytesBool.Length > 0 && bytesBool[0] != 0)
+                        {
+                            return true; // AD often uses 0xFF for TRUE
+                        }
+
                         return false;
                     }
                     // AD often returns "TRUE" or "FALSE" as strings for booleans when using S.DS.DirectoryEntry
@@ -576,10 +587,20 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     // If it comes as string "TRUE" / "FALSE"
                     if (rawValue is string strBool)
                     {
-                        if (bool.TryParse(strBool, out bool bResult)) return bResult; // Standard .NET bool parsing
-                                                                                      // AD specific:
-                        if (string.Equals(strBool, "TRUE", StringComparison.OrdinalIgnoreCase)) return true;
-                        if (string.Equals(strBool, "FALSE", StringComparison.OrdinalIgnoreCase)) return false;
+                        if (bool.TryParse(strBool, out bool bResult))
+                        {
+                            return bResult; // Standard .NET bool parsing
+                        }
+                        // AD specific:
+                        if (string.Equals(strBool, "TRUE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+
+                        if (string.Equals(strBool, "FALSE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
                     }
                     // If it comes as an integer-like value (though less common directly via S.DS.P for bool)
                     try { return Convert.ToInt32(rawValue) != 0; }
@@ -623,7 +644,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 case 22: // String(IA5)
                 case 27: // String(Case Sensitive)
                 case 64: // String(Unicode)
-                    if (rawValue is byte[] bytesStr) return Encoding.UTF8.GetString(bytesStr);
+                    if (rawValue is byte[] bytesStr)
+                    {
+                        return Encoding.UTF8.GetString(bytesStr);
+                    }
+
                     return rawValue.ToString();
 
                 case 23: // UTC Time
@@ -664,7 +689,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                 schemaInfo.AtttributeName.Equals("pwdLastSet", StringComparison.OrdinalIgnoreCase) ||
                                 schemaInfo.AtttributeName.Equals("lockoutTime", StringComparison.OrdinalIgnoreCase) ||
                                 schemaInfo.AtttributeName.Contains("Logon")) // lastLogon, lastLogonTimestamp
+                            {
                                 return null; // Or a specific "Never" representation
+                            }
                         }
                         try
                         {
@@ -689,7 +716,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
                           // oMObjectClass would ideally be decoded from BER to a dotted OID string
                           // and then mapped. For common cases like DNs:
                           // If oMObjectClass represents a DN syntax (e.g., "1.3.12.2.1011.28.0.714" for Object(DS-DN))
-                    if (rawValue is byte[] bytesDN) return Encoding.UTF8.GetString(bytesDN);
+                    if (rawValue is byte[] bytesDN)
+                    {
+                        return Encoding.UTF8.GetString(bytesDN);
+                    }
+
                     return rawValue.ToString(); // Typically a Distinguished Name string
 
                 default:
@@ -766,25 +797,53 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 foreach (var attr in attributesToCommit)
                 {
                     // distinguishedName is part of the request DN, not an attribute in the payload.
-                    if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase)) continue;
-                    if (attr.Key.Equals("cn", StringComparison.OrdinalIgnoreCase)) continue;
-                    if (attr.Key.Equals("name", StringComparison.OrdinalIgnoreCase)) continue;
+                    if (attr.Key.Equals("distinguishedname", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (attr.Key.Equals("cn", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (attr.Key.Equals("name", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
 
                     var dirAttr = new DirectoryAttribute(attr.Key);
-                    if (attr.Value is string strValue) dirAttr.Add(strValue);
-                    else if (attr.Value is byte[] byteValue) dirAttr.Add(byteValue);
+                    if (attr.Value is string strValue)
+                    {
+                        dirAttr.Add(strValue);
+                    }
+                    else if (attr.Value is byte[] byteValue)
+                    {
+                        dirAttr.Add(byteValue);
+                    }
                     else if (attr.Value is IEnumerable<string> stringValues)
                     {
-                        foreach (var val in stringValues) dirAttr.Add(val);
+                        foreach (var val in stringValues)
+                        {
+                            dirAttr.Add(val);
+                        }
                     }
-                    else if (attr.Value != null) dirAttr.Add(attr.Value.ToString());
+                    else if (attr.Value != null)
+                    {
+                        dirAttr.Add(attr.Value.ToString());
+                    }
 
                     if (dirAttr.Count > 0)
+                    {
                         addRequest.Attributes.Add(dirAttr);
+                    }
                 }
 
 
-                if (addRequest.Attributes.Count == 0) throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
+                if (addRequest.Attributes.Count == 0)
+                {
+                    throw new InvalidOperationException("Cannot commit a new entry with no attributes.");
+                }
 
                 var response = SendRequestAndGetResponse<AddResponse>(addRequest);
                 if (response?.ResultCode == ResultCode.Success)
@@ -889,7 +948,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             else if (value is IEnumerable<string> stringValues)
             {
                 foreach (var val in stringValues)
+                {
                     attributeModification.Add(val);
+                }
             }
             var modifyRequest = new ModifyRequest(DN, attributeModification);
             var modifyResponse = SendRequestAndGetResponse<ModifyResponse>(modifyRequest);

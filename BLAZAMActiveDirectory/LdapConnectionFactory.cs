@@ -157,7 +157,10 @@ namespace BLAZAM.ActiveDirectory
                     ConnectWithLdaps(settings, out connection, serverHostname);
                 }
                 if (connection == null)
+                {
                     return null;
+                }
+
                 var appConnection = new AppLdapConnection(connection, startedTLS);
 
                 if (_disposerTimer == null)
@@ -182,7 +185,11 @@ namespace BLAZAM.ActiveDirectory
                 try
                 {
                     var count = _connectionPool.Count;
-                    if (count < PoolSize) return;
+                    if (count < PoolSize)
+                    {
+                        return;
+                    }
+
                     for (int i = 0; i < count - PoolSize; i++)
                     {
                         if (!_connectionPool[i].IsDisposed
@@ -426,7 +433,11 @@ namespace BLAZAM.ActiveDirectory
 
         private static bool StartTls(LdapConnection currentConnection)
         {
-            if (OperatingSystem.IsWindows()) throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
+            if (OperatingSystem.IsWindows())
+            {
+                throw new AppException("Windows should use the signing and sealing options, not directly call StartTLS");
+            }
+
             lock (_tlsLock)
             {
                 currentConnection.SessionOptions.StartTransportLayerSecurity(null);

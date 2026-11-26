@@ -626,7 +626,10 @@ namespace BLAZAM.Helpers
 
         private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context)
         {
-            if (sre == null || sre.Attributes == null) return default;
+            if (sre == null || sre.Attributes == null)
+            {
+                return default;
+            }
 
             IDirectoryEntryAdapter? thisObject = null;
             List<string> objectClasses = new List<string>();

@@ -80,7 +80,10 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_searchDisabled == value)
+                {
                     return;
+                }
+
                 _searchDisabled = value;
             }
         }
@@ -107,7 +110,10 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_searchResults == value)
+                {
                     return;
+                }
+
                 _searchResults = value;
                 SearchResultsChanged.InvokeAsync(value);
             }
@@ -129,7 +135,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedResult == value)
+                {
                     return;
+                }
 
                 SearchResults = new List<IDirectoryEntryAdapter>
                 {
@@ -158,8 +166,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedSid == value)
+                {
                     return;
-
+                }
 
                 _selectedSid = value;
 
@@ -180,8 +189,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedGuid == value)
+                {
                     return;
-
+                }
 
                 _selectedGuid = value;
 

@@ -362,7 +362,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_lastKnownParent != null) return _lastKnownParent;
+                if (_lastKnownParent != null)
+                {
+                    return _lastKnownParent;
+                }
+
                 var parentDN = GetStringAttribute("lastknownparent");
                 _lastKnownParent = parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
                 return _lastKnownParent;
@@ -458,7 +462,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (DirectoryEntry != null)
+                {
                     DirectoryEntry.SetPropertyValue("objectclass", value);
+                }
                 else
                 {
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for {@DN}", DN);
