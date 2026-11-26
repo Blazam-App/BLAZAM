@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-2025
+    runs-on: windows-2022
     permissions: write-all
         
     steps:
