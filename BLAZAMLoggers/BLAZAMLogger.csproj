@@ -15,7 +15,6 @@
     <PackageReference Include="Serilog.Enrichers.Environment" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.Seq" />
-    <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" />
   </ItemGroup>
 
