@@ -1,5 +1,6 @@
 ﻿using BLAZAM.Common.Data;
 using BLAZAM.FileSystem;
+using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using BLAZAM.Update.Exceptions;
@@ -415,6 +416,12 @@ namespace BLAZAM.Update
 
                         using var client = new HttpClient();
                         client.DefaultRequestHeaders.UserAgent.ParseAdd("BLAZAM-Updater");
+                        var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+                        if (!token.IsNullOrEmpty())
+                        {
+                            client.DefaultRequestHeaders.Authorization =
+                                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                        }
                         using var response = await client.GetAsync(Release.DownloadURL, HttpCompletionOption.ResponseHeadersRead, _cancellationTokenSource.Token);
 
                         if (!response.IsSuccessStatusCode)
