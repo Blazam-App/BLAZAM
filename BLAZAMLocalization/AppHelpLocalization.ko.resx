@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>이 기능은 아직 개발 중입니다</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>UPN 접미사를 비워 두면 사용자가 사용 가능한 접미사를 선택할 수 있으며, 기본값은 도메인 FQDN입니다.</value>
+  </data>
 </root>

@@ -22,8 +22,8 @@ namespace BLAZAM.Tests.ActiveDirectory
             var credential = new LapsCredential(secureJson);
 
             // Assert
-            Assert.Equal("TestAccount", credential.AccountName.ToPlainText());
-            Assert.Equal("TestPassword", credential.Password.ToPlainText());
+            Assert.Equal("TestAccount", credential.AccountName.FromSecureString());
+            Assert.Equal("TestPassword", credential.Password.FromSecureString());
             // Check CreationTime is parsed correctly
             long fileTime = long.Parse("01D9F7A2B6C0A000", System.Globalization.NumberStyles.HexNumber);
             var expectedDate = DateTime.FromFileTimeUtc(fileTime);

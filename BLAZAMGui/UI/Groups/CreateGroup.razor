@@ -93,7 +93,7 @@
     IADOrganizationalUnit? parentOU;
     IADGroup? newGroup;
 
-    async void OUSelected(IDirectoryEntryAdapter entry)
+    async Task OUSelected(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)
         {
@@ -105,7 +105,7 @@
             parentOU = ou;
 
 
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 

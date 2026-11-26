@@ -29,9 +29,9 @@
         Modal.SetOnYes(SaveChanges);
         Modal.SetYesText(AppLocalization[Lang.Save_Photo]);
         Modal.Title = AppLocalization[Lang.Change_Thumbnail];
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
-    private async void LoadIcon(IBrowserFile e)
+    private async Task LoadIcon(IBrowserFile e)
     {
         try
         {
@@ -50,7 +50,7 @@
         catch(Exception ex){
             Loggers.SystemLogger.Error(ex, "Error uploading thumbnail image.");
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 

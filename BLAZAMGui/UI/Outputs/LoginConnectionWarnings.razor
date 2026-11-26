@@ -18,6 +18,6 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Monitor.OnDirectoryConnectionChanged += (async (state) => { await StateHasChangedAsync(); });
+        Monitor.OnDirectoryConnectionChanged += (async (state) => { await InvokeStateHasChangedAsync(); });
     }
 }

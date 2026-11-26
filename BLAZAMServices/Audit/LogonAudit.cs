@@ -24,7 +24,7 @@ namespace BLAZAM.Services.Audit
         public async Task<bool> Impersonate(ClaimsPrincipal impersonator, ClaimsPrincipal impersonateee, string? ipAddress = null)
         {
             UserState = ApplicationUserState.CreateUserState(impersonateee, factory).AuditActor;
-
+            UserState.Impersonator = impersonator.Claims.FirstOrDefault(c => c.Type == ClaimTypes.WindowsAccountName)?.Value;
             return await Log("Impersonation", ipAddress);
         }
         public async Task<bool> Login(ClaimsPrincipal user, string? ipAddress = null)

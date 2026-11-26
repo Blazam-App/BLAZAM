@@ -27,8 +27,6 @@ namespace BLAZAM.Database.Models
     /// </summary>
     public class ActiveDirectoryField : RecoverableAppDbSetBase, IActiveDirectoryField
     {
-        private const string _desription = "description";
-        private const string _memberOf = "memberOf";
 
         [NotMapped]
         public new DateTime? DeletedAt { get => null; set { _ = value; } }
@@ -81,78 +79,80 @@ namespace BLAZAM.Database.Models
 
             return false;
         }
-
+        /// <summary>
+        /// Determines whether the current field is valid for the specified Active Directory object type.
+        /// </summary>
+        /// <remarks>Supports specific field sets for User, Contact, Computer, and Group. For unsupported
+        /// or unhandled object types, only the description field is treated as valid.</remarks>
+        /// <param name="objectType">The Active Directory object type to validate against.</param>
+        /// <returns>true if the field is supported for the specified object type; otherwise, false.</returns>
         public bool IsFieldAppropriateForObject(ActiveDirectoryObjectType objectType)
         {
-
             switch (objectType)
             {
                 case ActiveDirectoryObjectType.User:
                     switch (FieldName)
                     {
-                        case "l":
-                        case "company":
-                        case "department":
-                        case _desription:
-                        case "employeeId":
-                        case "homeDirectory":
-                        case "homeDrive":
-                        case "homePhone":
-                        case "logonHours":
-                        case "manager":
-                        case "mail":
-                        case _memberOf:
-                        case "pager":
-                        case "physicalDeliveryOffice":
-                        case "postalCode":
-                        case "profilePath":
-                        case "scriptPath":
-                        case "st":
-                        case "streetAddress":
-                        case "telephoneNumber":
-                        case "title":
-                        case "thumbnail":
-                        case "userWorkstations":
-
+                        case ActiveDirectoryFields.CityFieldName:
+                        case ActiveDirectoryFields.CompanyFieldName:
+                        case ActiveDirectoryFields.DepartmentFieldName:
+                        case ActiveDirectoryFields.DescriptionFieldName:
+                        case ActiveDirectoryFields.EmployeeIdFieldName:
+                        case ActiveDirectoryFields.HomeDirectoryFieldName:
+                        case ActiveDirectoryFields.HomeDriveFieldName:
+                        case ActiveDirectoryFields.HomePhoneFieldName:
+                        case ActiveDirectoryFields.LogonHoursFieldName:
+                        case ActiveDirectoryFields.ManagerFieldName:
+                        case ActiveDirectoryFields.EmailFieldName:
+                        case ActiveDirectoryFields.PagerFieldName:
+                        case ActiveDirectoryFields.PhysicalDeliveryOfficeNameFieldName:
+                        case ActiveDirectoryFields.ZipFieldName:
+                        case ActiveDirectoryFields.ProfilePathFieldName:
+                        case ActiveDirectoryFields.ScriptPathFieldName:
+                        case ActiveDirectoryFields.StateFieldName:
+                        case ActiveDirectoryFields.StreetAddressFieldName:
+                        case ActiveDirectoryFields.TelephoneNumberFieldName:
+                        case ActiveDirectoryFields.TitleFieldName:
+                        case ActiveDirectoryFields.ThumbnailPhotoFieldName:
+                        case ActiveDirectoryFields.LogOnToFieldName:
                             return true;
                     }
 
                     break;
+
                 case ActiveDirectoryObjectType.Contact:
                     switch (FieldName)
                     {
-                        case "l":
-                        case "company":
-                        case "department":
-                        case _desription:
-                        case "displayName":
-                        case "distinguishedName":
-                        case "employeeId":
-                        case "homePhone":
-                        case "manager":
-                        case "mail":
-                        case _memberOf:
-                        case "objectSID":
-                        case "pager":
-                        case "physicalDeliveryOffice":
-                        case "postalCode":
-                        case "st":
-                        case "streetAddress":
-                        case "telephoneNumber":
-                        case "title":
-                        case "thumbnail":
-
+                        case ActiveDirectoryFields.CityFieldName:
+                        case ActiveDirectoryFields.CompanyFieldName:
+                        case ActiveDirectoryFields.DepartmentFieldName:
+                        case ActiveDirectoryFields.DescriptionFieldName:
+                        case ActiveDirectoryFields.DisplayNameFieldName:
+                        case ActiveDirectoryFields.DNFieldName:
+                        case ActiveDirectoryFields.EmployeeIdFieldName:
+                        case ActiveDirectoryFields.HomePhoneFieldName:
+                        case ActiveDirectoryFields.ManagerFieldName:
+                        case ActiveDirectoryFields.EmailFieldName:
+                        case ActiveDirectoryFields.SIDFieldName:
+                        case ActiveDirectoryFields.PagerFieldName:
+                        case ActiveDirectoryFields.PhysicalDeliveryOfficeNameFieldName:
+                        case ActiveDirectoryFields.ZipFieldName:
+                        case ActiveDirectoryFields.StateFieldName:
+                        case ActiveDirectoryFields.StreetAddressFieldName:
+                        case ActiveDirectoryFields.TelephoneNumberFieldName:
+                        case ActiveDirectoryFields.TitleFieldName:
+                        case ActiveDirectoryFields.ThumbnailPhotoFieldName:
                             return true;
                     }
 
                     break;
+
                 case ActiveDirectoryObjectType.Computer:
                     switch (FieldName)
                     {
-                        case _memberOf:
-                        case _desription:
-                        case "operatingSystemVersion":
-                        case "msLAPS-Password":
+                        case ActiveDirectoryFields.DescriptionFieldName:
+                        case ActiveDirectoryFields.OSFieldName:
+                        case ActiveDirectoryFields.LapsPasswordFieldName:
                             return true;
                     }
 
@@ -161,27 +161,29 @@ namespace BLAZAM.Database.Models
                 case ActiveDirectoryObjectType.Group:
                     switch (FieldName)
                     {
-                        case _desription:
-                        case "mail":
-                        case _memberOf:
-                        case "groupType":
+                        case ActiveDirectoryFields.DescriptionFieldName:
+                        case ActiveDirectoryFields.EmailFieldName:
+                        case ActiveDirectoryFields.MemberOfFieldName:
+                        case ActiveDirectoryFields.GroupTypeFieldName:
                             return true;
                     }
 
                     break;
 
                 case ActiveDirectoryObjectType.OU:
-
                     break;
+
+                case ActiveDirectoryObjectType.BitLocker:
+                    break;
+
                 default:
                     switch (FieldName)
                     {
-                        case _desription:
+                        case ActiveDirectoryFields.DescriptionFieldName:
                             return true;
                     }
 
                     break;
-
             }
 
             return false;

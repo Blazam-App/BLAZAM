@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>Учетная запись включена.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>Аккаунт заблокирован.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>Аккаунт заблокирован</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>Аккаунт не заблокирован.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Подразделения</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>ИЛИ</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Смена пропуска</value>
   </data>
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Сгенерировать новый токен API</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
-    <value>Добавлен член группы</value>
+  <data name="Group member added" xml:space="preserve">
+    <value>Добавлен участник группы</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>Член группы удален</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>Участник группы удален</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>Поиск по группам</value>
@@ -1391,5 +1388,338 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Введите значение здесь</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Нет подходящих записей</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Плагины</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Вопрос</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Ответ</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Перейти к пользователю</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Печать</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Удалено из группы</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Добавлено в группу</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>Пользователь заблокирован</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Проверить наличие обновлений</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Добавить участника</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Объект удалён</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Создать контакт</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Тип подключения</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Распределение</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Имя пользователя отсутствует</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>Пароль отсутствует</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Закрыть все</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Срок действия токена истек</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>Пользователь отключён</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Компьютеры</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Прочитанные уведомления</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Изменено пользователем</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Член</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Подтвердите удаление</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Учетные данные в порядке</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Состояние подключения к Active Directory</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Контроллеры домена</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Серийный</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Емкость</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Задержка в секундах</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>Используется</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Делегат</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Безопасность</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Зашифровано</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Глобальные настройки</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Глобальный</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Универсальный</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Инвертировать</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>События</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Прогресс</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Результат</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Подключено</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Кому</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Одобрить</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Завершение работы</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Перезагрузить</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Новости</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Срок действия пароля</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Срок действия пароля не истекает</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Действие</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Цель</value>
+  </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Триггеры</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Пароль изменён</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Завершить редактирование</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Учетная запись включена</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Поиск в каталоге</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Нет соответствующих записей</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Расписание выполнения</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Получить новости</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Выполнить</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Создать ещё</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Текущий шаблон</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Пользователь заблокирован</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Участник группы удалён</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Исключенные группы</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Запись изменена</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>У вас нет прав для входа</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Неизвестная ошибка при попытке входа в систему</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Контрольные вопросы</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Удалить сопоставление разрешений</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Нет непрочитанных уведомлений</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Запрос на доступ отправлен</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Настройки сохранены</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Не удалось сохранить настройки</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Никогда не использовалось</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Компактный вид</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Начните вводить текст для поиска...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Извините, результаты не найдены 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>К сожалению, точных совпадений не найдено, попробуйте добавить больше символов</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Нажмите для подробностей</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Нажмите, чтобы просмотреть документацию API</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Запланировано автоматическое обновление.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Запустить հիմա</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>После выполнения</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Оператор</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Никогда</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Пользовательский</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Добавить виджет</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Запланированное правило</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>И</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Значения</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>Без изменений</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Удалить из всех групп</value>
   </data>
 </root>

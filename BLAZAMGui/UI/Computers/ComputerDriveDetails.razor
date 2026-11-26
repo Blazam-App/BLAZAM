@@ -65,14 +65,14 @@ else
         {
             GetDriveData();
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
     private void GetDriveData()
     {
         Task.Run(async () =>
            {
                Drives = await Computer.GetDrivesAsync();
-               await StateHasChangedAsync();
+               await InvokeStateHasChangedAsync();
 
            });
     }

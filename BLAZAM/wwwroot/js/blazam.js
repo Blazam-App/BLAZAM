@@ -4,7 +4,7 @@ window.updateCookieExpiration = async () => {
     //Only update at least 500ms intervals
     if (currentTime - lastRequestTime > 500) {
         let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // Check for expiration
                 let response = JSON.parse(xhr.response);
@@ -28,7 +28,7 @@ window.attemptSignIn = async (loginReq) => {
 
     let xhr = new XMLHttpRequest();
     let response = await new Promise((resolve, reject) => {
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 resolve(xhr.response);
             } else if (this.readyState == 4 && this.status != 200) {
@@ -61,12 +61,12 @@ window.createGauge = async (id, maxValue) => {
     dialGauges[id] = Gauge(document.getElementById(id), {
         max: maxValue,
         // custom label renderer
-        label: function(value) {
+        label: function (value) {
             return Math.round(value) + "/" + this.max;
         },
         value: 0,
         // Custom dial colors (Optional)
-        color: function(value) {
+        color: function (value) {
             if (value < 20) {
                 return "#5ee432"; // green
             } else if (value < 40) {
@@ -136,6 +136,49 @@ window.localStorageHelper = {
     removeItem: (key) => {
         localStorage.removeItem(key);
     }
+};
+
+window.sanitizeBlazamUrl = (rawUrl) => {
+    try {
+        // Fall back to a dummy base if a relative path was passed
+        const url = new URL(rawUrl, 'https://app.local');
+        let path = url.pathname;
+
+        // 1. Sanitize Search queries (/search/Marketing -> /search/:query)
+        path = path.replace(/^\/search\/[^\/]+/i, '/search/:query');
+
+        // 2. Sanitize View endpoints (/view/CN%3D... -> /view/:object)
+        path = path.replace(/^\/view\/[^\/]+/i, '/view/:object');
+
+        // 3. Fallback catch-all for any unhandled encoded or plain AD Distinguished Names
+        // Matches patterns like CN=..., OU=..., DC=..., or URL-encoded equivalents
+        path = path.replace(/(?:CN|OU|DC)(?:%3D|=)[^\/&?]+/gi, ':dn');
+
+        return {
+            page_path: path,
+            page_location: 'https://app.local' + path
+        };
+    } catch {
+        return {
+            page_path: '/unknown',
+            page_location: 'https://app.local/unknown'
+        };
+    }
+};
+
+
+window.trackBlazamPageView = (url) => {
+    if (typeof gtag !== 'function') return;
+
+    const sanitized = window.sanitizeBlazamUrl(url || window.location.href);
+
+    gtag('event', 'page_view', {
+        page_title: 'Blazam',
+        page_path: sanitized.page_path,
+        page_location: sanitized.page_location,
+        page_referrer: '', // Clears the referrer so previous AD paths don't leak
+        send_page_view: false
+    });
 };
 
 

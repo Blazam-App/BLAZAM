@@ -53,6 +53,60 @@ namespace BLAZAM.ActiveDirectory.Data
             return LdapConnection.SendRequest(request);
         }
 
+        private static ExpiringMemoryCache _cachedUpnSuffixes = new();
+        internal List<string> GetForestAlternativeUpnSuffixes()
+        {
+            var _cachedValue = _cachedUpnSuffixes.GetValue<List<string>>();
+            if (_cachedValue != null)
+            {
+                return _cachedValue;
+            }
+            var suffixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+         
+
+            // 1. Query RootDSE for configurationNamingContext
+            var rootDseRequest = new SearchRequest(
+                distinguishedName: "",
+                ldapFilter: "(objectClass=*)",
+                searchScope: SearchScope.Base,
+                attributeList: new[] { "configurationNamingContext" }
+            );
+
+            var rootDseResponse = (SearchResponse)LdapConnection.SendRequest(rootDseRequest);
+            var configContext = rootDseResponse.Entries[0]
+                .Attributes["configurationNamingContext"]?[0]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(configContext))
+            {
+                return suffixes.ToList();
+            }
+
+            // 2. Query CN=Partitions for uPNSuffixes
+            var partitionsDn = $"CN=Partitions,{configContext}";
+            var partitionsRequest = new SearchRequest(
+                distinguishedName: partitionsDn,
+                ldapFilter: "(objectClass=crossRefContainer)",
+                searchScope: SearchScope.Base,
+                attributeList: new[] { "uPNSuffixes" }
+            );
+
+            var partitionsResponse = (SearchResponse)SendRequest(partitionsRequest);
+            if (partitionsResponse.Entries.Count > 0 &&
+                partitionsResponse.Entries[0].Attributes.Contains("uPNSuffixes"))
+            {
+                foreach (var value in partitionsResponse.Entries[0].Attributes["uPNSuffixes"].GetValues(typeof(string)))
+                {
+                    if (value is string suffix && !string.IsNullOrWhiteSpace(suffix))
+                    {
+                        suffixes.Add(suffix);
+                    }
+                }
+            }
+            var suffixList = suffixes.ToList();
+            _cachedUpnSuffixes.SetValue(suffixList,TimeSpan.FromMinutes(5));
+            return suffixList;
+        }
         ~AppLdapConnection()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

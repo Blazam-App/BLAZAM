@@ -144,7 +144,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
         protected void InitializeTreeView()
         {
             LoadingData = true;
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
             if (RootOU is null || RootOU.Count < 1)
             {
                 TopLevel = new ADOrganizationalUnit();

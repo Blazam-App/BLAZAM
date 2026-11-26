@@ -69,7 +69,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
         public ActiveDirectoryObjectType? ObjectTypeFilter { get; set; }
         public bool? EnabledOnly { get; set; }
-        public int MaxResults { get; set; } = 500;
+        public int MaxResults { get; set; } = DatabaseCache.ActiveDirectorySettings?.MaxSearchResults ?? 500;
 
         public List<IDirectoryEntryAdapter> Results { get; set; } = new();
         public string LdapFilter { get; private set; }
@@ -140,15 +140,7 @@ namespace BLAZAM.ActiveDirectory.Searchers
 
                 var pageOffset = 1;
 
-                //searcher = new DirectorySearcher((SearchRoot as LdapDirectoryEntry)?.UnderlyingEntry)
-                //{
-                //    VirtualListView = new DirectoryVirtualListView(0, PageSize - 1, pageOffset),
-                //    PageSize = PageSize,
-                //    Sort = new SortOption(ActiveDirectoryFields.CanonicalName.FieldName, SortDirection.Ascending),
-                //    SearchScope = SearchScope,
-                //    SizeLimit = MaxResults,
-                //    Filter = "(&(|(&(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=group)(objectClass=contact)(&(objectCategory=computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))(objectClass=organizationalUnit)(objectClass=printQueue)))"
-                //};
+
 
                 if (EnabledOnly == false)
                 {
@@ -523,55 +515,6 @@ namespace BLAZAM.ActiveDirectory.Searchers
                 pageRequestControl.Cookie = pageResponseControl.Cookie;
 
             } while (true); // The loop is controlled by the break statement inside.
-
-
-
-
-
-
-            //bool moreResults = true;
-            //SearchState = SearchState.Collecting;
-            //SearchResultCollection lastResults;
-            //try
-            //{
-            //    if (cancellationToken?.IsCancellationRequested == true) return;
-
-            //    lastResults = searcher.FindAll();
-            //    if (cancellationToken?.IsCancellationRequested == true) return;
-
-            //    var count = lastResults.Count;
-            //}
-            //catch
-            //{
-            //    searcher.VirtualListView = null;
-            //    lastResults = searcher.FindAll();
-            //}
-
-            //AddResults<TObject, TInterface>(lastResults);
-
-            //if (ObjectTypeFilter != ActiveDirectoryObjectType.OU)
-            //{
-            //    var approxTotal = searcher.VirtualListView?.ApproximateTotal;
-            //    var progress = 0;
-            //    if (approxTotal != null && approxTotal > 0)
-            //        progress = _searchResults.Count / approxTotal.Value;
-            //}
-            //if (lastResults.Count < pageSize)
-            //    moreResults = false;
-
-            //while (moreResults && cancellationToken?.IsCancellationRequested != true && searcher.VirtualListView != null)
-            //{
-            //    if (searcher.VirtualListView != null)
-            //        searcher.VirtualListView.Offset += pageSize;
-            //    //else
-            //    //    throw new ApplicationException("The searcher lost it's VirtualListView in the middle of searching!");
-            //    lastResults = searcher.FindAll();
-            //    AddResults<TObject, TInterface>(lastResults);
-            //    if (searcher.VirtualListView == null || lastResults.Count < pageSize)
-            //        moreResults = false;
-
-            //}
-
 
         }
 

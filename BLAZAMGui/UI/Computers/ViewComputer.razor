@@ -152,12 +152,12 @@
                                 <ViewSection Title="LAPS">
 
                                     <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
-                                                     Value="@Computer.LapsUsername.ToPlainText()"
+                                                     Value="@Computer.LapsUsername.FromSecureString()"
                                                      ReadOnly="true" />
 
                                     <DynamicMudInput T=string Label="@AppLocalization[Lang.Password]"
                                     Class="password-font"
-                                                     Value="@Computer.LapsPassword.ToPlainText()"
+                                                     Value="@Computer.LapsPassword.FromSecureString()"
                                                      ReadOnly="true" />
 
                                     <DynamicMudInput T=DateTime? Label="@AppLocalization[Lang.Expires]"

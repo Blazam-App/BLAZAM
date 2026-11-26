@@ -324,4 +324,7 @@
   <data name="Construction_Notice" xml:space="preserve">
     <value>Această funcționalitate este încă în construcție</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Lăsarea sufixului UPN necompletat va permite utilizatorului să aleagă orice sufix disponibil, implicit fiind FQDN-ul domeniului.</value>
+  </data>
 </root>

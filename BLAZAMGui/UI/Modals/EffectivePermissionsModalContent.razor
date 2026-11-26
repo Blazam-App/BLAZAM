@@ -29,7 +29,7 @@ else if(simRunning)
     private async Task onRun()
     {
         simRunning = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         simTarget = Directory.FindGlobalEntryBySid(Target.SID);
         var permissionApplicator = new PermissionApplicator(UserStateService, DbFactory, Directory);
         var simUser = new ApplicationUserState(DbFactory);
@@ -37,6 +37,6 @@ else if(simRunning)
         simTarget.SetCurrentUser(simUser.ToActiveDirectoryUserState());
         simRunning = false;
         simRan = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 }

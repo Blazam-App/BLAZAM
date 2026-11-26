@@ -38,6 +38,10 @@ namespace BLAZAM.Helpers
         }
         public static string AppTrim(this string str)
         {
+            if (str.IsNullOrEmpty())
+            {
+                return String.Empty;
+            }
             var trimmed = str.Trim();
             trimmed = trimmed.Trim('⠀');
             return trimmed;
@@ -96,7 +100,7 @@ namespace BLAZAM.Helpers
         /// </summary>
         /// <param name="secureString">The SecureString to convert. If null, an empty string is returned.</param>
         /// <returns>The plain text string.</returns>
-        public static string ToPlainText(this SecureString? secureString)
+        public static string FromSecureString(this SecureString? secureString)
         {
             if (secureString == null)
             {

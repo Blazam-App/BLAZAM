@@ -27,7 +27,7 @@ namespace BLAZAM.Services
                 {
                     return context.AppSettings.FirstOrDefault()?.AnalyticsId;
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     Loggers.DatabaseLogger.Error(ex, "Analytics: Error accessing AppSettings for ProductionGA4Property.");
                     return null;
@@ -48,7 +48,11 @@ namespace BLAZAM.Services
             _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory), "dbFactory cannot be null in Analytics constructor.");
             _jsRuntime = jSRuntime ?? throw new ArgumentNullException(nameof(jSRuntime), "jSRuntime cannot be null in Analytics constructor.");
             _httpClient = httpClient;
+
         }
+
+
+
 
         /// <summary>
         /// Posts an analytics event for an object being moved.

@@ -324,4 +324,7 @@ Probeer aangepaste updatereferenties te configureren.</value>
   <data name="Construction_Notice" xml:space="preserve">
     <value>Deze functie is nog in ontwikkeling</value>
   </data>
+  <data name="Template_Empty_Upn_Suffix" xml:space="preserve">
+    <value>Als u het UPN-achtervoegsel leeg laat, kan de gebruiker elk beschikbaar achtervoegsel kiezen, waarbij standaard de domein-FQDN wordt gebruikt.</value>
+  </data>
 </root>

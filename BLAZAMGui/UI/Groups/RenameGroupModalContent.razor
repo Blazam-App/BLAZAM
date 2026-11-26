@@ -46,7 +46,7 @@
         {
             _privateEntryInstance = Directory.Groups.FindGroupBySID(Group.SID.ToSidString());
             _originalName = _privateEntryInstance.GroupName;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 
@@ -55,7 +55,7 @@
         await base.OnInitializedAsync();
         Modal.SetOnYes(SaveChanges);
         Modal.YesEnabled = () => { return !LoadingData; };
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
 
     }

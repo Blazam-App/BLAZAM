@@ -1,4 +1,3 @@
-﻿
 using System.Collections;
 using System.DirectoryServices.Protocols;
 
@@ -42,13 +41,14 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
             var pageRequestControl = new PageResultRequestControl(1000);
             request.Controls.Add(pageRequestControl);
-
+            var results = 0;
             while (true)
             {
                 var response = (SearchResponse)connection.SendRequest(request);
 
                 foreach (SearchResultEntry entry in response.Entries)
                 {
+                    results++;
                     yield return new LdapDirectoryEntry(entry, _directory);
                 }
 
@@ -56,7 +56,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     .OfType<PageResultResponseControl>()
                     .FirstOrDefault();
 
-                if (pageResponseControl == null || pageResponseControl.Cookie.Length == 0)
+                if (pageResponseControl == null || pageResponseControl.Cookie.Length == 0 || results >= DatabaseCache.ActiveDirectorySettings?.MaxSearchResults)
                 {
                     break;
                 }

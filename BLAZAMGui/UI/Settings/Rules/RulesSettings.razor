@@ -72,7 +72,7 @@
     </MudGrid>
 
     <AppModal @ref="_settingsModal">
-        <GlobalRuleSettingsModalContent Settings="_settings" OnSaved="@(async()=>{await StateHasChangedAsync();await _ruleForTriggerDisplay.GetRulesAsync();})"/>
+        <GlobalRuleSettingsModalContent Settings="_settings" OnSaved="@(async()=>{await InvokeStateHasChangedAsync();await _ruleForTriggerDisplay.GetRulesAsync();})"/>
         </AppModal>
 </CascadingValue>
 @code {

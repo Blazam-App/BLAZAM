@@ -89,7 +89,7 @@
 
                         <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown"
                                  data-testid="custom-login-menu">
-                            <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await StateHasChangedAsync(); })
+                            <MudMenuItem OnClick=@(async () => { _demoCustomLogin = true; await InvokeStateHasChangedAsync(); })
                                          data-testid="custom-login-menu-item">
                                 @AppLocalization["Custom Login"]
                             </MudMenuItem>

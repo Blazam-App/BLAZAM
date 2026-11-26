@@ -26,6 +26,7 @@
                        Value="@Rule.Enabled"
                        ValueChanged="@(async (bool val) => { await ChangeEnabled(Rule, val); })" />
             <AppIconButton Color="Color.Primary"
+                            Tooltip="@AppLocalization[Lang.Edit]"
                            Icon="@Icons.Material.Filled.Edit"
                            OnClick="@(EditClicked)" />
 
@@ -136,6 +137,7 @@
                 {
                     <AppIconButton Color="Color.Primary"
                                    Icon="@Icons.Material.Filled.Refresh"
+                                   Tooltip="@AppLocalization[Lang.Refresh]"
                                    OnClick="@LoadFilteredEntries" />
                 }
                 <MudSpacer />
@@ -224,7 +226,7 @@
         {
             if (_compactView == value) return;
             _compactView = value;
-            _ = StateHasChangedAsync();
+            _ = InvokeStateHasChangedAsync();
         }
     }
     [Inject]
@@ -245,12 +247,12 @@
     {
         await base.OnInitializedAsync();
         ReloadRule();
-        ReloadEvent.Delegate += TriggerReloadRule;
+        ReloadEvent.EventHandler += TriggerReloadRule;
     }
     public override void Dispose()
     {
         base.Dispose();
-        ReloadEvent.Delegate -= TriggerReloadRule;
+        ReloadEvent.EventHandler -= TriggerReloadRule;
 
     }
 
@@ -299,11 +301,11 @@
 
 
         _loadingFilteredEntries = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         
         filteredEntries = await Rule.Filters.GetFilteredEntries(Rule.ActiveDirectoryObjectType,DbFactory,Directory);
         _loadingFilteredEntries = false;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     });
     }
     private async Task ChangeEnabled(AutomationRule rule, bool value)
@@ -322,15 +324,15 @@
             SnackBarService.Error(Lang.Error);
         }
     }
-    private async void RunRule()
+    private async Task RunRule()
     {
         _ruleRunning = true;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         var job = await RulesProcessor.ProcessScheduledRule(Rule);
         if (job == null)
         {
             _ruleRunning = false;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             return;
         }
         job.OnProgressUpdated += (progress) =>
@@ -340,7 +342,7 @@
         await job.WaitAsync();
 
         _ruleRunning = false;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         ReloadRule();
     }
 }

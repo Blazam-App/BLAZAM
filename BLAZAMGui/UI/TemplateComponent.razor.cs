@@ -93,7 +93,7 @@ namespace BLAZAM.Gui.UI
         }
         protected async Task RefreshComponents()
         {
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             Header?.OnRefreshRequested?.Invoke();
         }
 
@@ -153,7 +153,7 @@ namespace BLAZAM.Gui.UI
                 {
                     SelectedTemplate = await LoadTemplateWithParents(TemplateIdParameter);
                 }
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
                 Header?.OnRefreshRequested?.Invoke();
             }
             catch (Exception ex)
@@ -165,7 +165,7 @@ namespace BLAZAM.Gui.UI
 
         private async Task<DirectoryTemplate?> LoadTemplateWithParents(int? templateId)
         {
-            if (templateId == null)
+            if (templateId == null || Context == null)
             {
                 return null;
             }

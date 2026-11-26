@@ -20,12 +20,20 @@
 
                 <DynamicMudInput T=string Label="@AppLocalization[Lang.Username]"
                                  @bind-Value="@User.SAMAccountName"
-                                 Disabled=@(User?.NewEntry==false) />
+                                 Required=User.NewEntry
+                                 Disabled=@(User.NewEntry==false) />
+
+
+               
                 <AppCopyButton TextToCopy=@User.SAMAccountName />
 
             </MudStack>
         </AppTooltip>
-
+        <MudSelectList Options="Directory.UpnSuffixes"
+                       Label="@AppLocalization[Lang.UPN_Suffix]"
+                       Required=User.NewEntry
+                       Disabled="@(User.NewEntry==false)"
+                       @bind-Value="User.UserPrincipalNameSuffix" />
 
 
         @if (GroupableEntry?.NewEntry == true)
@@ -33,11 +41,13 @@
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Password]"
                              @bind-Value="@Password"
+                             Required=User.NewEntry
                              InputType="InputType.Password" />
 
             <DynamicMudInput T=string
                              Label="@AppLocalization[Lang.Confirm_Password]"
                              @bind-Value="@ConfirmPassword"
+                             Required=User.NewEntry
                              InputType="InputType.Password" />
         }
 
@@ -162,7 +172,12 @@
 
     string password;
     bool showFailedLogons;
-
+    string _selectedUpnSuffix;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _selectedUpnSuffix = User?.UserPrincipalNameSuffix ?? Directory.UpnSuffixes.FirstOrDefault();
+    }
     [Parameter]
     public string Password
     {

@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>Account is ingeschakeld.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>Account is vergrendeld.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>Account is vergrendeld</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>Account is niet vergrendeld.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>Organisatorische eenheid</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>OU</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>Wachtwoordwijziging</value>
   </data>
@@ -1122,10 +1119,10 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>Nieuw API-token genereren</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
+  <data name="Group member added" xml:space="preserve">
     <value>Groepslid toegevoegd</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
+  <data name="Group  member removed" xml:space="preserve">
     <value>Groepslid verwijderd</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
@@ -1391,5 +1388,338 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>Voer hier een waarde in</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>Geen overeenkomende items</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Plug-ins</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Vraag</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Antwoord</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>Ga naar gebruiker</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Afdrukken</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>Verwijderd uit groep</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>Toegevoegd aan groep</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>Gebruiker is buitengesloten</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>Controleren op updates</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>Lid toevoegen</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>Object verwijderd</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>Contact maken</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>Verbindingstype</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>Distributie</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Startdatum</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Einddatum</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>Gebruikersnaam ontbreekt</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>Wachtwoord ontbreekt</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>Alles negeren</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>Token verlopen</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>Gebruiker is uitgeschakeld</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>Computers</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>Meldingen lezen</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>Door gebruiker gewijzigd</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tijd</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Lid</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>Verwijderen bevestigen</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>Inloggegevens OK</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Status van Active Directory-verbinding</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>Domeincontrollers</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Serienummer</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Capaciteit</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>Vertraging in seconden</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>In gebruik</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>Afgevaardigde</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Beveiliging</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Versleuteld</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>Algemene instellingen</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Globaal</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>Universeel</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Aanmelden</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Toepassen</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>Ontkennen</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Toegang</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acties</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Gebeurtenissen</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Voortgang</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultaat</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbonden</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Onderwerp</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Aan</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Goedkeuren</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>Herstarten</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Nieuws</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>Wachtwoordvervaldatum</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>Wachtwoord verloopt nooit</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Actie</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Doel</value>
+  </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>Triggers</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>Wachtwoord gewijzigd</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>Bewerken beëindigen</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>Account ingeschakeld</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>Zoekmap</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>Geen overeenkomende items</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>Uitvoeringsschema</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>Nieuws ophalen</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Uitvoeren</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>Nog een maken</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>Huidige sjabloon</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>Gebruiker buitengesloten</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>Groepslid verwijderd</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>Uitgesloten groepen</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>Vermelding gewijzigd</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>Je bent niet bevoegd om in te loggen</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>Onbekende fout bij het proberen in te loggen</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>Beveiligingsvragen</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>Machtigingskoppeling verwijderen</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>Geen ongelezen meldingen</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>Toegangsverzoek verzonden</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>Instellingen opgeslagen</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>Instellingen opslaan mislukt</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>Nooit gebruikt</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>Compacte weergave</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>Begin met typen om te zoeken...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>Sorry, er zijn geen resultaten gevonden 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>Sorry er zijn geen exacte overeenkomsten gevonden, probeer meer tekens toe te voegen</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>Klik voor details</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>Klik om API-documentatie te bekijken</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>Er is een automatische update gepland.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>Nu uitvoeren</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>Na uitvoeren</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operator</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nooit</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacten</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>Widget toevoegen</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>Geplande regel</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>En</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Waarden</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>Geen wijzigingen</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>Toewijzing aan alle groepen opheffen</value>
   </data>
 </root>
