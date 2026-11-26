@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: windows-2025
     permissions: write-all
         
     steps:
@@ -21,8 +21,6 @@ jobs:
           dotnet-version: 10.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build application (Release)
-        run: dotnet build -c Release
       - name: Setup Playwright
         shell: pwsh
         run: |
