@@ -76,7 +76,7 @@ else
                 currentUserEntry = Directory.FindGlobalEntryBySid(sid);
             }
         }
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
 

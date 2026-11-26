@@ -53,6 +53,7 @@ namespace BLAZAM.Localization
         public static readonly string Fetch_News = "Fetch News";
         public static readonly string Excute = "Execute";
         public static readonly string Text = "Text";
+        public static readonly string Filters = "Filters";
         public static readonly string Language = "Language";
         public static readonly string PIN = "PIN";
         public static readonly string Removed_from_Group = "Removed from Group";
@@ -72,6 +73,7 @@ namespace BLAZAM.Localization
         public static readonly string Group_member_removed = "Group member removed";
         public static readonly string Object_deleted = "Object deleted";
         public static readonly string Excluded_Groups = "Excluded Groups";
+        public static readonly string No_changes = "No changes";
         public static readonly string Entry_modified = "Entry modified";
         public static readonly string Username_is_missing = "Username is missing";
         public static readonly string Password_is_missing = "Password is missing";
@@ -107,6 +109,7 @@ namespace BLAZAM.Localization
         public static readonly string Sorry_try_typing_more = "Sorry no exact matches were found, try adding more characters";
         public static readonly string Click_for_details = "Click for details";
         public static readonly string Click_to_view_API_documentation = "Click to view API documentation";
+        public static readonly string Unassign_from_all_groups = "Unassign from all groups";
         public static readonly string An_automatic_update_is_scheduled = "An automatic update is scheduled.";
         public static readonly string Password = "Password";
         public static readonly string Run_Now = "Run Now";
@@ -149,6 +152,7 @@ namespace BLAZAM.Localization
         public static readonly string Reset_Password = "Reset Password";
         public static readonly string Rename_User = "Rename User";
         public static readonly string Employee_Id = "Employee Id";
+        public static readonly string UPN_Suffix = "UPN Suffix";
         public static readonly string Not_Configured = "Not Configured";
         public static readonly string Contact_Info = "Contact Info";
         public static readonly string Allow_password_reset = "Allow password reset";
@@ -184,6 +188,7 @@ namespace BLAZAM.Localization
         public static readonly string Rename_OU = "Rename OU";
         public static readonly string Refresh_Session = "Refresh Session";
         public static readonly string Change_Thumbnail = "Change Thumbnail";
+        public static readonly string Edit_Value_List = "Edit Value List";
         public static readonly string Upload_File = "Upload File";
         public static readonly string Save_Photo = "Save Photo";
         public static readonly string Upload_Thumbnail_Photo = "Upload Thumbnail Photo";
@@ -318,6 +323,8 @@ namespace BLAZAM.Localization
         public static readonly string Required = "Required";
         public static readonly string Editable = "Editable";
         public static readonly string Value = "Value";
+        public static readonly string Values = "Values";
+        public static readonly string Value_List = "Value List";
         public static readonly string Negate = "Negate";
         public static readonly string Domain = "Domain";
         public static readonly string Apply = "Apply";
@@ -344,6 +351,9 @@ namespace BLAZAM.Localization
         public static readonly string Change_History = "Change History";
         public static readonly string Change_Password = "Change Password";
         public static readonly string Last_Change = "Last Change";
+        public static readonly string Add_Action = "Add Action";
+        public static readonly string Remove_Action = "Remove Action";
+        public static readonly string Add_Or_Filter = "Add Or Filter";
         public static readonly string Pass_Change = "Pass Change";
         public static readonly string Password_Expiration = "Password Expiration";
         public static readonly string Lockout_Time = "Lockout Time";
@@ -389,6 +399,7 @@ namespace BLAZAM.Localization
         public static readonly string Email_Enabled = "Email Enabled";
         public static readonly string Use_TLS = "Use TLS";
         public static readonly string Base_DN = "Base DN";
+        public static readonly string Max_Search_Results = "Maximum Search Results";
         public static readonly string User_Activity = "User Activity";
         public static readonly string Memory = "Memory";
         public static readonly string Rename_Computer = "Rename Computer";

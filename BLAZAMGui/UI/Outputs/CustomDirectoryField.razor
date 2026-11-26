@@ -45,13 +45,13 @@
     {
         base.OnInitialized();
 
-        Entry.OnChangesDiscarded.Delegate += DiscardChanges;
+        Entry.OnChangesDiscarded.EventHandler += DiscardChanges;
         GetValue();
     }
     public override void Dispose()
     {
         base.Dispose();
-        Entry?.OnChangesDiscarded.Delegate -= DiscardChanges;
+        Entry?.OnChangesDiscarded.EventHandler -= DiscardChanges;
     }
 
     private void DiscardChanges(object? sender = null, object? args = null)

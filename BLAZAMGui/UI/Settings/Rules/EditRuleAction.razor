@@ -1,93 +1,99 @@
 @inherits DatabaseComponentBase
+@using System.Dynamic
 @using BLAZAM.Database.Models.Rules
+@using Newtonsoft.Json
 <MudStack Row=true>
 
-        <MudSelectList T="AutomationRuleActionType"
-                       Options="_actionTypes"
-                       @bind-Value=Action.ActionType />
-        @switch (Action.ActionType)
-        {
-            case AutomationRuleActionType.ModifyField:
-                <MudSelectList T="IActiveDirectoryField" Options="_fields"
-                               Value=_selectedField
-                               ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
-                @if (_selectedField != null)
+    <MudSelectList T="AutomationRuleActionType"
+                   Options="_actionTypes"
+                   @bind-Value=Action.ActionType />
+    @switch (Action.ActionType)
+    {
+        case AutomationRuleActionType.ModifyField:
+            <MudSelectList T="IActiveDirectoryField" Options="_fields"
+                           Value=_selectedField
+                           ValueChanged="@((IActiveDirectoryField field)=>{FieldChanged(field);})" />
+            @if (_selectedField != null)
+            {
+                AutomationRuleActionFieldValue fieldValue;
+                if (Action.FieldValues.FirstOrDefault() == null)
                 {
-                    AutomationRuleActionFieldValue fieldValue;
-                    if (Action.FieldValues.FirstOrDefault() == null)
-                    {
-                        fieldValue = new() { CurrentField = _selectedField };
-                        Action.FieldValues.Add(fieldValue);
-                    }
-                    else
-                    {
-                        fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.CurrentField.Id == _selectedField.Id);
-                    }
-                    switch (Action.FieldValues.FirstOrDefault()?.CurrentField.FieldType)
-                    {
-                        case ActiveDirectoryFieldType.Text:
-                        case ActiveDirectoryFieldType.RawData:
-                        case ActiveDirectoryFieldType.StringList:
-                            <MudTextField T="string" @bind-Value=fieldValue.Value />
-                            break;
-                        case ActiveDirectoryFieldType.Date:
-                            <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
-                                           DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
-                            break;
-                        case ActiveDirectoryFieldType.DriveLetter:
-                            <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
-                            break;
-                        case ActiveDirectoryFieldType.FileTime:
-                            <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
-                                           DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
-
-                            break;
-                    }
+                    fieldValue = new() { CurrentField = _selectedField };
+                    Action.FieldValues.Add(fieldValue);
                 }
-                break;
-            case AutomationRuleActionType.Assign:
-                <ADAutoComplete MinCharacters="1"
-                                SelectedGuid="@Action.GroupGuids.FirstOrDefault()?.GroupGuid"
-                            SelectedResultChanged="@((result)=>{Action.GroupGuids.Add(new(){GroupGuid= result.Guid.Value,Assigned=true});})"
-                                SearchObjectType="ActiveDirectoryObjectType.Group" />
+                else
+                {
+                    fieldValue = Action.FieldValues.FirstOrDefault(fv => fv.CurrentField.Id == _selectedField.Id);
+                }
+                switch (Action.FieldValues.FirstOrDefault()?.CurrentField.FieldType)
+                {
+                    case ActiveDirectoryFieldType.Text:
+                    case ActiveDirectoryFieldType.RawData:
+                    case ActiveDirectoryFieldType.StringList:
+                        <MudTextField T="string" @bind-Value=fieldValue.Value />
+                        break;
+                    case ActiveDirectoryFieldType.Date:
+                        <MudDatePicker Date="@GetDateTime(fieldValue.Value)"
+                                       DateChanged="@((date)=>{fieldValue.Value=date.ToString();})" />
+                        break;
+                    case ActiveDirectoryFieldType.DriveLetter:
+                        <HomeDriveSelect @bind-DriveLetter=fieldValue.Value />
+                        break;
+                    case ActiveDirectoryFieldType.FileTime:
+                        <MudDatePicker Date="@GetFileTime(fieldValue.Value)"
+                                       DateChanged="@((date)=>{fieldValue.Value=date.Value.ToFileTimeUtc().ToString();})" />
 
-                break;
-            case AutomationRuleActionType.Lockout:
-                break;
-            case AutomationRuleActionType.SendEmail:
-                <AppConstructionNotice />
-                @* <MudTextField Disabled=true T="string" @bind-Value=Action.Data/>*@
+                        break;
+                }
+            }
+            break;
+        case AutomationRuleActionType.Assign:
+            <ADAutoComplete MinCharacters="1"
+                            SelectedResult="group"
+                            SelectedResultChanged="@SetGroup"
+                            SearchObjectType="ActiveDirectoryObjectType.Group" />
 
-                break;
-            case AutomationRuleActionType.Move:
-        @if (!LoadingData)
-        {
+            break;
+        case AutomationRuleActionType.Lockout:
+            break;
+        case AutomationRuleActionType.SendEmail:
+            <AppConstructionNotice />
+            @* <MudTextField Disabled=true T="string" @bind-Value=Action.Data/>*@
+
+            break;
+        case AutomationRuleActionType.Move:
+            @if (!LoadingData)
+            {
                 <ADAutoComplete MinCharacters="1"
                                 SelectedResult="ou"
                                 SelectedResultChanged="@OUSelected"
-                SearchObjectType="ActiveDirectoryObjectType.OU" />
+                                SearchObjectType="ActiveDirectoryObjectType.OU" />
             }
             else
             {
-                <MudProgressLinear Indeterminate=true Color="Color.Primary"/>
+                <MudProgressLinear Indeterminate=true Color="Color.Primary" />
             }
             break;
-            case AutomationRuleActionType.Unassign:
-                <ADAutoComplete MinCharacters="1"
-                                SelectedResultChanged="@((result)=>{Action.GroupGuids.Add(new(){GroupGuid= result.Guid.Value,Assigned=false});})"
-                                SearchObjectType="ActiveDirectoryObjectType.Group" />
-
-                break;
-            case AutomationRuleActionType.Enable:
-                break;
-            case AutomationRuleActionType.Disable:
-                break;
-            case AutomationRuleActionType.Unlock:
-                break;
-        }
-        <MudButton OnClick="@(RemovedClicked)"
-                   Color="Color.Error"
-                   StartIcon="@Icons.Material.Filled.Remove">Remove Action</MudButton>
+        case AutomationRuleActionType.Unassign:
+            <ADAutoComplete MinCharacters="1"
+                            Disabled="RemoveFromAllGroups"
+                            SelectedResult="group"
+                            SelectedResultChanged="@SetGroup"
+                            SearchObjectType="ActiveDirectoryObjectType.Group" />
+            <MudCheckBox T="bool"
+                         @bind-Value="@RemoveFromAllGroups"
+                         Label="@AppLocalization[Lang.Unassign_from_all_groups]" />
+            break;
+        case AutomationRuleActionType.Enable:
+            break;
+        case AutomationRuleActionType.Disable:
+            break;
+        case AutomationRuleActionType.Unlock:
+            break;
+    }
+    <MudButton OnClick="@(RemovedClicked)"
+               Color="Color.Error"
+               StartIcon="@Icons.Material.Filled.Remove">@AppLocalization[Lang.Remove_Action]</MudButton>
 
   
 </MudStack>
@@ -104,7 +110,31 @@
 
     private List<AutomationRuleActionType> _actionTypes = new();
 
+    private bool RemoveFromAllGroups
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Action.Data))
+                return false;
 
+            dynamic? json = JsonConvert.DeserializeObject<ExpandoObject>(Action.Data);
+            var dict = (IDictionary<string, object>?)json;
+            if (dict is null)
+            {
+                return false;
+            }
+            return dict.TryGetValue("RemoveAllGroups", out var val) && val is true;
+        }
+        set
+        {
+            dynamic json = string.IsNullOrWhiteSpace(Action.Data)
+                ? new ExpandoObject()
+                : JsonConvert.DeserializeObject<ExpandoObject>(Action.Data);
+
+            json.RemoveAllGroups = value;
+            Action.Data = JsonConvert.SerializeObject(json);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -124,6 +154,10 @@
         {
             _selectedField = Action.FieldValues[0].Field;
         }
+        if (Action.GroupGuids.Any() && Action.GroupGuids[0] != null)
+        {
+            group = Directory.FindGlobalEntryByGuid(Action.GroupGuids[0].GroupGuid) as IADGroup;
+        }
         if (Action.ActionType == AutomationRuleActionType.Move)
         {
             using var directory = DirectoryFactory.CreateActiveDirectoryContext();
@@ -135,6 +169,8 @@
         LoadingData = false;
 
     }
+
+    private IADGroup? group;
     private IADOrganizationalUnit? ou;
     private void OUSelected(IDirectoryEntryAdapter? newOu)
 
@@ -148,6 +184,20 @@
         {
             Action.Data = null;
             ou = null;
+        }
+    }
+    private void SetGroup(IDirectoryEntryAdapter? groupToAdd)
+    {
+        group = groupToAdd as IADGroup;
+        if (groupToAdd == null)
+        {
+            Action.GroupGuids.Clear();
+        }
+        else
+        {
+            Action.GroupGuids = [new AutomationRuleGroupGuid() {
+                                 GroupGuid = groupToAdd.Guid.Value, Assigned = false
+                                }];
         }
     }
 

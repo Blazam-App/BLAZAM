@@ -44,7 +44,6 @@
 </AppModal>
 
 @code {
-    EditRule? editRuleContent;
     MudDropContainer<AutomationRule>? dropContainer;
     [CascadingParameter]
     public RuleViewFilter ViewFilter { get; set; }
@@ -59,7 +58,7 @@
         {
             if (_compactView == value) return;
             _compactView = value;
-            dropContainer.Refresh();
+            dropContainer?.Refresh();
         }
     }
     AppEvent _reloadEvent = new();
@@ -74,19 +73,22 @@
     {
         await base.OnInitializedAsync();
         _ = GetRulesAsync();
-        ViewFilter.ObjectTypeChanged += () => GetRulesAsync();
-        ViewFilter.TriggerChanged += () => GetRulesAsync();
-        RulesSettings.CreateRule += () => CreateNewRule();
+        ViewFilter.ObjectTypeChanged += GetAllRules;
+        ViewFilter.TriggerChanged += GetAllRules;
+        RulesSettings.CreateRule += CreateNewRule;
     }
+
     private void CreateNewRule()
     {
         selectedRule = new();
         selectedRule.Order = rules.Count - 1;
-
-        _ = createRuleModal.ShowAsync();
-
-
+        if (createRuleModal != null)
+        {
+            _ = createRuleModal.ShowAsync();
+        }
     }
+
+    private async void GetAllRules() => await GetRulesAsync();
     /// <summary>
     ///
     /// </summary>
@@ -151,5 +153,16 @@
             }
         }
 
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        if(ViewFilter!=null)
+        {
+            ViewFilter.ObjectTypeChanged -= GetAllRules;
+            ViewFilter.TriggerChanged -= GetAllRules;
+        }   
+        RulesSettings.CreateRule -= CreateNewRule;
     }
 }

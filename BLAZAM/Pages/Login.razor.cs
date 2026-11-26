@@ -72,7 +72,7 @@ namespace BLAZAM.Pages
             {
                 SetPasswordResetAvailable();
 
-                await StateHasChangedAsync();
+                await InvokeStateHasChangedAsync();
             }
 
 
@@ -80,7 +80,7 @@ namespace BLAZAM.Pages
         private async Task AttemptSignIn(string? otpCode = null)
         {
             attemptingSignIn = true;
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             LoginRequest? authenticationResult = null;
             if (ValidateInput(LoginRequest))
             {
@@ -104,7 +104,7 @@ namespace BLAZAM.Pages
 
             await ProcessAuthenticationResult(authenticationResult);
 
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
         private bool ValidateInput(LoginRequest? validationResult)
         {
@@ -181,7 +181,7 @@ namespace BLAZAM.Pages
                     break;
                 case LoginResultStatus.OK:
                     attemptingSignIn = true;
-                    Nav.NavigateTo(redirectUrl, true);
+                    Nav.PostLogonNavigateTo(redirectUrl);
 
                     break;
             }

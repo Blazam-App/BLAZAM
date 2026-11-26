@@ -16,7 +16,7 @@
         public BaseAuditLogger(IAppDatabaseFactory factory, AuditLogActor userState)
         {
             _factory = factory;
-            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.EventHandler += TriggerDirectoryEntryChangedEvent;
             System = new SystemAudit(factory);
             User = new UserAudit(factory, userState);
             Group = new GroupAudit(factory, userState);
@@ -311,7 +311,7 @@
 
         public void Dispose()
         {
-            ActiveDirectoryEvents.DirectoryEntryEvent.Delegate -= TriggerDirectoryEntryChangedEvent;
+            ActiveDirectoryEvents.DirectoryEntryEvent.EventHandler -= TriggerDirectoryEntryChangedEvent;
             System = null;
             User = null;
             Group = null;

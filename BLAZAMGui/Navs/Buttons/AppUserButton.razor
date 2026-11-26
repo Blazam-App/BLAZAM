@@ -93,12 +93,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
         _userState = CurrentUser.State;
         _eprp = new EffectivePasswordResetPolicy(_userState.PermissionDelegates);
         if (_userState != null)
-            _userState.OnSettingsChanged.Delegate += InvokeStateHasChanged;
-        await StateHasChangedAsync();
+            _userState.OnSettingsChanged.EventHandler += InvokeStateHasChanged;
+        await InvokeStateHasChangedAsync();
     }
 
     public override void Dispose()
@@ -106,6 +106,6 @@
         base.Dispose();
         
         if (_userState != null)
-            _userState.OnSettingsChanged.Delegate -= InvokeStateHasChanged;
+            _userState.OnSettingsChanged.EventHandler -= InvokeStateHasChanged;
     }
 }

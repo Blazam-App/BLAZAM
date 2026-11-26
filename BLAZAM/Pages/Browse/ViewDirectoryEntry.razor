@@ -68,7 +68,7 @@
 
         if ( DirectoryEntry!=null )
         {
-            DirectoryEntry.OnModelDeleted.Delegate += Refresh;
+            DirectoryEntry.OnModelDeleted.EventHandler += Refresh;
         }
     }
 
@@ -76,7 +76,7 @@
     {
         if (DirectoryEntry != null)
         {
-            DirectoryEntry.OnModelDeleted.Delegate -= Refresh;
+            DirectoryEntry.OnModelDeleted.EventHandler -= Refresh;
         }
     }
 

@@ -36,6 +36,7 @@
 <MudStack Row=true>
     <ADAutoComplete SearchObjectType="ActiveDirectoryObjectType.Group" @bind-SelectedResult=_selectedGroup @ref=_searchBox />
     <AppIconButton Icon="@Icons.Material.Filled.Add"
+                    Tooltip="@AppLocalization[Lang.Add]"
                    OnClick="@(()=>{GroupGuids.Add(new(){Guid=_selectedGroup.Guid.Value});_selectedGroup=null;_searchBox.Clear();})" />
 </MudStack>
 

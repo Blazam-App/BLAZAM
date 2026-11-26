@@ -46,9 +46,9 @@
             await base.OnInitializedAsync();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate += RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler += RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate += Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler += Renamed;
                 if (Context != null)
                 {
                     CustomFields = (await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync()).Where(cf => cf.IsFieldAppropriateForObject(DirectoryEntry.ObjectType)).ToList();
@@ -64,9 +64,9 @@
             base.Dispose();
             if (DirectoryEntry != null)
             {
-                DirectoryEntry.OnModelChanged.Delegate -= RefreshEntryComponents;
+                DirectoryEntry.OnModelChanged.EventHandler -= RefreshEntryComponents;
 
-                DirectoryEntry.OnDirectoryModelRenamed.Delegate -= Renamed;
+                DirectoryEntry.OnDirectoryModelRenamed.EventHandler -= Renamed;
 
             }
         }
@@ -94,7 +94,7 @@
         /// <summary>
         /// Prompts the user for confirmation and sends a discard changes call to the <see cref="IDirectoryEntryAdapter"/> to remove changes if accepted
         /// </summary>
-        protected virtual async void DiscardChanges()
+        protected virtual async Task DiscardChanges()
         {
             if (DirectoryEntry != null && await MessageService.Confirm("Are you sure you want to discard your changes?", "Discard Changes"))
             {
@@ -139,7 +139,7 @@
         protected async Task RefreshEntryComponents()
         {
             SubHeader?.Refresh();
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
         protected void RefreshEntryComponents(object? state, object? args)
         {

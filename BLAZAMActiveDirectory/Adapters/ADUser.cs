@@ -191,6 +191,22 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 SetAttribute(ActiveDirectoryFields.UserPrincipalName.FieldName, value);
             }
         }
+        public string? UserPrincipalNameSuffix
+        {
+            get
+            {
+                return UserPrincipalName?.Split("@").Length > 1 ? UserPrincipalName.Split("@")[1] : Directory.UpnSuffixes.FirstOrDefault();
+            }
+            set
+            {
+                var prefix = UserPrincipalName?.Split("@")[0];
+                if(prefix.IsNullOrEmpty())
+                {
+                    throw new AppException("Cannot set UPN suffix when UPN prefix is null or empty");
+                }
+                UserPrincipalName = prefix + "@" + value;
+            }
+        }
 
 
 

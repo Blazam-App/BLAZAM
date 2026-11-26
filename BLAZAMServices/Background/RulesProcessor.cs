@@ -48,7 +48,7 @@ namespace BLAZAM.Services.Background
         {
             if (!_initialized)
             {
-                ActiveDirectoryEvents.DirectoryEntryEvent.Delegate += ProcessDirectoryEntryChanged;
+                ActiveDirectoryEvents.DirectoryEntryEvent.EventHandler += ProcessDirectoryEntryChanged;
 
                 _initialized = true;
 
@@ -157,6 +157,7 @@ namespace BLAZAM.Services.Background
             };
             foreach (var ruleForEvent in applicableRules)
             {
+                _audit.RuleExecutionStarted(ruleForEvent);
                 var ruleExecutionStep = new JobStep(ruleForEvent.Name, (step) =>
                 {
                     ProcessMatchedEntry(ruleForEvent, args.Entry);
@@ -224,7 +225,7 @@ namespace BLAZAM.Services.Background
                 ThreadPriority = ThreadPriority.Lowest
             };
             List<IDirectoryEntryAdapter> filteredEntries;
-            IApplicationUserState rulesUserState = new RulesUserState(dbFactory);
+            IApplicationUserState rulesUserState = new RulesUserState(dbFactory, rule.Name);
             using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext(rulesUserState.ToActiveDirectoryUserState());
             filteredEntries = await rule.Filters.GetFilteredEntries(rule.ActiveDirectoryObjectType, dbFactory, directory);
             _ = _audit.RuleFilterEvaluated(rule, rule.Filters.ToJson());
@@ -268,8 +269,6 @@ namespace BLAZAM.Services.Background
 
             Loggers.RulesLogger.Information("Rule {@Rule} processing started on {@Entry}.", ruleForEvent.Name, entry.DN);
             ruleForEvent.ExecutionId = Guid.NewGuid();
-
-            _audit.RuleExecutionStarted(ruleForEvent);
 
             //Task.Delay(50).Wait();
 
@@ -391,7 +390,7 @@ namespace BLAZAM.Services.Background
                         eventType = ApplicationEventType.All;
                         return;
                     }
-                    ;
+
                     groupableEntry.AssignTo(group);
                 }
             }
@@ -403,22 +402,40 @@ namespace BLAZAM.Services.Background
             eventType = ApplicationEventType.Unassign;
             if (entry is IGroupableDirectoryAdapter groupableEntry)
             {
+                bool removeFromAllGroups = false;
                 using var directory = activeDirectoryContextFactory.CreateActiveDirectoryContext();
-                var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
-                if (group != null)
+
+                if (action.Data != null)
                 {
-                    target = group;
-                    if (!groupableEntry.IsANestedMemberOf(group))
+                    dynamic data = action.Data;
+                    removeFromAllGroups = data.RemoveFromAllGroups ?? false;
+                }
+                if (removeFromAllGroups)
+                {
+                    var groups = groupableEntry.MemberOf;
+                    foreach (var g in groups)
                     {
-                        eventType = ApplicationEventType.All;
-                        return;
+                        groupableEntry.UnassignFrom(g);
                     }
-                    groupableEntry.UnassignFrom(group);
+                }
+                else
+                {
+                    var group = directory.FindGlobalEntryByGuid(action.GroupGuids[0].GroupGuid) as IADGroup;
+                    if (group != null)
+                    {
+                        target = group;
+                        if (!groupableEntry.IsAMemberOf(group))
+                        {
+                            eventType = ApplicationEventType.All;
+                            return;
+                        }
+                        groupableEntry.UnassignFrom(group);
+                    }
                 }
             }
         }
 
-        private void ExecuteDisableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteDisableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -432,7 +449,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteEnableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteEnableAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -446,7 +463,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteUnlockAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteUnlockAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (entry is IAccountDirectoryAdapter account)
@@ -460,7 +477,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteLockoutAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteLockoutAction(IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.LockedOut;
             if (entry is IAccountDirectoryAdapter account)
@@ -497,7 +514,7 @@ namespace BLAZAM.Services.Background
             }
         }
 
-        private void ExecuteModifyFieldAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
+        private static void ExecuteModifyFieldAction(AutomationRuleAction action, IDirectoryEntryAdapter entry, out ApplicationEventType eventType)
         {
             eventType = ApplicationEventType.Modify;
             if (action.FieldValues.Count > 0)
@@ -552,21 +569,8 @@ namespace BLAZAM.Services.Background
                 return;
             }
 
-            var changes = entry.Changes;
             var result = entry.CommitChanges(ruleJob);
-            if (result.FailedSteps.Count == 0)
-            {
 
-                ActiveDirectoryEvents.DirectoryEntryEvent.Invoke(this, new()
-                {
-                    Actor = new RulesUserState(dbFactory, rule.Name).AuditActor,
-                    Changes = changes,
-                    Entry = entry,
-                    Target = target,
-                    Origin = origin,
-                    EventType = eventType
-                });
-            }
         }
 
         /// <summary>
@@ -694,7 +698,7 @@ namespace BLAZAM.Services.Background
                 case ActiveDirectoryFieldOperator.Boolean:
                     if (entry.GetPropertyValue(customField.FieldName) is bool boolValue)
                     {
-                        return boolValue == true;
+                        return boolValue;
                     }
                     break;
             }

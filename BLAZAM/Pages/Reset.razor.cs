@@ -259,7 +259,7 @@ namespace BLAZAM.Pages
             _attemptReset = true;
             LoadingData = true;
             await Task.Delay(10);
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
             try
             {
                 var user = Directory.Users.FindUserByUsername(LoginRequest.Username, exactMatch: true);

@@ -19,7 +19,12 @@ namespace BLAZAM.Pages.Api
             _dbFactory = dbFactory;
             _userStateService = userStateService;
         }
-
+        /// <summary>
+        /// Asynchronously gets unread notifications for the current authenticated user.
+        /// </summary>
+        /// <remarks>Loads related notification data for each unread user notification.</remarks>
+        /// <returns>An <see cref="UnauthorizedResult"/> when the user is not authenticated; otherwise a <see cref="JsonResult"/>
+        /// containing unread user notifications ordered by notification creation time in descending order.</returns>
         public async Task<IActionResult> OnGetAsync()
         {
             if (User != null)

@@ -133,7 +133,7 @@
                             {
 
 
-                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" Even=@(true) />
+                                <AvailableUpdate Update=@update OnApply="ApplyUpdate" OnSchedule="TestAutoUpdate" Even=@(true) />
                                 i++;
 
 
@@ -213,7 +213,7 @@
                 await output.RunAsync();
 
             }
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 
@@ -221,7 +221,7 @@
     {
 
         DownladProgress = progress;
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
 
     }
 

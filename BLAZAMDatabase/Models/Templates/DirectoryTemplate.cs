@@ -83,6 +83,18 @@ namespace BLAZAM.Database.Models.Templates
             set => UsernameFormula = value;
         }
 
+        public string? UpnSuffix { get; set; }
+        [NotMapped]
+        public string? EffectiveUpnSuffix
+        {
+            get
+            {
+                return GetEffectiveValue<string>(t => t.UpnSuffix, t => t.EffectiveUpnSuffix);
+
+            }
+            set => UpnSuffix = value;
+        }
+
         public string? ParentOU { get; set; }
         [NotMapped]
         public string? EffectiveParentOU
@@ -132,8 +144,8 @@ namespace BLAZAM.Database.Models.Templates
         }
 
         public List<DirectoryTemplateFieldValue> FieldValues { get; set; } = [];
-        [NotMapped]
 
+        [NotMapped]
         public List<DirectoryTemplateFieldValue> EffectiveFieldValues
         {
             get
@@ -230,7 +242,7 @@ namespace BLAZAM.Database.Models.Templates
         }
         public string GenerateUsername(NewUserName newUser, int? incrementedNumber = null)
         {
-            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber);
+            return ReplaceVariables(EffectiveUsernameFormula, newUser, incrementedNumber: incrementedNumber).Replace(" ", "");
 
 
         }
@@ -371,6 +383,26 @@ namespace BLAZAM.Database.Models.Templates
 
             // Return the final processed value.
             return value;
+        }
+
+        public DirectoryTemplateFieldValueList? GetTemplateValueList(IActiveDirectoryField field)
+        {
+
+
+            if (EffectiveFieldValues.Any(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+
+                var customFV = EffectiveFieldValues.Where(fv => fv.CustomField?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return customFV?.ValueList;
+            }
+
+            if (EffectiveFieldValues.Any(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true))
+            {
+
+                var fV = EffectiveFieldValues.Where(fv => fv.Field?.FieldName.Equals(field.FieldName, StringComparison.InvariantCultureIgnoreCase) == true).FirstOrDefault();
+                return fV?.ValueList;
+            }
+            return null;
         }
         private static string Substring(string? str, int start, int count)
         {

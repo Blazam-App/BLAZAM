@@ -101,6 +101,7 @@
         LoadingData = true;
         await Modal.RefreshView();
 
+        CurrentUser.State.Preferences.PreferredLanguage = selectedCulture;  
         var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(selectedCulture));
         await JS.SetCookieAsync(CookieRequestCultureProvider.DefaultCookieName, cookieValue, days: 36500, path: "/");
 

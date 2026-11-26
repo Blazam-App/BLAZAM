@@ -253,6 +253,10 @@ namespace BLAZAM.ActiveDirectory
         }
         public AppDelegate<DirectoryConnectionStatus>? OnStatusChanged { get; set; }
 
+        public List<string> UpnSuffixes { get {
+                using var connection = GetConnection();
+                return [ConnectionSettings.FQDN, .. connection.GetForestAlternativeUpnSuffixes()]; 
+            } }
 
         public Exception? ConnectionException { get; set; }
 

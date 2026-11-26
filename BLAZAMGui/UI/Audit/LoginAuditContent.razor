@@ -70,7 +70,7 @@
     protected override async Task FetchData()
     {
         if (StartDate == null || EndDate == null) return;
-        auditEntries = await Context.LogonAuditLog.Where(e => e.Timestamp >= StartDate && e.Timestamp < EndDate.Value.AddDays(1)).OrderByDescending(e => e.Timestamp).ToListAsync();
+        auditEntries = await Context.LogonAuditLog.Where(e => e.Timestamp >= StartDate.Value.ToUniversalTime() && e.Timestamp < EndDate.Value.AddDays(1).ToUniversalTime()).OrderByDescending(e => e.Timestamp).ToListAsync();
         await InvokeAsync(StateHasChanged);
     }
 }

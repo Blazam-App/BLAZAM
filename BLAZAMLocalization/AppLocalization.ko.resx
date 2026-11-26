@@ -135,8 +135,8 @@
   <data name="Account is enabled." xml:space="preserve">
     <value>계정을 사용할 수 있습니다.</value>
   </data>
-  <data name="Account is locked out." xml:space="preserve">
-    <value>계정이 잠겨 있습니다.</value>
+  <data name="Account is locked out" xml:space="preserve">
+    <value>계정이 잠겨 있습니다</value>
   </data>
   <data name="Account is not locked out." xml:space="preserve">
     <value>계정이 잠겨 있지 않습니다.</value>
@@ -648,9 +648,6 @@
   <data name="Organizational Unit" xml:space="preserve">
     <value>조직 구성 단위</value>
   </data>
-  <data name="OU" xml:space="preserve">
-    <value>또는</value>
-  </data>
   <data name="Pass Change" xml:space="preserve">
     <value>패스 변경</value>
   </data>
@@ -1122,11 +1119,11 @@
   <data name="Generate New API Token" xml:space="preserve">
     <value>새 API 토큰 생성</value>
   </data>
-  <data name="Group Member Added" xml:space="preserve">
-    <value>그룹 구성원이 추가됨</value>
+  <data name="Group member added" xml:space="preserve">
+    <value>그룹 멤버 추가됨</value>
   </data>
-  <data name="Group Member Removed" xml:space="preserve">
-    <value>그룹 구성원이 제거됨</value>
+  <data name="Group  member removed" xml:space="preserve">
+    <value>그룹 구성원 제거됨</value>
   </data>
   <data name="Group Searched" xml:space="preserve">
     <value>검색된 그룹</value>
@@ -1391,5 +1388,338 @@
   </data>
   <data name="Enter_value_here" xml:space="preserve">
     <value>여기에 값을 입력하세요</value>
+  </data>
+  <data name="No_matching_results" xml:space="preserve">
+    <value>일치하는 항목이 없습니다</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>연락처</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>플러그인</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>질문</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>답변</value>
+  </data>
+  <data name="Go To User" xml:space="preserve">
+    <value>사용자로 이동</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>인쇄</value>
+  </data>
+  <data name="Removed from Group" xml:space="preserve">
+    <value>그룹에서 제거됨</value>
+  </data>
+  <data name="Added to Group" xml:space="preserve">
+    <value>그룹에 추가됨</value>
+  </data>
+  <data name="User is locked out" xml:space="preserve">
+    <value>사용자가 잠겼습니다</value>
+  </data>
+  <data name="Check for Update" xml:space="preserve">
+    <value>업데이트 확인</value>
+  </data>
+  <data name="Add Member" xml:space="preserve">
+    <value>구성원 추가</value>
+  </data>
+  <data name="Object deleted" xml:space="preserve">
+    <value>개체가 삭제되었습니다</value>
+  </data>
+  <data name="Create Contact" xml:space="preserve">
+    <value>연락처 만들기</value>
+  </data>
+  <data name="Connection Type" xml:space="preserve">
+    <value>연결 유형</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>배포</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>시작 날짜</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>종료일</value>
+  </data>
+  <data name="Username is missing" xml:space="preserve">
+    <value>사용자 이름이 없습니다</value>
+  </data>
+  <data name="Password is missing" xml:space="preserve">
+    <value>비밀번호가 없습니다</value>
+  </data>
+  <data name="Dismiss all" xml:space="preserve">
+    <value>모두 닫기</value>
+  </data>
+  <data name="Token expired" xml:space="preserve">
+    <value>토큰이 만료되었습니다</value>
+  </data>
+  <data name="User is disabled" xml:space="preserve">
+    <value>사용자가 비활성화되었습니다</value>
+  </data>
+  <data name="Computers" xml:space="preserve">
+    <value>컴퓨터</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>검색</value>
+  </data>
+  <data name="Read Notifications" xml:space="preserve">
+    <value>읽은 알림</value>
+  </data>
+  <data name="User Modified" xml:space="preserve">
+    <value>사용자 수정됨</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>회원</value>
+  </data>
+  <data name="Confirm deletion" xml:space="preserve">
+    <value>삭제 확인</value>
+  </data>
+  <data name="Credentials OK" xml:space="preserve">
+    <value>자격 증명 확인됨</value>
+  </data>
+  <data name="Active Directory Connection Status" xml:space="preserve">
+    <value>Active Directory 연결 상태</value>
+  </data>
+  <data name="Domain Controllers" xml:space="preserve">
+    <value>도메인 컨트롤러</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>일련 번호</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>용량</value>
+  </data>
+  <data name="Delay in seconds" xml:space="preserve">
+    <value>초 단위 지연</value>
+  </data>
+  <data name="Used" xml:space="preserve">
+    <value>사용 중</value>
+  </data>
+  <data name="Delegate" xml:space="preserve">
+    <value>대표</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>보안</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>카테고리</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>암호화됨</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="Global Settings" xml:space="preserve">
+    <value>전역 설정</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>전역</value>
+  </data>
+  <data name="Universal" xml:space="preserve">
+    <value>범용</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>적용</value>
+  </data>
+  <data name="Negate" xml:space="preserve">
+    <value>부정</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>접근 권한</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>작업</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>이벤트</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>진행률</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>결과</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>연결됨</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>제목</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>받는 사람</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>승인</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="Reboot" xml:space="preserve">
+    <value>재부팅</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>뉴스</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="Password Expiration" xml:space="preserve">
+    <value>비밀번호 만료</value>
+  </data>
+  <data name="Password Never Expires" xml:space="preserve">
+    <value>암호가 만료되지 않음</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>작업</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>대상</value>
+  </data>
+  <data name="Triggers" xml:space="preserve">
+    <value>트리거</value>
+  </data>
+  <data name="Password changed" xml:space="preserve">
+    <value>비밀번호가 변경되었습니다</value>
+  </data>
+  <data name="End Edit" xml:space="preserve">
+    <value>편집 종료</value>
+  </data>
+  <data name="Account Enabled" xml:space="preserve">
+    <value>계정 활성화됨</value>
+  </data>
+  <data name="Search Directory" xml:space="preserve">
+    <value>디렉터리 검색</value>
+  </data>
+  <data name="No matching entries" xml:space="preserve">
+    <value>일치하는 항목이 없습니다</value>
+  </data>
+  <data name="Execution Schedule" xml:space="preserve">
+    <value>실행 일정</value>
+  </data>
+  <data name="Fetch News" xml:space="preserve">
+    <value>뉴스 가져오기</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>실행</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>필터</value>
+  </data>
+  <data name="Create Another" xml:space="preserve">
+    <value>다른 항목 만들기</value>
+  </data>
+  <data name="Current Template" xml:space="preserve">
+    <value>현재 템플릿</value>
+  </data>
+  <data name="User locked out" xml:space="preserve">
+    <value>사용자 잠김</value>
+  </data>
+  <data name="Group member removed" xml:space="preserve">
+    <value>그룹 구성원이 제거됨</value>
+  </data>
+  <data name="Excluded Groups" xml:space="preserve">
+    <value>제외된 그룹</value>
+  </data>
+  <data name="Entry modified" xml:space="preserve">
+    <value>항목이 수정됨</value>
+  </data>
+  <data name="You are not authorized to login" xml:space="preserve">
+    <value>로그인할 권한이 없습니다</value>
+  </data>
+  <data name="Unknown error while attempting to log in" xml:space="preserve">
+    <value>로그인 시도 중 알 수 없는 오류가 발생했습니다</value>
+  </data>
+  <data name="Security Questions" xml:space="preserve">
+    <value>보안 질문</value>
+  </data>
+  <data name="Delete permission mapping" xml:space="preserve">
+    <value>권한 매핑 삭제</value>
+  </data>
+  <data name="No unread notifications" xml:space="preserve">
+    <value>읽지 않은 알림이 없습니다</value>
+  </data>
+  <data name="Access request sent" xml:space="preserve">
+    <value>액세스 요청이 전송되었습니다</value>
+  </data>
+  <data name="Google Authenticator" xml:space="preserve">
+    <value>Google Authenticator</value>
+  </data>
+  <data name="Settings saved" xml:space="preserve">
+    <value>설정이 저장되었습니다</value>
+  </data>
+  <data name="Failed to save settings" xml:space="preserve">
+    <value>설정을 저장하지 못했습니다</value>
+  </data>
+  <data name="Never used" xml:space="preserve">
+    <value>사용한 적 없음</value>
+  </data>
+  <data name="Compact View" xml:space="preserve">
+    <value>컴팩트 보기</value>
+  </data>
+  <data name="Start typing to search" xml:space="preserve">
+    <value>검색하려면 입력을 시작하세요...</value>
+  </data>
+  <data name="Sorry no result were found" xml:space="preserve">
+    <value>죄송합니다. 검색 결과를 찾을 수 없습니다 😒</value>
+  </data>
+  <data name="Sorry_try_typing_more" xml:space="preserve">
+    <value>죄송합니다 정확히 일치하는 항목을 찾을 수 없습니다, 문자를 더 입력해 보세요</value>
+  </data>
+  <data name="Click for details" xml:space="preserve">
+    <value>자세히 보려면 클릭하세요</value>
+  </data>
+  <data name="Click to view API documentation" xml:space="preserve">
+    <value>API 문서를 보려면 클릭하세요</value>
+  </data>
+  <data name="An automatic update is scheduled" xml:space="preserve">
+    <value>자동 업데이트가 예약되어 있습니다.</value>
+  </data>
+  <data name="Run Now" xml:space="preserve">
+    <value>지금 실행</value>
+  </data>
+  <data name="After Executing" xml:space="preserve">
+    <value>실행 후</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>연산자</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>안 함</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>사용자 지정</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>연락처</value>
+  </data>
+  <data name="Add Widget" xml:space="preserve">
+    <value>위젯 추가</value>
+  </data>
+  <data name="Scheduled Rule" xml:space="preserve">
+    <value>예약된 규칙</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>그리고</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>값</value>
+  </data>
+  <data name="No_changes" xml:space="preserve">
+    <value>변경 사항 없음</value>
+  </data>
+  <data name="Unassign from all groups" xml:space="preserve">
+    <value>모든 그룹에서 할당 해제</value>
   </data>
 </root>

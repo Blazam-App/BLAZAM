@@ -49,11 +49,11 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await StateHasChangedAsync();
+        await InvokeStateHasChangedAsync();
     }
 
 
-    async void OUSelected(IDirectoryEntryAdapter entry)
+    async Task OUSelected(IDirectoryEntryAdapter entry)
     {
         if (entry is IADOrganizationalUnit ou)
         {
@@ -64,7 +64,7 @@
             }
             parentOU = ou;
 
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 

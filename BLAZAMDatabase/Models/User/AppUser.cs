@@ -11,6 +11,12 @@ namespace BLAZAM.Database.Models.User
         public bool SearchDisabledUsers { get; set; }
         public bool SearchDisabledComputers { get; set; }
         public string? Username { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version recorded at the most recent logon.
+        /// </summary>
+        public string? LastLogonVersion { get; set; }
+        public string? PreferredLanguage { get; set; }
         public List<UserNotification> Notifications { get; set; } = [];
         public List<ReadNewsItem> ReadNewsItems { get; set; } = [];
         public List<UserFavoriteEntry> FavoriteEntries { get; set; } = [];

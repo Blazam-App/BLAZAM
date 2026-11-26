@@ -34,7 +34,9 @@ else
     private LoginRequest imperonationRequest = new(){ Impersonation=true};
     public IADUser? User { get; set; }
     bool attemptingImpersonation;
-    async void AttemptSignIn()
+
+
+    private async Task AttemptSignIn()
     {
         imperonationRequest.Username = User?.SAMAccountName;
         imperonationRequest.Password = "impersonate";
@@ -96,7 +98,7 @@ else
                     Nav.NavigateTo("/home", true);
                     break;
             }
-            await StateHasChangedAsync();
+            await InvokeStateHasChangedAsync();
         }
     }
 
