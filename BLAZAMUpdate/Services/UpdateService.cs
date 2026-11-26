@@ -96,12 +96,16 @@ namespace BLAZAM.Update.Services
             return ApplicationIdentityTempDirectory;
 
         }
-
+        /// <summary>
+        /// Gets the temporary directory used for application identity update data.
+        /// </summary>
+        /// <remarks>Returns a directory path under the application's temporary directory named "update",
+        /// with a trailing directory separator.</remarks>
         public SystemDirectory ApplicationIdentityTempDirectory
         {
             get
             {
-                return new SystemDirectory(_applicationInfo.TempDirectory + "update" + Path.DirectorySeparatorChar);
+                return new SystemDirectory(Path.Combine(_applicationInfo.TempDirectory.FullPath, "update") + Path.DirectorySeparatorChar);
             }
         }
         private readonly IAppDatabaseFactory? _dbFactory;
