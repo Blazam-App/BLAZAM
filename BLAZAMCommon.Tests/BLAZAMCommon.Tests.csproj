@@ -30,6 +30,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="Microsoft.Playwright.NUnit" />
 		<PackageReference Include="Moq" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
 		<PackageReference Include="Serilog" />
