@@ -99,7 +99,7 @@ namespace BLAZAM.Services.Background
 
             if (permissiondelegate != null
                 &&
-                (permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup)
+                ((permissiondelegate is IADGroup && directoryUser.IsANestedMemberOf(permissiondelegate as IADGroup))
                 || directoryUser.SID.ToSidString().Equals(permissiondelegate.SID.ToSidString())))
             {
                 webUser.PermissionDelegates.Add(l);
@@ -164,7 +164,7 @@ namespace BLAZAM.Services.Background
             AddClaimIfNotNull(userRoles, ClaimTypes.Surname, directoryUser.Sn);
             AddClaimIfNotNull(userRoles, ClaimTypes.Email, directoryUser.Email);
 
-            if (!string.IsNullOrEmpty(impersonatorSid))
+            if (!impersonatorSid.IsNullOrEmpty())
             {
                 userRoles.Add(new Claim(ClaimTypes.UserData, "impersonated"));
                 userRoles.Add(new Claim(ClaimTypes.Actor, impersonatorSid));
@@ -187,7 +187,7 @@ namespace BLAZAM.Services.Background
 
         private static void AddClaimIfNotNull(List<Claim> claims, string type, string? value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
             {
                 claims.Add(new Claim(type, value));
             }

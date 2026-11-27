@@ -6,7 +6,6 @@ using BLAZAM.Common.Data.Services;
 using BLAZAM.Common.Exceptions;
 using BLAZAM.Common.Helpers;
 using BLAZAM.Database.Models;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using BLAZAM.Notifications.Services;
 using System.Diagnostics;
@@ -190,7 +189,10 @@ namespace BLAZAM.ActiveDirectory
         public IDirectoryEntry GetDeleteObjectsEntry()
         {
             if (ConnectionSettings == null || ConnectionSettings.FQDN == null)
+            {
                 throw new InvalidOperationException("Connection settings or FQDN not available to construct Deleted Objects path.");
+            }
+
             string deletedObjectsDN = "CN=Deleted Objects," + ConnectionSettings.FQDN.FqdnToDN();
             return new LdapDirectoryEntry(deletedObjectsDN, this);
         }
@@ -431,7 +433,9 @@ namespace BLAZAM.ActiveDirectory
                 ConnectionException = ex;
                 Status = DirectoryConnectionStatus.BadConfiguration;
                 if (FailedConnectionAttempts < 10)
+                {
                     FailedConnectionAttempts++;
+                }
             }
             catch (Exception ex)
             {
@@ -610,9 +614,20 @@ namespace BLAZAM.ActiveDirectory
         {
             if (AppRootDirectoryEntry is null || RootDirectoryEntry is null)
             {
-                if (ad == null) throw new ArgumentNullException(nameof(ad), "ADSettings cannot be null for initializing directory entries.");
-                if (string.IsNullOrEmpty(ad.ApplicationBaseDN)) throw new InvalidOperationException("ApplicationBaseDN is not configured.");
-                if (ad.FQDN == null || string.IsNullOrEmpty(ad.FQDN.FqdnToDN())) throw new InvalidOperationException("FQDN is not configured properly to derive root DN.");
+                if (ad == null)
+                {
+                    throw new ArgumentNullException(nameof(ad), "ADSettings cannot be null for initializing directory entries.");
+                }
+
+                if (ad.ApplicationBaseDN.IsNullOrEmpty())
+                {
+                    throw new InvalidOperationException("ApplicationBaseDN is not configured.");
+                }
+
+                if (ad.FQDN == null || ad.FQDN.FqdnToDN().IsNullOrEmpty())
+                {
+                    throw new InvalidOperationException("FQDN is not configured properly to derive root DN.");
+                }
 
                 // AppRootDirectoryEntry might be null if ApplicationBaseDN is not set, handle appropriately or ensure it's always set.
                 AppRootDirectoryEntry = new LdapDirectoryEntry(ad.ApplicationBaseDN, this);

@@ -177,7 +177,7 @@ namespace BLAZAM
                         .Select(u => u.PreferredLanguage)     // Match your culture string property
                         .FirstOrDefaultAsync();
 
-                    return string.IsNullOrWhiteSpace(culture)
+                    return culture.IsNullOrWhiteSpace()
                         ? null
                         : new ProviderCultureResult(culture, culture);
                 }));

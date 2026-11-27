@@ -100,7 +100,7 @@ namespace BLAZAM.Gui.UI
 
 
 
-        public Func<bool> YesEnabled { get; set; } = (() => { return true; });
+        public Func<bool> YesEnabled { get; set; } = () => { return true; };
 
 
 

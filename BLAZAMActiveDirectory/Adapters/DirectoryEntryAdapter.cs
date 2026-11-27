@@ -1,7 +1,6 @@
 ﻿using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Helpers;
 using BLAZAM.Jobs;
 using BLAZAM.Logger;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +65,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                         // or if it is a custom property that does not exist in the DirectoryEntry
                     }
 
-                    if (currentValue == null && prop.Value != null || currentValue != null && !currentValue.Equals(prop.Value))
+                    if ((currentValue == null && prop.Value != null) || (currentValue != null && !currentValue.Equals(prop.Value)))
                     {
                         changes.Add(new AuditChangeLog()
                         {
@@ -363,7 +362,11 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                if (_lastKnownParent != null) return _lastKnownParent;
+                if (_lastKnownParent != null)
+                {
+                    return _lastKnownParent;
+                }
+
                 var parentDN = GetStringAttribute("lastknownparent");
                 _lastKnownParent = parentDN != null ? Directory.OUs.FindOuByDN(parentDN) : null;
                 return _lastKnownParent;
@@ -459,7 +462,9 @@ namespace BLAZAM.ActiveDirectory.Adapters
             set
             {
                 if (DirectoryEntry != null)
+                {
                     DirectoryEntry.SetPropertyValue("objectclass", value);
+                }
                 else
                 {
                     Loggers.ActiveDirectoryLogger.Error("Error setting objectClass for {@DN}", DN);
@@ -889,8 +894,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                                 || DirectoryEntry.GetPropertyValue(p.Key)?.Equals(p.Value) != true)
                             {
                                 if (p.Value == null
-                            || p.Value is string strValue && strValue.IsNullOrEmpty()
-                            || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                            || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                            || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
                                 {
 
                                     DirectoryEntry.ClearPropertyValue(p.Key);
@@ -945,8 +950,8 @@ namespace BLAZAM.ActiveDirectory.Adapters
                     foreach (var p in NewEntryProperties)
                     {
                         if (p.Value == null
-                               || p.Value is string strValue && strValue.IsNullOrEmpty()
-                               || p.Value is DateTime dateValue && dateValue == DateTime.MinValue)
+                               || (p.Value is string strValue && strValue.IsNullOrEmpty())
+                               || (p.Value is DateTime dateValue && dateValue == DateTime.MinValue))
                         {
                             continue;
                         }
@@ -1370,7 +1375,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
                 if (!NewEntry)
                 {
 
-                    if (value == null || value is string strValue && strValue == "")
+                    if (value == null || (value is string strValue && strValue == ""))
                     {
                         var currentValue = GetStringAttribute(propertyName);
                         if ((currentValue == null && value == null) || currentValue?.Equals(value) == true)

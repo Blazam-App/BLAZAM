@@ -159,7 +159,7 @@ namespace BLAZAM.Common.Data
                 lastProcessTime = Process.TotalProcessorTime;
 
                 var pollingDelta = DateTime.Now - lastPollTime;
-                var cpuValue = (processTimeDelta / pollingDelta) * 100;
+                var cpuValue = processTimeDelta / pollingDelta * 100;
 
                 // Only add valid CPU values (0-100%)
                 if (cpuValue <= 100)

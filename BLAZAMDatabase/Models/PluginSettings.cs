@@ -1,4 +1,6 @@
-﻿namespace BLAZAM.Database.Models
+﻿
+
+namespace BLAZAM.Database.Models
 {
     public class PluginSettings : AppDbSetBase
     {
@@ -13,7 +15,7 @@
         /// <returns></returns>
         public T GetSettings<T>() where T : class, new()
         {
-            if (string.IsNullOrEmpty(SettingsJson))
+            if (SettingsJson.IsNullOrEmpty())
             {
                 return new T();
             }

@@ -67,8 +67,8 @@ namespace BLAZAM.Gui.UI.Inputs
         [CascadingParameter]
         public SearchService SearchParameters { get; set; }
 
-        IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
-        bool _searchDisabled;
+        private IEnumerable<IDirectoryEntryAdapter> _searchResults = new List<IDirectoryEntryAdapter>();
+        private bool _searchDisabled;
 
         /// <summary>
         /// Indicates whether to search for disabled Users/Computers
@@ -80,7 +80,10 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_searchDisabled == value)
+                {
                     return;
+                }
+
                 _searchDisabled = value;
             }
         }
@@ -107,7 +110,10 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_searchResults == value)
+                {
                     return;
+                }
+
                 _searchResults = value;
                 SearchResultsChanged.InvokeAsync(value);
             }
@@ -129,7 +135,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedResult == value)
+                {
                     return;
+                }
 
                 SearchResults = new List<IDirectoryEntryAdapter>
                 {
@@ -158,8 +166,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedSid == value)
+                {
                     return;
-
+                }
 
                 _selectedSid = value;
 
@@ -180,8 +189,9 @@ namespace BLAZAM.Gui.UI.Inputs
             set
             {
                 if (_selectedGuid == value)
+                {
                     return;
-
+                }
 
                 _selectedGuid = value;
 
@@ -222,12 +232,12 @@ namespace BLAZAM.Gui.UI.Inputs
             _cancellationList.Add(newSource);
 
 
-            if (string.IsNullOrEmpty(searchText))
+            if (searchText.IsNullOrEmpty())
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }
 
-            if (token.IsCancellationRequested || string.IsNullOrEmpty(searchText))
+            if (token.IsCancellationRequested || searchText.IsNullOrEmpty())
             {
                 return Enumerable.Empty<IDirectoryEntryAdapter>();
             }

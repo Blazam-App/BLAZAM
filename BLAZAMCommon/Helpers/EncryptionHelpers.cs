@@ -42,7 +42,27 @@ namespace BLAZAM.Helpers
             var str = Encryption.Instance.DecryptObject<string>(input);
             return str == null ? "" : str;
         }
-
+        /// <summary>
+        /// Asynchronously decrypts the specified string and converts the result to the requested type.
+        /// </summary>
+        /// <typeparam name="T">The type to convert the decrypted value to.</typeparam>
+        /// <param name="input">The encrypted string to decrypt.</param>
+        /// <returns>A task that represents the asynchronous operation and contains the decrypted value converted to the
+        /// specified type.</returns>
+        public static async Task<T?> DecryptAsync<T>(this string input)
+        {
+            return await Task.Run(() => input.Decrypt<T>());
+        }
+        /// <summary>
+        /// Asynchronously decrypts the specified string value and returns the decrypted text.
+        /// </summary>
+        /// <param name="input">The encrypted string value to decrypt.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the decrypted string, or <see
+        /// langword="null"/> if decryption produces no value.</returns>
+        public static async Task<string?> DecryptAsync(this string input)
+        {
+            return await Task.Run(() => input.Decrypt<string>());
+        }
         /// <summary>
         /// Encrypts an object into a ciphertext string.
         /// </summary>

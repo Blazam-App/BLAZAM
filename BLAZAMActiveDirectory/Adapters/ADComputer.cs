@@ -2,7 +2,6 @@
 using BLAZAM.ActiveDirectory.Data;
 using BLAZAM.Database.Models;
 using BLAZAM.Database.Models.Permissions;
-using BLAZAM.Helpers;
 using BLAZAM.Logger;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -45,7 +44,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         }
         public async Task<bool> RenameAsync(string newName)
         {
-            if (string.IsNullOrEmpty(CanonicalName))
+            if (CanonicalName.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Warning("Cannot rename computer. CanonicalName is null or empty.");
                 return false;
@@ -64,7 +63,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
         public async Task<bool> ShutdownAsync(int delaySeconds = 0, string? message = null, bool force = true, bool reboot = false)
         {
-            if (string.IsNullOrEmpty(CanonicalName))
+            if (CanonicalName.IsNullOrEmpty())
             {
                 Loggers.ActiveDirectoryLogger.Warning("Cannot shutdown computer. CanonicalName is null or empty.");
                 return false;

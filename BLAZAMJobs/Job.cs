@@ -155,7 +155,7 @@ namespace BLAZAM.Jobs
                     return false; // Exit execution
                 }
 
-                step.OnProgressUpdated += ((val) => { OnProgressUpdated?.Invoke(val); });
+                step.OnProgressUpdated += (val) => { OnProgressUpdated?.Invoke(val); };
 
                 if (!ExecuteStep(step))
                 {

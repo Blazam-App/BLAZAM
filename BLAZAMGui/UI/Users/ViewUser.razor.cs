@@ -158,7 +158,9 @@ namespace BLAZAM.Gui.UI.Users
         public override void Dispose()
         {
             if (_disposed)
+            {
                 return;
+            }
 
             // Dispose managed resources here
             _confirmPassword = String.Empty;

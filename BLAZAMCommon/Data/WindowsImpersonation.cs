@@ -80,8 +80,10 @@ namespace BLAZAM.Common.Data
         /// </summary>
         public void EnsureProfileExists()
         {
-            if (ImpersonationUser == null) return;
-
+            if (ImpersonationUser == null)
+            {
+                return;
+            }
 
             if (!OperatingSystem.IsWindows())
             {

@@ -115,7 +115,9 @@
 
         AuthenticationSettings settings = new AuthenticationSettings();
         string newAdminPassword;
+        string newDuoSecret;
         string adminPasswordInDb;
+        string duoSecretInDb;
         bool? duoHealthCheckResult = null;
 
     protected override async Task OnInitializedAsync()
@@ -132,6 +134,8 @@
             //Pull encrypted admin pass and store encrypted value
             adminPasswordInDb = settings?.AdminPassword;
             newAdminPassword = adminPasswordInDb;
+            duoSecretInDb = settings?.DuoClientSecret;
+            newDuoSecret = duoSecretInDb;
             await DoDuoHealthCheck();
             LoadingData = false;
 
@@ -165,12 +169,22 @@
     protected override async Task Save()
     {
         var decryptedPass = adminPasswordInDb.Decrypt<string>();
-        if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass.Equals(adminPasswordInDb))
+        if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass?.Equals(adminPasswordInDb)==true)
         {
 
             settings.AdminPassword = await newAdminPassword.EncryptAsync();
 
             adminPasswordInDb = settings.AdminPassword;
+
+        }
+
+        var decryptedSecret = duoSecretInDb.Decrypt<string>();
+        if (!newDuoSecret.Equals(duoSecretInDb) || decryptedSecret?.Equals(duoSecretInDb)==true)
+        {
+
+            settings.DuoClientSecret = await newDuoSecret.EncryptAsync();
+
+            duoSecretInDb = settings.DuoClientSecret;
 
         }
 

@@ -1,4 +1,4 @@
-﻿using BLAZAM.Database.Context;
+using BLAZAM.Database.Context;
 using System.Collections;
 using System.DirectoryServices.Protocols;
 
@@ -28,7 +28,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public IEnumerator GetEnumerator()
         {
             using var connection = _directory.GetConnection();
-            if (connection == null) yield break;
+            if (connection == null)
+            {
+                yield break;
+            }
 
             var request = new SearchRequest(
                 _parentDn,
@@ -99,9 +102,10 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public IDirectoryEntry Find(string name, string schemaClassName)
         {
             string filter = "(&(objectClass=*)(|(cn=" + name + ")(ou=" + name + ")))";
-            if (!string.IsNullOrEmpty(schemaClassName))
+            if (!schemaClassName.IsNullOrEmpty())
+            {
                 filter = "(&(objectClass=" + schemaClassName + ")(|(cn=" + name + ")(ou=" + name + ")))";
-
+            }
 
             using var connection = _directory.GetConnection();
             var request = new SearchRequest(_parentDn, filter, System.DirectoryServices.Protocols.SearchScope.OneLevel, null);

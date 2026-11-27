@@ -561,7 +561,7 @@ namespace BLAZAM.Helpers
         /// </example>
         public static string? GetParentDn(this string dn)
         {
-            if (string.IsNullOrWhiteSpace(dn))
+            if (dn.IsNullOrWhiteSpace())
             {
                 return null;
             }
@@ -626,7 +626,10 @@ namespace BLAZAM.Helpers
 
         private static IDirectoryEntryAdapter? Encapsulate(this SearchResultEntry sre, IActiveDirectoryContext context)
         {
-            if (sre == null || sre.Attributes == null) return default;
+            if (sre == null || sre.Attributes == null)
+            {
+                return default;
+            }
 
             IDirectoryEntryAdapter? thisObject = null;
             List<string> objectClasses = new List<string>();
@@ -708,7 +711,7 @@ namespace BLAZAM.Helpers
         /// <returns>The parent DN, or null if no parent exists (e.g., for a domain root) or if the DN is invalid.</returns>
         public static string? GetParentDN(string? dn)
         {
-            if (string.IsNullOrEmpty(dn))
+            if (dn.IsNullOrEmpty())
             {
                 return null;
             }

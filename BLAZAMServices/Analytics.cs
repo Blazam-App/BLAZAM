@@ -327,7 +327,7 @@ namespace BLAZAM.Services
                 measurementId ??= ProductionGA4Property;
                 apiSecret ??= Environment.GetEnvironmentVariable("GA4_API_SECRET");
 
-                if (string.IsNullOrWhiteSpace(measurementId) || string.IsNullOrWhiteSpace(apiSecret))
+                if (measurementId.IsNullOrWhiteSpace() || apiSecret.IsNullOrWhiteSpace())
                 {
                     Loggers.SystemLogger.Warning("Analytics: Missing GA4 measurementId or apiSecret. Server-side event '{EventName}' not sent.", eventName);
                     return;

@@ -96,7 +96,7 @@ namespace BLAZAM.ActiveDirectory.Data
 
                         try
                         {
-                            ntaccount = (securityIdentifier.Translate(typeof(NTAccount)) as NTAccount);
+                            ntaccount = securityIdentifier.Translate(typeof(NTAccount)) as NTAccount;
                         }
                         catch (Exception ex)
                         {

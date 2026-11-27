@@ -1,6 +1,4 @@
-﻿using BLAZAM.Helpers;
-
-namespace BLAZAM.Database.Models.Permissions
+﻿namespace BLAZAM.Database.Models.Permissions
 {
     public class ObjectActions
     {

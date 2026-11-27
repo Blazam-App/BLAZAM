@@ -33,21 +33,21 @@ namespace BLAZAM.Services.Duo
                 {
 
                     ClientId = auth.DuoClientId;
-                    ClientSecret = auth.DuoClientSecret;
+                    ClientSecret = auth.DuoClientSecret?.Decrypt();
                     ApiHost = auth.DuoApiHost;
                     RedirectUri = "blank";
 
                 }
             }
-            if (string.IsNullOrWhiteSpace(ClientId))
+            if (ClientId.IsNullOrWhiteSpace())
             {
                 throw new DuoException("A 'Client ID' configuration value is required in the appsettings file.");
             }
-            if (string.IsNullOrWhiteSpace(ClientSecret))
+            if (ClientSecret.IsNullOrWhiteSpace())
             {
                 throw new DuoException("A 'Client Secret' configuration value is required in the appsettings file.");
             }
-            if (string.IsNullOrWhiteSpace(ApiHost))
+            if (ApiHost.IsNullOrWhiteSpace())
             {
                 throw new DuoException("An 'Api Host' configuration value is required in the appsettings file.");
             }
@@ -63,25 +63,25 @@ namespace BLAZAM.Services.Duo
                 {
 
                     ClientId = auth.DuoClientId;
-                    ClientSecret = auth.DuoClientSecret;
+                    ClientSecret = auth.DuoClientSecret?.Decrypt();
                     ApiHost = auth.DuoApiHost;
                     RedirectUri = callbackUri;
 
                 }
             }
-            if (string.IsNullOrWhiteSpace(ClientId))
+            if (ClientId.IsNullOrWhiteSpace())
             {
                 throw new DuoException("A 'Client ID' configuration value is required in the appsettings file.");
             }
-            if (string.IsNullOrWhiteSpace(ClientSecret))
+            if (ClientSecret.IsNullOrWhiteSpace())
             {
                 throw new DuoException("A 'Client Secret' configuration value is required in the appsettings file.");
             }
-            if (string.IsNullOrWhiteSpace(ApiHost))
+            if (ApiHost.IsNullOrWhiteSpace())
             {
                 throw new DuoException("An 'Api Host' configuration value is required in the appsettings file.");
             }
-            if (string.IsNullOrWhiteSpace(RedirectUri))
+            if (RedirectUri.IsNullOrWhiteSpace())
             {
                 throw new DuoException("A 'Redirect URI' configuration value is required in the appsettings file.");
             }
