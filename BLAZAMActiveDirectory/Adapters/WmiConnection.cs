@@ -152,15 +152,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                foreach (var mo in PerformQuery(_totalMemoryQuery))
-                {
-                    double total = Convert.ToDouble(mo["TotalVisibleMemorySize"]);
-                    double free = Convert.ToDouble(mo["FreePhysicalMemory"]);
-                    return new ComputerMemory { Total = total, Free = free };
-                }
+                var mo = PerformQuery(_totalMemoryQuery).GetEnumerator();
+                mo.MoveNext();
 
-                return new ComputerMemory();
-
+                double total = Convert.ToDouble(mo.Current["TotalVisibleMemorySize"]);
+                double free = Convert.ToDouble(mo.Current["FreePhysicalMemory"]);
+                return new ComputerMemory { Total = total, Free = free };
             }
         }
 
@@ -200,13 +197,12 @@ namespace BLAZAM.ActiveDirectory.Adapters
         {
             get
             {
-                foreach (var mo in PerformQuery(_cpuStatsQuery))
-                {
-                    int percentProcessor = Convert.ToInt32(mo["PercentProcessorTime"]);
-                    return percentProcessor;
-                }
+                var mo = PerformQuery(_cpuStatsQuery).GetEnumerator();
+                mo.MoveNext();
 
-                return 0;
+                int percentProcessor = Convert.ToInt32(mo.Current["PercentProcessorTime"]);
+
+                return percentProcessor;
             }
         }
 

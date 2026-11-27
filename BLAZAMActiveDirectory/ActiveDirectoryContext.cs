@@ -465,7 +465,7 @@ namespace BLAZAM.ActiveDirectory
             }
             if (!IsCancelRequested && Status != DirectoryConnectionStatus.OK)
             {
-                Task.Delay(5000, this._connectionCTS.Token).Wait();
+                Task.Delay(5000, _connectionCTS.Token).Wait(_connectionCTS.Token);
                 return CheckConnect();
             }
 

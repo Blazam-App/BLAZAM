@@ -16,7 +16,7 @@ namespace BLAZAM.Helpers
         /// <typeparam name="T">The type to decrypt the object to.</typeparam>
         /// <param name="input">The ciphertext string to decrypt. If null, default(T) is returned.</param>
         /// <returns>The decrypted object, or default(T) if decryption fails or input is null.</returns>
-        public static T? Decrypt<T>(this string input)
+        public static T? Decrypt<T>(this string? input)
         {
             if (input == null)
             {
@@ -33,7 +33,7 @@ namespace BLAZAM.Helpers
         /// </remarks>
         /// <param name="input">The ciphertext string to decrypt. If null, an empty string is returned.</param>
         /// <returns>The decrypted string, or an empty string if decryption fails or input is null.</returns>
-        public static string Decrypt(this string input)
+        public static string Decrypt(this string? input)
         {
             if (input == null)
             {
@@ -49,7 +49,7 @@ namespace BLAZAM.Helpers
         /// <param name="input">The encrypted string to decrypt.</param>
         /// <returns>A task that represents the asynchronous operation and contains the decrypted value converted to the
         /// specified type.</returns>
-        public static async Task<T?> DecryptAsync<T>(this string input)
+        public static async Task<T?> DecryptAsync<T>(this string? input)
         {
             return await Task.Run(() => input.Decrypt<T>());
         }
@@ -59,9 +59,13 @@ namespace BLAZAM.Helpers
         /// <param name="input">The encrypted string value to decrypt.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the decrypted string, or <see
         /// langword="null"/> if decryption produces no value.</returns>
-        public static async Task<string?> DecryptAsync(this string input)
+        public static async Task<string?> DecryptAsync(this string? input)
         {
-            return await Task.Run(() => input.Decrypt<string>());
+            if (input == null)
+            {
+                return string.Empty;
+            }
+            return await Task.Run(() => input.Decrypt());
         }
         /// <summary>
         /// Encrypts an object into a ciphertext string.

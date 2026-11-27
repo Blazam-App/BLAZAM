@@ -33,7 +33,7 @@ namespace BLAZAM.Services.Duo
                 {
 
                     ClientId = auth.DuoClientId;
-                    ClientSecret = auth.DuoClientSecret?.Decrypt();
+                    ClientSecret = await auth.DuoClientSecret.DecryptAsync();
                     ApiHost = auth.DuoApiHost;
                     RedirectUri = "blank";
 
