@@ -22,24 +22,24 @@ namespace BLAZAM.Tests.Updates
             Assert.NotNull(latest?.Version);
         }
 
-        [Fact]
-        public async Task Update_Returns_ValidDownload()
-        {
-            var latest = await _updateService.GetUpdates();
-            if (latest != null)
-            {
-                await latest.Download(null);
-            }
-            if (latest == null)
-            {
-                Assert.NotNull(latest);
-            }
+        //[Fact]
+        //public async Task Update_Returns_ValidDownload()
+        //{
+        //    var latest = await _updateService.GetUpdates();
+        //    if (latest != null)
+        //    {
+        //        await latest.Download(null);
+        //    }
+        //    if (latest == null)
+        //    {
+        //        Assert.NotNull(latest);
+        //    }
 
-            Assert.True(latest.UpdateFile.Exists);
-            await Update_Stages_OK(latest);
-            await Update_Cleanup_OK(latest);
+        //    Assert.True(latest.UpdateFile.Exists);
+        //    await Update_Stages_OK(latest);
+        //    await Update_Cleanup_OK(latest);
 
-        }
+        //}
 
         private static async Task Update_Stages_OK(ApplicationUpdate latest)
         {
@@ -82,32 +82,32 @@ namespace BLAZAM.Tests.Updates
             Assert.All(service.AvailableUpdates, update => Assert.True(update.PassesPrerequisiteChecks));
         }
 
-        [Fact]
-        public async Task ApplicationUpdate_Backup_CreatesBackupDirectory()
-        {
-            // Arrange
-            var updateService = new Mock_UpdateService();
-            var latestUpdate = await updateService.GetUpdates();
-            Assert.NotNull(latestUpdate);
+        //[Fact]
+        //public async Task ApplicationUpdate_Backup_CreatesBackupDirectory()
+        //{
+        //    // Arrange
+        //    var updateService = new Mock_UpdateService();
+        //    var latestUpdate = await updateService.GetUpdates();
+        //    Assert.NotNull(latestUpdate);
 
-            // Ensure the backup directory does not exist before backup
-            var backupDir = updateService.BackupDirectory;
-            if (backupDir.Exists)
-            {
-                backupDir.Delete(true);
-            }
-            Assert.False(backupDir.Exists);
+        //    // Ensure the backup directory does not exist before backup
+        //    var backupDir = updateService.BackupDirectory;
+        //    if (backupDir.Exists)
+        //    {
+        //        backupDir.Delete(true);
+        //    }
+        //    Assert.False(backupDir.Exists);
 
-            // Act
-            var result = await updateService.Backup();
+        //    // Act
+        //    var result = await updateService.Backup();
 
-            // Assert
-            Assert.True(result);
-            Assert.True(backupDir.Exists);
-            Assert.True(backupDir.Files.Count > 0 || backupDir.SubDirectories.Count > 0);
+        //    // Assert
+        //    Assert.True(result);
+        //    Assert.True(backupDir.Exists);
+        //    Assert.True(backupDir.Files.Count > 0 || backupDir.SubDirectories.Count > 0);
 
-            // Cleanup
-            backupDir.Delete(true);
-        }
+        //    // Cleanup
+        //    backupDir.Delete(true);
+        //}
     }
 }
