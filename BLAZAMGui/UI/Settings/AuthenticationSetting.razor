@@ -168,7 +168,7 @@
 
     protected override async Task Save()
     {
-        var decryptedPass = adminPasswordInDb.Decrypt<string>();
+        var decryptedPass = await adminPasswordInDb.DecryptAsync<string>();
         if (!newAdminPassword.Equals(adminPasswordInDb) || decryptedPass?.Equals(adminPasswordInDb)==true)
         {
 
@@ -178,7 +178,7 @@
 
         }
 
-        var decryptedSecret = duoSecretInDb.Decrypt<string>();
+        var decryptedSecret = await duoSecretInDb.DecryptAsync<string>();
         if (!newDuoSecret.Equals(duoSecretInDb) || decryptedSecret?.Equals(duoSecretInDb)==true)
         {
 

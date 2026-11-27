@@ -348,7 +348,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
 
                     }
 
-                    Task.Delay(1000, _pingCancellationTokenSource.Token).Wait();
+                    Task.Delay(1000, _pingCancellationTokenSource.Token).Wait(_pingCancellationTokenSource.Token);
                 }
 
                 _pingCancellationTokenSource.Dispose();
