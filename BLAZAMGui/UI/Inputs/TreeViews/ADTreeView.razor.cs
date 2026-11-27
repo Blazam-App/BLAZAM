@@ -55,7 +55,7 @@ namespace BLAZAM.Gui.UI.Inputs.TreeViews
                 if (ShowAllEntries)
                 {
                     var children = parentNode.Children
-                        .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || (c.CanRead))
+                        .Where(c => (c.ObjectType == ActiveDirectoryObjectType.OU && ShouldShowOU(c)) || c.CanRead)
                         .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.Group)
                         .MoveToTop(c => c.ObjectType == ActiveDirectoryObjectType.OU);
                     _childrenCache[parentNode] = children;

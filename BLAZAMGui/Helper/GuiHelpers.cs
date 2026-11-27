@@ -34,7 +34,7 @@ namespace BLAZAM.Helpers
             };
 
 
-            return (await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title, options: options));
+            return await dialogService.ShowMessage<AppNewsItemDialog>(dialogParams, item.Title, options: options);
 
         }
 

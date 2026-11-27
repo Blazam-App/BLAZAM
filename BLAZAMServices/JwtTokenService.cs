@@ -63,7 +63,7 @@ namespace BLAZAM.Services
                 Audience = ApplicationInfo.installationId.ToString(),
                 IssuedAt = DateTime.UtcNow,
                 Issuer = DatabaseCache.ApplicationSettings?.AppName, // Assumes AppSettings and AppName are available
-                Expires = (DateTime.UtcNow + lifetime.Value),
+                Expires = DateTime.UtcNow + lifetime.Value,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encryption.Instance.APITokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -26,7 +26,11 @@ namespace BLAZAM.Services.Background
         /// random time between 15 and 45 seconds after launch.</param>
         public virtual void Start(bool immediate = false)
         {
-            if (started) return;
+            if (started)
+            {
+                return;
+            }
+
             started = true; // set before scheduling to avoid a race
 
             TimeSpan startDelay = TimeSpan.Zero;

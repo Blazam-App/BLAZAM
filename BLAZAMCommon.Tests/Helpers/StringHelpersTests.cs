@@ -110,7 +110,7 @@ namespace BLAZAMCommon.Tests.Helpers
             int expectedHash = 17;
             foreach (char c in longString)
             {
-                unchecked { expectedHash = expectedHash * 23 + c; }
+                unchecked { expectedHash = (expectedHash * 23) + c; }
             }
             Assert.Equal(expectedHash, hash);
         }

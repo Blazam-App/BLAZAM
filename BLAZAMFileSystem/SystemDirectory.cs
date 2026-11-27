@@ -27,7 +27,7 @@ namespace BLAZAM.FileSystem
                 // Path.GetFullPath might not add a trailing slash if the directory doesn't exist.
                 // We append one to signify it's a directory for consistency in FullPath.
                 string basePath = base.FullPath; // Get FullPath from base constructor
-                if (!string.IsNullOrEmpty(basePath) &&
+                if (!basePath.IsNullOrEmpty() &&
                     !basePath.EndsWith(Path.DirectorySeparatorChar.ToString()) &&
                     !basePath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
                 {
@@ -38,7 +38,7 @@ namespace BLAZAM.FileSystem
                     FullPath = basePath;
                 }
                 // Re-evaluate FullPath to ensure it's absolute and clean after potential modification
-                if (!string.IsNullOrEmpty(FullPath))
+                if (!FullPath.IsNullOrEmpty())
                 {
                     FullPath = Path.GetFullPath(FullPath);
                 }
@@ -162,7 +162,7 @@ namespace BLAZAM.FileSystem
         {
             get
             {
-                if (string.IsNullOrEmpty(FullPath))
+                if (FullPath.IsNullOrEmpty())
                 {
                     Loggers.SystemLogger.Warning("SystemDirectory.Name: FullPath is null or empty. Cannot determine directory name.");
                     return null;
@@ -218,7 +218,9 @@ namespace BLAZAM.FileSystem
             // Handle Directories
             var directories = Directory.GetDirectories(FullPath, "*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 directories = directories.Where(d => !d.Contains(parentDirectory.FullPath));
+            }
 
             foreach (string dirPath in directories)
             {
@@ -236,7 +238,9 @@ namespace BLAZAM.FileSystem
             // Handle Files
             var files = Directory.GetFiles(FullPath, "*.*", SearchOption.AllDirectories).AsEnumerable();
             if (copyingDownTree)
+            {
                 files = files.Where(f => !f.Contains(parentDirectory.FullPath));
+            }
 
             var filesList = files.ToList();
 
@@ -254,7 +258,7 @@ namespace BLAZAM.FileSystem
                 }
             }
 
-            FileProgress progress = new FileProgress
+            FileProgress progress = new()
             {
                 ExpectedSize = totalSize,
                 CompletedBytes = 0
@@ -264,7 +268,7 @@ namespace BLAZAM.FileSystem
             {
                 try
                 {
-                    FileInfo fInfo = new FileInfo(newPath);
+                    FileInfo fInfo = new(newPath);
                     string destPath = newPath.Replace(FullPath, parentDirectory.FullPath);
 
                     File.Copy(newPath, destPath, true);

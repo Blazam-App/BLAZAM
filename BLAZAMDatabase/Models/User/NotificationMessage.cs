@@ -79,8 +79,8 @@ namespace BLAZAM.Database.Models.User
         public override bool Equals(object? obj)
         {
 
-            return obj is NotificationMessage message && (
-                   Id != 0 && Id == message.Id);
+            return obj is NotificationMessage message &&
+                   Id != 0 && Id == message.Id;
         }
 
         public bool Equals(NotificationMessage? other)

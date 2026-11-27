@@ -26,7 +26,7 @@ namespace BLAZAM.FileSystem
             try
             {
                 FullPath = Path.GetFullPath(path);
-                if (string.IsNullOrEmpty(FullPath)) // Path.GetFullPath can return empty if input is effectively empty after processing
+                if (FullPath.IsNullOrEmpty()) // Path.GetFullPath can return empty if input is effectively empty after processing
                 {
                     // This case might be redundant if Path.GetFullPath throws for such inputs,
                     // but kept for robustness based on original logic.
@@ -88,7 +88,7 @@ namespace BLAZAM.FileSystem
                         // If FullPath points to a non-existent file in an existing directory, this will test the directory.
                         // If FullPath points to a non-existent file in a non-existent directory, DirectoryInfo will handle it.
                         string? targetDirectory = directoryInfo.Exists ? FullPath : fileInfo.DirectoryName;
-                        if (string.IsNullOrEmpty(targetDirectory) || !Directory.Exists(targetDirectory))
+                        if (targetDirectory.IsNullOrEmpty() || !Directory.Exists(targetDirectory))
                         {
                             // If the directory itself doesn't exist, can't write a test file.
                             // This could be a new file in a new directory. The ability to create the directory

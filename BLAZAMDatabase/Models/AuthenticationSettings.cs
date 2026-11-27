@@ -28,7 +28,14 @@ namespace BLAZAM.Database.Models
         [Compare(nameof(AdminPassword))]
         public string? AdminPasswordConfirmed { get; set; }
         public bool DuoEnabled { get; set; }
+        /// <summary>
+        /// Gets or sets the Duo client ID.
+        /// </summary>
         public string? DuoClientId { get; set; }
+        /// <summary>
+        /// Gets or sets the Duo client secret ciphertext used for application authentication.
+        /// </summary>
+        /// <remarks>Stored as ciphertext that requires decryption for use.</remarks>
         public string? DuoClientSecret { get; set; }
         public string? DuoApiHost { get; set; }
         public DuoUnreachableBehavior DuoUnreachableBehavior { get; set; } = DuoUnreachableBehavior.Block;

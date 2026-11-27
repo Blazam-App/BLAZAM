@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿
+using Microsoft.Win32;
 
 namespace BLAZAM.Common.Data
 {
@@ -27,7 +28,7 @@ namespace BLAZAM.Common.Data
             try
             {
                 string? sharedFrameworkPath = GetSharedFrameworkPath();
-                if (string.IsNullOrEmpty(sharedFrameworkPath))
+                if (sharedFrameworkPath.IsNullOrEmpty())
                 {
                     return false;
                 }

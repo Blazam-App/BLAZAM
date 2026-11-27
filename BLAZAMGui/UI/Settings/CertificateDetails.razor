@@ -86,7 +86,7 @@
 
         LoadingData = true;
 
-        var rawcert = AppSettings.SSLCertificateCipher?.Decrypt<byte[]?>();
+        var rawcert = await AppSettings.SSLCertificateCipher.DecryptAsync<byte[]?>();
         if (rawcert != null && rawcert.Length > 1000)
         {
                 using var cert = X509CertificateLoader.LoadCertificate(rawcert);

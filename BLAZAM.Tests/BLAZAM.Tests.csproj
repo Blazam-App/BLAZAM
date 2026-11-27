@@ -37,6 +37,7 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="Microsoft.Playwright.NUnit" />
 		<PackageReference Include="Moq" />
 		<PackageReference Include="MudBlazor" />
 		<PackageReference Include="Octokit" />

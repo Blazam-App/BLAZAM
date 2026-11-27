@@ -35,7 +35,7 @@ namespace BLAZAM.Services
 
             var encryptionKey = configuration.GetValue<string>("EncryptionKey");
 
-            if (string.IsNullOrEmpty(encryptionKey))
+            if (encryptionKey.IsNullOrEmpty())
             {
                 Loggers.SystemLogger.Fatal("EncryptionKey is null or empty in application configuration. EncryptionService cannot be initialized.");
                 throw new InvalidOperationException("EncryptionKey is missing from configuration.");

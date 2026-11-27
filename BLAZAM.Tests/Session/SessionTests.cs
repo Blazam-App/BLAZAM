@@ -323,7 +323,7 @@ namespace BLAZAM.Tests.Session
             var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, "/url", user);
 
             // Act
-            bool actualEquality = (requestA == requestB);
+            bool actualEquality = requestA == requestB;
 
             // Assert
             Assert.Equal(expectedEquality, actualEquality);
@@ -365,7 +365,7 @@ namespace BLAZAM.Tests.Session
             var requestB = new MFARequest(MfaType.CiscoDuo, tokenB, "/url", user);
 
             // Act
-            bool actualInequality = (requestA != requestB);
+            bool actualInequality = requestA != requestB;
 
             // Assert
             Assert.Equal(expectedInequality, actualInequality);

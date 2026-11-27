@@ -23,7 +23,7 @@ namespace BLAZAM.Gui.UI.Dashboard.Widgets
                 LoadingData = true;
                 var search = new ADSearch(Directory);
                 search.Fields.Changed = DateTime.UtcNow - _timeFrame;
-                ChangedEntries = (search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>()).Where(x => x.CanRead).ToList();
+                ChangedEntries = search.Search<DirectoryEntryAdapter, IDirectoryEntryAdapter>().Where(x => x.CanRead).ToList();
                 LoadingData = false;
             });
 

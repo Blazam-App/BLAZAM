@@ -1,5 +1,4 @@
-﻿using BLAZAM.Helpers;
-using BLAZAM.Logger;
+﻿using BLAZAM.Logger;
 using System.Management;
 using System.Runtime.InteropServices;
 

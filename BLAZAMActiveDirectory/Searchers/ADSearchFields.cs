@@ -1,6 +1,4 @@
-﻿using BLAZAM.Helpers;
-
-namespace BLAZAM.ActiveDirectory.Searchers
+﻿namespace BLAZAM.ActiveDirectory.Searchers
 {
     public class ADSearchFields
     {

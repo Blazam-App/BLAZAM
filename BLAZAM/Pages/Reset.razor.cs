@@ -112,21 +112,27 @@ namespace BLAZAM.Pages
             if (!Token.IsNullOrEmpty())
             {
                 var usersettings = await Context.UserSettings.Include(x => x.PasswordResetSettings).FirstOrDefaultAsync(x => x.PasswordResetSettings.ResetToken == Token);
-                if (usersettings?.PasswordResetSettings.TokenExpiration?.Decrypt<DateTime>() > DateTime.UtcNow)
-                {
-                    _tokenValid = true;
-                    _userToReset = Directory.Users.FindUserBySID(usersettings.UserGUID);
-                    if (_userToReset != null)
-                    {
-                        LoginRequest.Username = _userToReset.SAMAccountName;
-                        await AttemptResetPassword();
-                        SnackBarService.Success("Token Valid!");
-                    }
-                }
-                else
+                if (usersettings == null || usersettings.PasswordResetSettings.TokenExpiration.IsNullOrEmpty())
                 {
                     SnackBarService.Error("Either the token has expired or the token is invalid");
+                    return;
                 }
+                var expiration = await usersettings.PasswordResetSettings.TokenExpiration.DecryptAsync<DateTime>();
+                if (expiration > DateTime.UtcNow != true)
+                {
+                    SnackBarService.Error("Either the token has expired or the token is invalid");
+                    return;
+                }
+                _tokenValid = true;
+                _userToReset = Directory.Users.FindUserBySID(usersettings.UserGUID);
+                if (_userToReset != null)
+                {
+                    LoginRequest.Username = _userToReset.SAMAccountName;
+                    await AttemptResetPassword();
+                    SnackBarService.Success("Token Valid!");
+                }
+
+
             }
             if (!State.IsNullOrEmpty() && !Code.IsNullOrEmpty())
             {
@@ -160,7 +166,7 @@ namespace BLAZAM.Pages
                 LoadingData = false;
                 return;
             }
-            if (_submittedPin.Equals(appUser.Preferences.PasswordResetSettings.PIN?.Decrypt()))
+            if (_submittedPin.Equals(await appUser.Preferences.PasswordResetSettings.PIN.DecryptAsync()))
             {
 
 
@@ -187,9 +193,9 @@ namespace BLAZAM.Pages
                 LoadingData = false;
                 return;
             }
-            if (CheckAnswer(_submittedAnswer1, appUser.Preferences.PasswordResetSettings.Answer1?.Decrypt())
-                && CheckAnswer(_submittedAnswer2, appUser.Preferences.PasswordResetSettings.Answer2?.Decrypt())
-                && CheckAnswer(_submittedAnswer3, appUser.Preferences.PasswordResetSettings.Answer3?.Decrypt()))
+            if (CheckAnswer(_submittedAnswer1, await appUser.Preferences.PasswordResetSettings.Answer1.DecryptAsync())
+                && CheckAnswer(_submittedAnswer2, await appUser.Preferences.PasswordResetSettings.Answer2.DecryptAsync())
+                && CheckAnswer(_submittedAnswer3, await appUser.Preferences.PasswordResetSettings.Answer3.DecryptAsync()))
             {
                 _qaValid = true;
                 _ = AttemptResetPassword();
@@ -263,10 +269,16 @@ namespace BLAZAM.Pages
             try
             {
                 var user = Directory.Users.FindUserByUsername(LoginRequest.Username, exactMatch: true);
-                if (!ValidateUser(user)) return;
+                if (!ValidateUser(user))
+                {
+                    return;
+                }
 
                 appUser = await user.GetApplicationUser(UserStateService, DbFactory, Directory, AppAuthenticationStateProvider);
-                if (!ValidateAppUser(appUser)) return;
+                if (!ValidateAppUser(appUser))
+                {
+                    return;
+                }
 
                 _effectiveResetPolicy = new EffectivePasswordResetPolicy(appUser.PermissionDelegates);
                 if (!_effectiveResetPolicy.CanResetPassword)
@@ -275,10 +287,25 @@ namespace BLAZAM.Pages
                     return;
                 }
 
-                if (!await IsEmailRequirementMet(appUser)) return;
-                if (!IsPinRequirementMet(appUser)) return;
-                if (!IsQARequirementMet(appUser)) return;
-                if (!await IsMFARequirementMet(appUser)) return;
+                if (!await IsEmailRequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!IsPinRequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!IsQARequirementMet(appUser))
+                {
+                    return;
+                }
+
+                if (!await IsMFARequirementMet(appUser))
+                {
+                    return;
+                }
 
                 if (_pinValid && _qaValid && _mfaValid)
                 {
@@ -400,7 +427,9 @@ namespace BLAZAM.Pages
             }
             else if (_auth.ShouldPerformGoogleAuthenticatorMFA(appUser.Preferences, LoginRequest, authSettings) && !_mfaValid)
             {
-                _ = googleAuthenticatorModal?.ShowAsync(_appUser?.Preferences.AuthenticatorSecret?.Decrypt().ToSecureString());
+                var userSecret = await appUser.Preferences.AuthenticatorSecret.DecryptAsync();
+                _ = googleAuthenticatorModal?.ShowAsync(userSecret.ToSecureString());
+                userSecret = null;
                 return false;
             }
             _mfaValid = true;
@@ -422,7 +451,7 @@ namespace BLAZAM.Pages
             _resetAuditLogger?.Dispose();
         }
     }
-    class ResetAttempt
+    internal class ResetAttempt
     {
         public string Username { get; set; }
         public DateTime AttemptTime { get; set; }

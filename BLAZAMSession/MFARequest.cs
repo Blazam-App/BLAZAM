@@ -30,7 +30,11 @@ namespace BLAZAM.Session
         {
             get => _user; set
             {
-                if (_user == value) return;
+                if (_user == value)
+                {
+                    return;
+                }
+
                 _user = value;
                 if (_user != null)
                 {
