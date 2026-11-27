@@ -982,7 +982,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void Rename(string newName)
         {
             // 1. Validate the new name
-            if (string.IsNullOrWhiteSpace(newName))
+            if (newName.IsNullOrWhiteSpace())
             {
                 throw new ArgumentException("The new name cannot be null or empty.", nameof(newName));
             }
@@ -1017,7 +1017,7 @@ namespace BLAZAM.ActiveDirectory.Adapters
         public void MoveTo(IDirectoryEntry newParent)
         {
             // 1. Validate the new parent
-            if (newParent == null || string.IsNullOrWhiteSpace(newParent.DN))
+            if (newParent == null || newParent.DN.IsNullOrWhiteSpace())
             {
                 throw new ArgumentNullException(nameof(newParent), "New parent entry and its DN cannot be null.");
             }

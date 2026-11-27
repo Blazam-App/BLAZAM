@@ -114,7 +114,7 @@
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(Action.Data))
+            if (Action.Data.IsNullOrWhiteSpace())
                 return false;
 
             dynamic? json = JsonConvert.DeserializeObject<ExpandoObject>(Action.Data);
@@ -127,7 +127,7 @@
         }
         set
         {
-            dynamic json = string.IsNullOrWhiteSpace(Action.Data)
+            dynamic json = Action.Data.IsNullOrWhiteSpace()
                 ? new ExpandoObject()
                 : JsonConvert.DeserializeObject<ExpandoObject>(Action.Data);
 

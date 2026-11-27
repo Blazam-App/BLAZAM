@@ -17,7 +17,7 @@ namespace BLAZAM.Common.Helpers
         /// <returns>True on a successful ping response; otherwise, false (including if hostNameOrAddress is null/empty or a PingException occurs).</returns>
         public static bool PingHost(string hostNameOrAddress)
         {
-            if (string.IsNullOrWhiteSpace(hostNameOrAddress))
+            if (hostNameOrAddress.IsNullOrWhiteSpace())
             {
                 return false;
             }
@@ -61,7 +61,7 @@ namespace BLAZAM.Common.Helpers
         /// <returns>True if any of the specified ports are open; otherwise, false (including if hostNameOrAddress or ports array is invalid/empty, or a SocketException occurs).</returns>
         public static bool IsAnyPortOpen(string hostNameOrAddress, int[] ports)
         {
-            if (string.IsNullOrWhiteSpace(hostNameOrAddress))
+            if (hostNameOrAddress.IsNullOrWhiteSpace())
             {
                 return false;
             }

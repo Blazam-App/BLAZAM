@@ -77,7 +77,7 @@ namespace BLAZAM.ActiveDirectory.Data
             var configContext = rootDseResponse.Entries[0]
                 .Attributes["configurationNamingContext"]?[0]?.ToString();
 
-            if (string.IsNullOrWhiteSpace(configContext))
+            if (configContext.IsNullOrWhiteSpace())
             {
                 return suffixes.ToList();
             }
@@ -97,7 +97,7 @@ namespace BLAZAM.ActiveDirectory.Data
             {
                 foreach (var value in partitionsResponse.Entries[0].Attributes["uPNSuffixes"].GetValues(typeof(string)))
                 {
-                    if (value is string suffix && !string.IsNullOrWhiteSpace(suffix))
+                    if (value is string suffix && !suffix.IsNullOrWhiteSpace())
                     {
                         suffixes.Add(suffix);
                     }

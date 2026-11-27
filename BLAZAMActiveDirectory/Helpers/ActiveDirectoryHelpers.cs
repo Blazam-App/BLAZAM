@@ -561,7 +561,7 @@ namespace BLAZAM.Helpers
         /// </example>
         public static string? GetParentDn(this string dn)
         {
-            if (string.IsNullOrWhiteSpace(dn))
+            if (dn.IsNullOrWhiteSpace())
             {
                 return null;
             }

@@ -55,6 +55,16 @@ namespace BLAZAM.Helpers
         {
             return string.IsNullOrEmpty(str); // System.String.IsNullOrEmpty handles both null and empty.
         }
+        /// <summary>
+        /// Determines whether a string is null, empty, or consists only of white-space characters.
+        /// </summary>
+        /// <param name="str">The string to evaluate.</param>
+        /// <returns><see langword="true"/> if <paramref name="str"/> is null, empty, or consists only of white-space characters;
+        /// otherwise, <see langword="false"/>.</returns>
+        public static bool IsNullOrWhiteSpace(this string? str)
+        {
+            return string.IsNullOrWhiteSpace(str); // System.String.IsNullOrWhiteSpace handles both null and whitespace.
+        }
 
         /// <summary>
         /// Checks if a URL is local to the host (relative path or localhost).
