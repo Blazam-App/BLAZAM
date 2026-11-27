@@ -187,7 +187,7 @@ namespace BLAZAM.Services
                         throw new AppException("HMAC Key not supplied to subscription set to use it.");
                     }
 
-                    var key = subscription.HmacKey.Decrypt<string>();
+                    var key = await subscription.HmacKey.DecryptAsync();
                     if (key != null && key.StartsWith(prefix))
                     {
                         key = key.Substring(prefix.Length);

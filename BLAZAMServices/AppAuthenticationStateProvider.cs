@@ -283,7 +283,7 @@ namespace BLAZAM.Services
 
         private async Task<AuthenticationState?> HandleLocalAdminLogin(LoginRequest loginReq, AuthenticationSettings settings)
         {
-            var adminPass = settings.AdminPassword?.Decrypt();
+            var adminPass = await settings.AdminPassword.DecryptAsync();
             if (adminPass is null)
             {
                 return null;

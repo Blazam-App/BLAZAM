@@ -88,12 +88,12 @@
             {
                 // Decrypt for editing
                 pin = CurrentUser.State.Preferences.PasswordResetSettings.PIN ?? "";
-                question1 = CurrentUser.State.Preferences.PasswordResetSettings.Question1?.Decrypt() ?? "";
-                answer1 = CurrentUser.State.Preferences.PasswordResetSettings.Answer1?.Decrypt() ?? "";
-                question2 = CurrentUser.State.Preferences.PasswordResetSettings.Question2?.Decrypt() ?? "";
-                answer2 = CurrentUser.State.Preferences.PasswordResetSettings.Answer2?.Decrypt() ?? "";
-                question3 = CurrentUser.State.Preferences.PasswordResetSettings.Question3?.Decrypt() ?? "";
-                answer3 = CurrentUser.State.Preferences.PasswordResetSettings.Answer3?.Decrypt() ?? "";
+                question1 = await CurrentUser.State.Preferences.PasswordResetSettings.Question1.DecryptAsync() ?? "";
+                answer1 = await CurrentUser.State.Preferences.PasswordResetSettings.Answer1.DecryptAsync() ?? "";
+                question2 = await CurrentUser.State.Preferences.PasswordResetSettings.Question2.DecryptAsync() ?? "";
+                answer2 = await CurrentUser.State.Preferences.PasswordResetSettings.Answer2.DecryptAsync() ?? "";
+                question3 = await CurrentUser.State.Preferences.PasswordResetSettings.Question3.DecryptAsync() ?? "";
+                answer3 = await CurrentUser.State.Preferences.PasswordResetSettings.Answer3.DecryptAsync() ?? "";
             }
         }
         catch (Exception ex)
