@@ -56,16 +56,18 @@ namespace BLAZAM.Gui.UI
         [Parameter]
         public EventCallback<bool> OnToggleEditMode { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+            if(firstRender)
+            {
+                LoadingData = true;
 
-            await base.OnInitializedAsync();
-            LoadingData = true;
-
-            _showRequestButton = ((await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowActionAccessRequest == true || (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowFieldAccessRequest == true)
-            && (await Context.GlobalPermissionRequestActions.CountAsync() > 0 || await Context.GlobalPermissionRequestFields.CountAsync() > 0);
-            LoadingData = false;
-
+                _showRequestButton = ((await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowActionAccessRequest == true || (await Context.GlobalPermissionSettings.FirstOrDefaultAsync())?.AllowFieldAccessRequest == true)
+                && (await Context.GlobalPermissionRequestActions.CountAsync() > 0 || await Context.GlobalPermissionRequestFields.CountAsync() > 0);
+                LoadingData = false;
+            }
+           
         }
 
         private async Task ToggleEditMode(bool editEnabled)

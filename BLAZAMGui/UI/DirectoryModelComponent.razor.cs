@@ -101,7 +101,7 @@ namespace BLAZAM.Gui.UI
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            if (_searchTerm == null || _searchTerm == "")
+            if (_searchTerm.IsNullOrWhiteSpace())
             {
                 LoadingData = false;
 
@@ -127,7 +127,13 @@ namespace BLAZAM.Gui.UI
 
             if (Context != null)
             {
-                CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+                try
+                {
+                    CustomFields = await Context.CustomActiveDirectoryFields.Where(cf => cf.DeletedAt == null).ToListAsync();
+                }catch(InvalidOperationException ex)
+                {
+                    Loggers.DatabaseLogger.Error(ex, "Error while getting custom fields from database");
+                }
             }
             await InvokeStateHasChangedAsync();
 
