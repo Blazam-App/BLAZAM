@@ -53,11 +53,11 @@ namespace BLAZAM.Pages
         public async Task<IActionResult> OnGet(string? state = null, string? code = null)
         {
             // Duo should have sent a 'state' and 'code' parameter.  If either is missing or blank, something is wrong.
-            if (string.IsNullOrWhiteSpace(state))
+            if (state.IsNullOrWhiteSpace())
             {
                 throw new DuoException("Required state value was empty");
             }
-            if (string.IsNullOrWhiteSpace(code))
+            if (code.IsNullOrWhiteSpace())
             {
                 throw new DuoException("Required code value was empty");
             }

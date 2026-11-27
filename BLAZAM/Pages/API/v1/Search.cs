@@ -40,7 +40,7 @@ namespace BLAZAM.Pages.API.v1
         {
 
             // Validate the query parameter: allow alphanumeric, space, hyphen, underscore, and period, 1-100 chars
-            if (string.IsNullOrWhiteSpace(query) || query.Length > 100 || !ValidSearchCharactersRegex().IsMatch(query))
+            if (query.IsNullOrWhiteSpace() || query.Length > 100 || !ValidSearchCharactersRegex().IsMatch(query))
             {
                 return BadRequest("Invalid query parameter.");
             }

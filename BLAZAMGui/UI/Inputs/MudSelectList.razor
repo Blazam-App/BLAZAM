@@ -22,7 +22,7 @@
         <ActivatorContent>
             <MudField Disabled="@Disabled"
                       HelperText="@HelperText"
-                      Label="@(Required && !string.IsNullOrWhiteSpace(Label) ? $"{Label}*" : Label)"
+                      Label="@(Required && !Label.IsNullOrWhiteSpace() ? $"{Label}*" : Label)"
                       Error="@HasErrors"
                       ErrorText="@GetErrorText()"
                       @onclick="@(() => context.ToggleAsync())">

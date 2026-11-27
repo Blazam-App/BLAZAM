@@ -49,7 +49,7 @@ namespace BLAZAM.Gui.UI
             get
             {
                 var sb = new StringBuilder("overflow: hidden;");
-                if (!string.IsNullOrWhiteSpace(Style))
+                if (!Style.IsNullOrWhiteSpace())
                 {
                     sb.Append(' ').Append(Style);
                 }

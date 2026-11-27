@@ -98,7 +98,7 @@ namespace BLAZAM.Common.Data
         /// <exception cref="System.ComponentModel.Win32Exception">Thrown when the process fails to start.</exception>
         public bool ExecuteCommand(string command, uint timeoutMs = 5000, string? workingDirectory = null)
         {
-            if (string.IsNullOrWhiteSpace(command))
+            if (command.IsNullOrWhiteSpace())
             {
                 throw new ArgumentException("Command cannot be null or empty", nameof(command));
             }
