@@ -414,16 +414,14 @@ namespace BLAZAM.ActiveDirectory
                 {
                     Loggers.ActiveDirectoryLogger.Information(ldapEx, "Server Error");
                 }
-                connection?.Dispose();
-                connection = null;
+               
                 return false;
             }
 
             catch (Exception ex)
             {
                 Loggers.ActiveDirectoryLogger.Warning(ex, "General Exception during StartTLS connection");
-                connection?.Dispose();
-                connection = null;
+            
                 return false;
             }
         }

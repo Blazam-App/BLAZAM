@@ -427,7 +427,7 @@ namespace BLAZAM.Pages
             }
             else if (_auth.ShouldPerformGoogleAuthenticatorMFA(appUser.Preferences, LoginRequest, authSettings) && !_mfaValid)
             {
-                var userSecret = await _appUser?.Preferences.AuthenticatorSecret.DecryptAsync();
+                var userSecret = await appUser.Preferences.AuthenticatorSecret.DecryptAsync();
                 _ = googleAuthenticatorModal?.ShowAsync(userSecret.ToSecureString());
                 userSecret = null;
                 return false;

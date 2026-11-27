@@ -325,10 +325,10 @@ namespace BLAZAM.Services
             }
             return null;
         }
-        private async Task<AuthenticationState?> HandleGoogleAuthenticatorMFA(LoginRequest loginReq, IApplicationUserState newUserState, ClaimsPrincipal userClaim, AppUser? userSettings)
+        private async Task<AuthenticationState?> HandleGoogleAuthenticatorMFA(LoginRequest loginReq, IApplicationUserState newUserState, ClaimsPrincipal userClaim, AppUser userSettings)
         {
             var passcode = loginReq.MFAToken;
-            loginReq.MFAToken = userSettings.AuthenticatorSecret.Decrypt<string>();
+            loginReq.MFAToken = await userSettings.AuthenticatorSecret.DecryptAsync();
             if (passcode.IsNullOrEmpty() || !_googleAuthenticatorService.ValidateTwoFactorPIN(loginReq.MFAToken.ToSecureString(), passcode))
             {
                 var twostepState = GetAnonymous(loginReq.Id.ToString(), loginReq.MFAToken);
@@ -360,6 +360,10 @@ namespace BLAZAM.Services
                 else
                 {
                     var userSettings = await GetUserSettings(context, userClaim);
+                    if(userSettings == null)
+                    {
+                        return null;
+                    }
                     if (ShouldPerformGoogleAuthenticatorMFA(userSettings, loginReq, settings))
                     {
                         var googleAuthResult = await HandleGoogleAuthenticatorMFA(loginReq, newUserState, userClaim, userSettings);
